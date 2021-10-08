@@ -61,9 +61,15 @@ async function gotoAnswers(questionId) {
                          {question.question}
                     </p>
                 </a>
-                <p className="updateDate">
-                    <p className="updatedOnText">Updated on:</p> 13/08/2021
-                </p>
+
+                <div className="updateDate">
+                    <p>Updated on: </p>
+                    <p>13/08/2021</p> 
+                </div>
+
+                {/* <p className="updateDate"></p> */}
+                     
+                
                 {/* <hr /> */}
             </div>
             

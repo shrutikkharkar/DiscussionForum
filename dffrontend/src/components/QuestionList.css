@@ -6,15 +6,12 @@
     text-align: center;
   }
 
-  .answerCount, .viewCount, .voteCount, .questionDiscussion{
+  .answerCount, .viewCount, .voteCount, .questionDiscussion, .updateDate{
     display: table-cell;
     padding-left: 1rem;
     padding-right: 1rem;
   }
 
-  .updateDate{
-    display: table-cell;
-  }
 
   .questionDiscussion{
     font-size: 1.3rem;
@@ -23,6 +20,6 @@
     cursor: pointer;
   }
 
-  .updatedOnText{
+  /* .updatedOnText{
     white-space: nowrap;
-  }
+  } */
