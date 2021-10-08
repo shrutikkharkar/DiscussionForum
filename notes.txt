@@ -1,0 +1,60 @@
+reply to an answer
+
+Redux (useSelector)
+
+passport passport-jwt validator
+
+Collections:
+1. answers
+2. users
+3. questions
+
+
+cors
+dotenv
+mongoose
+
+"Rest client" vs code extension
+
+User details attributes
+1. Name
+2. Class
+3. Department
+4. Password
+3. Special User(Staff)
+
+Pages:
+1. Login / Signup page(/userLogin)
+2. Primary page(all questions)(/index)
+3. Search result page(/searchQuery)
+4. Add question page(/addQuestion)
+ 
+models for questions
+question
+answersCount
+viewsCount
+votesCount
+updatedondate
+answeredById
+
+security:
+google firebase authentication system
+amazon simple mail 
+free ssl(opensource)
+
+DB:
+Mlab
+Redis labs
+
+virtual private server
+Digital ocean
+vultur
+
+Dokku(similar to heroku)
+
+For frontend hosting:
+netlify
+
+For user uploaded images:
+imgix.com($3/1000 images additional money for network)
+cloudinary.com(free tier)

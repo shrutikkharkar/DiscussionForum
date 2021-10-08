@@ -1,0 +1,42 @@
+.topQuesAnsPageAnswer{
+    font-size: 1.6rem;
+    color: lightslategray;
+}
+
+.answer{
+    font-size: 1.3rem;
+}
+
+.vote_count{
+    font-size: 1.2rem;
+}
+
+.answeredBy{
+    float: right;
+    color: rgb(47, 168, 158);
+}
+
+hr.hrBelowAns{
+    border-top: 5px dashed;
+}
+
+.bookmark{
+    float: right;
+    cursor: pointer;
+}
+
+.far{
+    font-size: 1.4rem;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+.inSaved{
+    font-size: 1.4rem;
+    margin-top: 1rem;
+}
+
+.bookmark:active + i{
+    color: greenyellow;
+}
+

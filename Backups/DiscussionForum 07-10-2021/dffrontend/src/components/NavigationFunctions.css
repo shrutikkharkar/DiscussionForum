@@ -1,0 +1,25 @@
+.navigation-functions-div{
+    position: absolute;
+    padding: 4rem;
+}
+
+.functions{
+    cursor: pointer;
+    font-size:1.1rem;
+}
+
+.functions:hover{
+    color: rgb(0, 0, 0);
+}
+
+.function-like-icon:hover{
+    color: rgb(253, 59, 59);
+}
+
+.function-answered-icon:hover{
+    color: rgb(47, 204, 7);
+}
+
+.function-saved-icon:hover{
+    color: rgb(82, 137, 255);
+}
