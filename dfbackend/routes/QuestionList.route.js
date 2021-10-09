@@ -62,8 +62,8 @@ router.get('/get', async (req, res) => {
                 as: 'question_details'
             }
         },
-  
-
+        
+        
         {
             $project: 
             {
@@ -75,9 +75,6 @@ router.get('/get', async (req, res) => {
                 viewCount: {
                     $size: "$viewedById"
                 },
-
-                likedById: "$question_details.likedById",
-                dislikedById: "$question_details.dislikedById",
 
                 likeCount: {
                     $size: "$question_details.likedById"
