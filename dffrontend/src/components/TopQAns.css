@@ -3,6 +3,11 @@
     color: lightslategray;
 }
 
+.topQAnsList{
+    border-right: 2px solid rgb(212, 208, 208);
+    border-left: 2px solid rgb(212, 208, 208);
+}
+
 .answer{
     font-size: 1.3rem;
 }

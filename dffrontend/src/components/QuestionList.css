@@ -4,7 +4,10 @@
   
   .questionListContainer{
     text-align: center;
+    border-right: 2px solid rgb(212, 208, 208);
+    border-left: 2px solid rgb(212, 208, 208);
   }
+
 
   .answerCount, .viewCount, .voteCount, .questionDiscussion, .updateDate{
     display: table-cell;

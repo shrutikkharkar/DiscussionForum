@@ -38,10 +38,11 @@ async function gotoAnswers(questionId) {
     if(questions){
     return (
         <>
+        <div className="container w-75 questionListContainer">
         {
         questions.map(question => 
         (
-        <div className="container w-75 questionListContainer">
+        <div>
             
             <div className="questionBlock" key={question.id}>
                 <div className="answerCount">
@@ -66,11 +67,6 @@ async function gotoAnswers(questionId) {
                     <p>Updated on: </p>
                     <p>11/10/2021</p> 
                 </div>
-
-                {/* <p className="updateDate"></p> */}
-                     
-                
-                {/* <hr /> */}
             </div>
             
             <hr />      
@@ -78,6 +74,8 @@ async function gotoAnswers(questionId) {
         )
 
         )}
+
+        </div>
         
         
         </>

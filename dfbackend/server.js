@@ -5,6 +5,7 @@ const dotenv = require('dotenv')
 const UserRouteUrls = require('./routes/User.route')
 const questionListRouteUrls = require('./routes/QuestionList.route')
 const AnswerListRouteUrls = require('./routes/AnswerList.route')
+const CommentListRouteUrls = require('./routes/CommentList.route')
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
 
@@ -34,6 +35,7 @@ app.use(cors({
 app.use('/user', UserRouteUrls)
 app.use('/question', questionListRouteUrls)
 app.use('/answer', AnswerListRouteUrls) 
+app.use('/comment', CommentListRouteUrls) 
 
 
 

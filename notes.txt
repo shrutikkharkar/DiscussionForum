@@ -1,3 +1,9 @@
+Functions to add:
+-Comment on answer
+-toggle like dislike and save
+
+
+
 $ git add .
 
 $ git commit -m "Updated style on update date"

@@ -1,6 +1,14 @@
 .navigation-functions-div{
-    position: absolute;
+    /* position: absolute;
     padding: 4rem;
+    background-color: cadetblue; */
+
+    position: absolute;
+    background-color: antiquewhite;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-left: 1rem;
+    
 }
 
 .functions{

@@ -29,6 +29,35 @@ router.post('/post', auth, async (req, res) => {
     }
 })
 
+// router.post('/addComment/:id', auth, async (req, res) => {
+//     try{
+//         const comment = req.body
+//         const ansId = mongoose.Types.ObjectId(req.params.id)
+//         const userId = mongoose.Types.ObjectId(req.user)
+
+//         Answer.aggregate([
+//             {
+//                 $match:
+//                 {
+//                     _id: ansId
+//                 }
+//             },
+
+//             {
+//                 $add:
+//                 {
+
+//                 }
+//             }
+//         ])
+
+//     }
+//     catch (err) {
+//         console.error(err);
+//         res.status(500).send();
+//     }
+// })
+
 router.post('/deleteAnswer/:id', auth, async (req, res) => {
     try {
         const answerId = mongoose.Types.ObjectId(req.params.id);

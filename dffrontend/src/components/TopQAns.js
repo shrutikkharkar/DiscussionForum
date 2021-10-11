@@ -124,7 +124,7 @@ function TopQAns() {
 
     return (
         <>
-            <div className="container w-75">
+            <div className="container topQAnsList w-75">
                     <p className="topQuesAnsPageAnswer">{question.question}</p>
                     <p>{question.userName}</p>
                     <hr className="hrBelowAns"/>
@@ -159,11 +159,15 @@ function TopQAns() {
 
                     <div>
                         <i onClick={() => likeAnswer(answer._id)} className="far fa-thumbs-up"></i>
-                        {/* <button onClick={() => likeAnswer(answer._id)} >Like</button> */}
                         <span className="vote_count"> {answer.likeCount}</span>
+
                         &nbsp; &nbsp; &nbsp; &nbsp;
                         <i onClick={() => dislikeAnswer(answer._id)} className="far fa-thumbs-down"></i>
                         <span className="vote_count"> {answer.dislikeCount}</span>
+
+                        &nbsp; &nbsp; &nbsp; &nbsp;
+                        <i class="far fa-comment-dots"></i>
+                        <span className="comment_count"> 1</span>
 
                         <span>
                             <i onClick={() => saveAnswer(answer._id)} className="far bookmark bookmark-onclick fa-bookmark"></i>
