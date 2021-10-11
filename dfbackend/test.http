@@ -17,7 +17,11 @@ content-type: application/json
 }
 ###
 
-#
+###
+POST http://localhost:3001/question/deleteQuestion/6163d56f2bfba8249460c5af
+content-type: application/json
+
+###
 POST http://localhost:3001/answer/removeLike/6155d2bd4b884f0578277466
 content-type: application/json
 ###
@@ -177,7 +181,17 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3001/question/get/
+GET http://localhost:3001/question/get/614eef9b6f422f2958112990
+content-type: application/json
+
+###
+###
+POST http://localhost:3001/question/deleteQuestion/61631a0b3dae9215749adcf2
+content-type: application/json
+
+###
+###
+GET http://localhost:3001/question/getVotes/
 content-type: application/json
 
 ###

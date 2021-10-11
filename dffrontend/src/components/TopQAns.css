@@ -25,11 +25,12 @@ hr.hrBelowAns{
     cursor: pointer;
 }
 
-.far{
+.far, .fa-thumbs-up{
     font-size: 1.4rem;
     margin-top: 1rem;
     cursor: pointer;
 }
+
 
 .inSaved{
     font-size: 1.4rem;

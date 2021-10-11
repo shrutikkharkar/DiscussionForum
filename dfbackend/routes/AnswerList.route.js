@@ -29,24 +29,84 @@ router.post('/post', auth, async (req, res) => {
     }
 })
 
+router.post('/deleteAnswer/:id', auth, async (req, res) => {
+    try {
+        const answerId = mongoose.Types.ObjectId(req.params.id);
+        const userId = mongoose.Types.ObjectId(req.user);
+
+        Answer.findOneAndDelete({_id: answerId, answeredById: userId})
+        .then((answers) => {
+            if(answers){
+                res.send("Answer deleted successfully");
+            }
+            else{
+                res.send("Didint delete");
+            }
+        })
+
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+})
+
 //LIKE DISLIKE SAVE START
+
+// router.post('/like/:id', auth, async (req, res) => {
+
+//     try {
+//         let answerId = mongoose.Types.ObjectId(req.params.id)
+//         let userId = mongoose.Types.ObjectId(req.user)
+
+//         Answer.findOneAndUpdate(
+//             {
+//                 _id: answerId
+//             }, 
+//             {
+//                 $addToSet: 
+//                 {
+//                     likedById: userId
+//                 }
+//             })
+//         .then((answers) => {
+//             if(answers){
+//                 res.send("Liked successfully");
+//             }
+//             else{
+//                 res.send("Didint like");
+//             }
+            
+//         })
+//     }
+//     catch (err) {
+//         console.error(err);
+//         res.status(500).send();
+//     }
+
+// })
 
 router.post('/like/:id', auth, async (req, res) => {
 
     try {
         let answerId = mongoose.Types.ObjectId(req.params.id)
         let userId = mongoose.Types.ObjectId(req.user)
-
-        Answer.findOneAndUpdate(
+    
+        await Answer.findOneAndUpdate(
             {
                 _id: answerId
             }, 
             {
+                $pull: 
+                {
+                    dislikedById: userId
+                },
                 $addToSet: 
                 {
                     likedById: userId
                 }
-            })
+            }
+        )
         .then((answers) => {
             if(answers){
                 res.send("Liked successfully");
@@ -54,8 +114,8 @@ router.post('/like/:id', auth, async (req, res) => {
             else{
                 res.send("Didint like");
             }
-            
-        })
+        })  
+  
     }
     catch (err) {
         console.error(err);
@@ -63,6 +123,8 @@ router.post('/like/:id', auth, async (req, res) => {
     }
 
 })
+
+
 
 router.post('/removeLike/:id', auth, async (req, res) => {
 
@@ -109,6 +171,10 @@ router.post('/dislike/:id', auth, async (req, res) => {
                 _id: answerId
             }, 
             {
+                $pull: 
+                {
+                    likedById: userId
+                },
                 $addToSet: 
                 {
                     dislikedById: userId

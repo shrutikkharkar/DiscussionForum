@@ -22,6 +22,18 @@ function answerList() {
     }
 }
 
+function removeLike(answerId) {
+    try {
+        axios.post(`http://localhost:3001/answer/removeLike/${answerId}`)
+        .then(res => {
+            answerList()
+        })
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+
     if(answers){
     return (
         <>
@@ -42,7 +54,7 @@ function answerList() {
             </div>
             
             <div>
-                <i className="fas fa-thumbs-up"></i>
+                <i onClick={() => removeLike(answer._id)} className="fas fa-thumbs-up"></i>
                 <span className="vote_count"> {answer.likeCount}</span>
                 &nbsp; &nbsp; &nbsp; &nbsp;
                 <i className="far fa-thumbs-down"></i>

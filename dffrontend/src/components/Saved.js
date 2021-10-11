@@ -22,6 +22,21 @@ function answerList() {
     }
 }
 
+function removeSave(answerId) {
+
+    try{
+        axios.post(`http://localhost:3001/answer/removeSave/${answerId}`)
+        .then(res => {
+            answerList()
+        })
+
+    }
+    catch (err) {
+        console.error(err);
+    }
+
+}
+
     if(answers){
     return (
         <>
@@ -50,7 +65,7 @@ function answerList() {
                 <span className="vote_count"> {answer.dislikeCount}</span>
 
                 <span>
-                    <i className="fas bookmark bookmark-onclick fa-bookmark inSaved"></i>
+                    <i onClick={() => removeSave(answer._id)} className="fas bookmark bookmark-onclick fa-bookmark inSaved"></i>
                 </span>
 
             </div>

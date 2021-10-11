@@ -23,6 +23,7 @@ function TopQAns() {
             
             await axios.get(`http://localhost:3001/question/get/${questionID}`)
             .then(response => {
+                console.log(response.data)
                 setQuestion(response.data);
             })
         } 
@@ -125,6 +126,7 @@ function TopQAns() {
         <>
             <div className="container w-75">
                     <p className="topQuesAnsPageAnswer">{question.question}</p>
+                    <p>{question.userName}</p>
                     <hr className="hrBelowAns"/>
                     <p style={{fontWeight: 'bold', fontSize: '1.2rem'}}>Answers: </p>
                     <form onSubmit={giveAnswer}>

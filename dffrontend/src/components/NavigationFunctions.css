@@ -23,3 +23,7 @@
 .function-saved-icon:hover{
     color: rgb(82, 137, 255);
 }
+
+.function-questioned-icon:hover{
+    color: rgb(82, 255, 189);
+}

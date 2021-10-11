@@ -9,6 +9,7 @@ import SearchResult from './components/SearchResult';
 import Saved from './components/Saved';
 import Liked from './components/Liked';
 import Answered from './components/Answered';
+import Questioned from './components/Questioned';
 import NavigationFunctions from './components/NavigationFunctions';
 import AuthContext from './context/AuthContext';
 
@@ -44,6 +45,8 @@ function Router() {
                         <Route path="/liked"><NavigationFunctions /><Liked /></Route>
 
                         <Route path="/answered"><NavigationFunctions /><Answered /></Route>
+
+                        <Route path="/questioned"><NavigationFunctions /><Questioned /></Route>
 
                         <Route exact path="/"><NavigationFunctions /><Home /></Route>
 

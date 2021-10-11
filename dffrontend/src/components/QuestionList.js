@@ -64,7 +64,7 @@ async function gotoAnswers(questionId) {
 
                 <div className="updateDate">
                     <p>Updated on: </p>
-                    <p>13/08/2021</p> 
+                    <p>11/10/2021</p> 
                 </div>
 
                 {/* <p className="updateDate"></p> */}

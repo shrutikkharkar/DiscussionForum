@@ -2,8 +2,6 @@ import React from 'react'
 import {useHistory} from 'react-router-dom'
 import './NavigationFunctions.css'
 
-
-
 function NavigationFunctions() {
 
     const history = useHistory();
@@ -16,6 +14,10 @@ function NavigationFunctions() {
     }
     function sendToAnswered(){
         history.push('/answered');
+    }
+
+    function sendToQuestioned(){
+        history.push('/questioned');
     }
 
     return (
@@ -34,6 +36,11 @@ function NavigationFunctions() {
                 <p onClick={sendToAnswered} className='function-answered-icon'>
                     <i className="fas fa-check-square"></i>
                     <span className='functions'> Answered</span>
+                </p>
+
+                <p onClick={sendToQuestioned} className='function-questioned-icon'>
+                    <i class="fas fa-question-circle"></i>
+                    <span className='functions'> Questions</span>
                 </p>
                 
             </div>
