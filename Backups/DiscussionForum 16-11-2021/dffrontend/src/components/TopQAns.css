@@ -1,0 +1,54 @@
+.topQuesAnsPageAnswer{
+    font-size: 1.6rem;
+    color: lightslategray;
+}
+
+/* .topQAnsList{
+    border-right: 2px solid rgb(212, 208, 208);
+    border-left: 2px solid rgb(212, 208, 208);
+} */
+
+.answer{
+    font-size: 1.3rem;
+}
+
+.vote_count{
+    font-size: 1.2rem;
+}
+
+.answeredBy{
+    float: right;
+    color: rgb(47, 168, 158);
+}
+
+hr.hrBelowAns{
+    border-top: 5px dashed;
+}
+
+.bookmark{
+    float: right;
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.far, .fa-thumbs-up{
+    font-size: 1.4rem;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+.likeIcon, .dislikeIcon, .commentIcon{
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+
+.inSaved{
+    font-size: 1.4rem;
+    margin-top: 1rem;
+}
+
+.bookmark:active + i{
+    color: greenyellow;
+}
+

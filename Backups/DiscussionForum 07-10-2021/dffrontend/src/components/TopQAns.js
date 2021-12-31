@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import './TopQAns.css'
+import AuthContext from '../context/AuthContext'
 
 function TopQAns() {
 
     const queryParams = new URLSearchParams(window.location.search);
+
+    const {loggedIn} = useContext(AuthContext);
 
     const [answer, setAnswer] = useState('')
     const [answers, setAnswers] = useState([])
@@ -35,10 +38,19 @@ function TopQAns() {
     async function getAnswers() {
         try 
         {
-            await axios.get(`http://localhost:3001/answer/get/${questionID}`)
-            .then(response => {
-                setAnswers(response.data);
-            })
+            if(loggedIn===true){
+                await axios.get(`http://localhost:3001/answer/getForUser/${questionID}`)
+                .then(response => {
+                    setAnswers(response.data);
+                })
+            }
+            else{
+                await axios.get(`http://localhost:3001/answer/get/${questionID}`)
+                .then(response => {
+                    setAnswers(response.data);
+                })
+            }
+            
         } 
         catch (err) {
             console.error(err);

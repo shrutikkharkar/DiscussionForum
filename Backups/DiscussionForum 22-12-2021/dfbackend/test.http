@@ -1,0 +1,262 @@
+###
+POST http://localhost:3001/user/login
+content-type: application/json
+
+{
+    "email": "shrutikharkar3@gmail.com",
+    "password": "Shrutik"
+}
+###
+###
+POST http://localhost:3001/user/login
+content-type: application/json
+
+{
+    "email": "krishna@gmail.com",
+    "password": "Shrutik"
+}
+###
+GET http://localhost:3001/user/getAllUserDetails
+content-type: application/json
+
+###
+GET http://localhost:3001/user/isAdmin
+content-type: application/json
+
+###
+POST http://localhost:3001/comment/addComment/6155fc61a5ae5b2e20f8605e
+content-type: application/json
+
+{
+    "comment": "Second comment for ipl answer"
+}
+###
+GET http://localhost:3001/comment/getComments/6155fc61a5ae5b2e20f8605e
+content-type: application/json
+###
+POST http://localhost:3001/user/login
+content-type: application/json
+
+{
+    "email": "krishna@gmail.com",
+    "password": "Shrutik"
+}
+###
+
+###
+POST http://localhost:3001/question/deleteQuestion/6163d56f2bfba8249460c5af
+content-type: application/json
+
+###
+POST http://localhost:3001/answer/removeLike/6155d2bd4b884f0578277466
+content-type: application/json
+###
+###
+POST http://localhost:3001/answer/removeLike/6155fc61a5ae5b2e20f8605e
+content-type: application/json
+###
+POST http://localhost:3001/answer/removedisLike/6155d2bd4b884f0578277466
+content-type: application/json
+###
+###
+POST http://localhost:3001/answer/removedisLike/6155fc61a5ae5b2e20f8605e
+content-type: application/json
+###
+###
+POST http://localhost:3001/answer/removeSave/6155d2bd4b884f0578277466
+content-type: application/json
+###
+###
+POST http://localhost:3001/answer/removeSave/6155fc61a5ae5b2e20f8605e
+content-type: application/json
+###
+
+GET http://localhost:3001/user/logout
+
+###
+###
+UPDATE http://localhost:3001/answer/saved/6155d2bd4b884f0578277466
+Content-Type: application/json
+###
+GET http://localhost:3001/user/getUsername
+content-type: application/json
+###
+
+GET http://localhost:3001/answer/get/614eef9b6f422f2958112990
+Content-Type: application/json
+
+###
+###
+
+GET http://localhost:3001/answer/getForUser/614eef9b6f422f2958112990
+Content-Type: application/json
+
+###
+###
+
+GET http://localhost:3001/answer/getSaved
+Content-Type: application/json
+
+###
+PATCH http://localhost:3001/user/savedAnswer/611637598971d01c389b028f
+Content-Type: application/json
+
+{
+    "savedAnswers": [{"savedAnswerId": "611637598971d01c389b028f"}]
+}
+
+###
+GET http://localhost:3001/user/logout
+
+###
+
+GET http://localhost:3001/answer/answered
+Content-Type: application/json
+
+###
+POST http://localhost:3001/user/login
+content-type: application/json
+
+{
+    "email": "shrutikharkar3@gmail.com",
+    "password": "Shrutik"
+}
+
+###
+
+POST http://localhost:3001/user/signup
+Content-Type: application/json
+
+{
+    "fullName": "Shrutik Kharkar", 
+    "userName": "Shrutik Kharkar", 
+    "email": "four@gmail.com", 
+    "Class": "BE", 
+    "branch": "INFT",  
+    "password": "Shrutik"
+}
+
+
+###
+###
+POST http://localhost:3001/user/login
+content-type: application/json
+
+{
+    "email": "shrutikharkar3@gmail.com",
+    "password": "Shrutik"
+}
+
+###
+
+POST http://localhost:3001/test/
+content-type: application/json
+{
+	"testString": "Hello Shrutik"
+}
+
+
+###
+
+GET http://localhost:3001/answers/test
+content-type: application/json
+
+###
+
+GET http://localhost:3001/answers/getAnswerCount/6116376e8971d01c389b0297
+content-type: application/json
+
+
+###
+
+POST http://localhost:3001/question/post
+Content-Type: application/json
+
+{
+    "questionById": "6107e5d6748fa20bd4339519",
+    "question": "This one second question for testing!",
+    "answersCount": 0,
+    "viewCount": 0,
+    "votesCount": 0
+}
+
+###
+
+PATCH http://localhost:3001/questions/update/610fc0457d32093698c2dff0
+Content-Type: application/json
+
+{
+    "question": "This is the first question for testing! Fetching from the mongoDB atlas. This is the first question for testing! Fetching from the mongoDB atlas."
+}
+
+
+###
+GET http://localhost:3001/answer/get/614eef9b6f422f2958112990
+Content-Type: application/json
+
+###
+
+
+###
+GET http://localhost:3001/answer/getAnswerStats/614eef9b6f422f2958112990
+Content-Type: application/json
+
+###
+
+
+POST http://localhost:3001/answer/post
+Content-Type: application/json
+
+{
+    "questionID": "614eef9b6f422f2958112990",
+    "answer": "You can go for mask detection"
+}
+
+###
+GET http://localhost:3001/question/get/614eef9b6f422f2958112990
+content-type: application/json
+
+###
+###
+POST http://localhost:3001/question/deleteQuestion/61631a0b3dae9215749adcf2
+content-type: application/json
+
+###
+###
+GET http://localhost:3001/question/getVotes/
+content-type: application/json
+
+###
+GET http://localhost:3001/user/loggedIn
+content-type: application/json
+###
+GET http://localhost:3001/answers/getCounts/
+content-type: application/json
+
+###
+POST http://localhost:3001/user/login
+content-type: application/json
+
+{
+    "email": "shrutikharkar3@gmail.com",
+    "password": "Shrutik"
+}
+
+###
+POST http://localhost:3001/question/post
+Content-Type: application/json
+
+{
+    "questionById": "6107e5d6748fa20bd4339519",
+    "question": "This is the second!",
+    "answersCount": 0,
+    "viewCount": 0,
+    "votesCount": 0
+}
+###
+GET http://localhost:3001/user/logout
+
+
+###
+GET http://localhost:3001/user/get
+content-type: application/json

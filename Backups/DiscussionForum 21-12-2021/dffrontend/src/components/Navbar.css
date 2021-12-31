@@ -1,0 +1,50 @@
+
+.searchForm{
+    display: inline-flex;
+    margin-inline: auto;
+  }
+
+  
+.fa-caret-down{
+  font-size: 30px;
+  cursor: pointer;
+}
+
+  .searchBox{
+    width: 40rem;
+  }
+  
+  .logo{
+    position: absolute;
+    font-size: 2rem;
+    font-weight: 700;
+    color: darkgray;
+    padding-left: 1rem;
+    padding-top: 1rem;
+    cursor: pointer;
+    /* color: #0bccda; */
+  }
+
+  .searchButton{
+
+    float: left;
+    width: 20%;
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none;
+    cursor: pointer;
+  }
+  .searchButton:hover{
+    background: #0bda95;
+  }
+
+  
+  .userNameSpan{
+    display: flex;
+  }
+
+  
+  

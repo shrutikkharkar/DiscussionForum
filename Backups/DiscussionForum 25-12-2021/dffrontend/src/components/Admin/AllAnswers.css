@@ -1,0 +1,21 @@
+.allAnswersToggleBar{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.allAnswersToggleButtons{
+    background: rgb(228, 250, 250);
+    border: 2px solid gainsboro;
+    font-size: 1.3rem;
+}
+
+.allAnswersToggleButtons:hover{
+    background: rgb(0, 0, 0);
+    color: #fff;
+    
+}
+
+.selectedToggleButton{
+    background: rgb(0, 0, 0);
+    color: #fff;
+}

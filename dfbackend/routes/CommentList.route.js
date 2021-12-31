@@ -1,27 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const Comment = require('../models/CommentList.model')
 const auth = require('../middleware/auth')
-const mongoose = require('mongoose')
+const adminAuth = require('../middleware/adminAuth')
+const commentListController = require('../controllers/CommentList.controller.js')
 
-router.post('/addComment/:id', auth, async (req, res) => {
 
-    try {
-        const answerId = mongoose.Types.ObjectId(req.params.id)
-        const userId = mongoose.Types.ObjectId(req.user)
+router.post('/addComment/:id', auth, commentListController.addComment);
 
-        const comment = req.body
+router.get('/getComments/:id', commentListController.getComments);
 
-        const newComment = new Comment({
-            answerId: answerId, commentById: userId, comment: comment
-        });
+router.post('/deleteComment/:id', auth, commentListController.deleteComment);
 
-        const savedComment = await newComment.save();
-        return res.json(savedComment);
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
+router.get('/getAllCommentDetails', adminAuth, commentListController.getAllCommentDetails);
 
-})
+router.post('/removeCommentByAdmin/:id', adminAuth, commentListController.removeCommentByAdmin);
+
+router.post('/unblockAnyCommentByAdmin/:id', adminAuth, commentListController.unblockAnyCommentByAdmin);
+
+router.post('/unblockMyBlockedCommentByAdmin/:id', adminAuth, commentListController.unblockMyBlockedCommentByAdmin);
+
+router.get('/getAllBlockedCommentDetails', adminAuth, commentListController.getAllBlockedCommentDetails);
+
+router.get('/getAllMeBlockedCommentDetails', adminAuth, commentListController.getAllMeBlockedCommentDetails);
+
+
+module.exports = router

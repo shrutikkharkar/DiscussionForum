@@ -1,6 +1,36 @@
+Algo to use:
+Content matching using Levenshtein Distance algorithm
+Question-answer pair generation and ranking using NAIVE BAYES considering like count and comment polarity.
+Features extracted from answers has higher power compared to the features extracted from questions.
+Results shows that KNN has better output then Naive bayes also it takes lesser time than Naive bayes.
+
+Summation: Content matching Levenshtein Distance algorithm, Question-answer pair generation and ranking using KNN considering like count and comment polarity AND using answer features.
+
 Functions to add:
+-priviledges - 1(normal user), 2(College student), 3(Faculty/admin)
 -Comment on answer
--toggle like dislike and save
+toggle like dislike and save
+-google signup
+-tags
+-image bar
+-report
+-search algo
+-notification
+-update profile 
+-Admin panel - User list(Take down questions, Take down answers, Take down comments, Block activity, Block Everything), 
+               All questions(Take down and Bring back TOGGLE), 
+               All answers(Take down and Bring back TOGGLE),
+               (When answer is blocked, notify the user)
+               All comments(Take down and Bring back TOGGLE), 
+               Reports  
+-Answered(Show if answer was removed)
+USE REACT TOASTIFY FOR ALERT
+-If answer should be visible to admin even if user is blocked
+-Add comments logo in side panel
+
+
+https://github.com/safak/youtube/tree/mern-social-app
+
 
 
 

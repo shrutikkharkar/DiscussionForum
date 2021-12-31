@@ -3,16 +3,20 @@
     color: lightslategray;
 }
 
-.topQAnsList{
+/* .topQAnsList{
     border-right: 2px solid rgb(212, 208, 208);
     border-left: 2px solid rgb(212, 208, 208);
+} */
+
+.verifiedIcon{
+    color: rgb(31, 184, 255);
 }
 
 .answer{
     font-size: 1.3rem;
 }
 
-.vote_count{
+.vote_count, .comment_count{
     font-size: 1.2rem;
 }
 
@@ -27,6 +31,7 @@ hr.hrBelowAns{
 
 .bookmark{
     float: right;
+    font-size: 1.6rem;
     cursor: pointer;
 }
 
@@ -35,6 +40,21 @@ hr.hrBelowAns{
     margin-top: 1rem;
     cursor: pointer;
 }
+
+.likeIcon, .dislikeIcon, .commentIcon{
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.liked, .disliked{
+    color : rgb(255, 1, 1);
+}
+
+.saved{
+    color : rgb(58, 240, 2);
+}
+
+
 
 
 .inSaved{

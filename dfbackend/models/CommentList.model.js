@@ -18,11 +18,27 @@ const CommentListSchema = new mongoose.Schema({
     },
 
     likedById: [
-        {type: mongoose.Types.ObjectId}
+        {
+            type: mongoose.Types.ObjectId
+        }
     ],
 
     dislikedById: [
-        {type: mongoose.Types.ObjectId}
+        {
+            type: mongoose.Types.ObjectId
+        }
+    ],
+
+    reportedById: [
+        {
+            type: mongoose.Types.ObjectId
+        }
+    ],
+
+    removedById: [
+        {
+            type: mongoose.Types.ObjectId
+        }
     ],
 
     updatedOnDate: {
