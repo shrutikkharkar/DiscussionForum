@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-// const jwt = require('jsonwebtoken');
-// const dotenv = require('dotenv')
 
 const userSchema = new mongoose.Schema({
 
@@ -17,7 +15,6 @@ const userSchema = new mongoose.Schema({
     email: {
         type: 'string',
         required: true,
-
     },
 
     Class: {
@@ -44,6 +41,11 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Types.ObjectId
         }
     ],
+
+    verified: {
+        type: 'boolean',
+        default: false
+    },
 
     date: {
         type: 'date',

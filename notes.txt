@@ -6,27 +6,36 @@ Results shows that KNN has better output then Naive bayes also it takes lesser t
 
 Summation: Content matching Levenshtein Distance algorithm, Question-answer pair generation and ranking using KNN considering like count and comment polarity AND using answer features.
 
+BUGS:
+1. when question is deleted, user who has asked can also view it
+
 Functions to add:
 -priviledges - 1(normal user), 2(College student), 3(Faculty/admin)
--Comment on answer
+Comment on answer
 toggle like dislike and save
 -google signup
 -tags
 -image bar
--report
+report
 -search algo
--notification
--update profile 
--Admin panel - User list(Take down questions, Take down answers, Take down comments, Block activity, Block Everything), 
+notification
+-update profile
+Delete answers when question is deleted 
+Admin panel - User list(Take down questions, Take down answers, Take down comments, Block activity, Block Everything), 
                All questions(Take down and Bring back TOGGLE), 
                All answers(Take down and Bring back TOGGLE),
                (When answer is blocked, notify the user)
                All comments(Take down and Bring back TOGGLE), 
                Reports  
--Answered(Show if answer was removed)
+Answered(Show if answer was removed)
 USE REACT TOASTIFY FOR ALERT
--If answer should be visible to admin even if user is blocked
+If answer should be visible to admin even if user is blocked
 -Add comments logo in side panel
+
+LOGIC FOR NOTIFICATIONS:
+when liked store likedById, answerId, answerById, seen(true/false)
+Notification for liked, commented, answered, removed ans and question,
+special notification for admins
 
 
 https://github.com/safak/youtube/tree/mern-social-app

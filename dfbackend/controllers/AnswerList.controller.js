@@ -1,9 +1,26 @@
 const mongoose = require('mongoose')
 const Answer = require('../models/AnswerList.model')
+const Comment = require('../models/CommentList.model')
+const Notification = require('../models/NotificationList.model')
 
 const postAnswer = async (req, res) => {
     try {
-        const {questionID, answer} = req.body;
+
+        const {questionID, answer, questionById} = req.body;
+
+        // Logic for notification
+        const newNotification = new Notification({
+            forUserId: questionById,
+            fromUserId: req.user,
+            propertyId: questionID, 
+            seen: false,
+            type: 'answered'
+        });
+
+        const savedNotification = await newNotification.save();
+        // Logic for notification
+
+        
 
         if(!questionID || !answer)
             return res.status(400).json({errorMessage: 'Enter all required fields'});
@@ -14,6 +31,8 @@ const postAnswer = async (req, res) => {
 
         const savedAnswer = await newAnswer.save();
         return res.json(savedAnswer);
+
+
     }
     catch (err) {
         console.error(err);
@@ -27,16 +46,19 @@ const deleteAnswer = async (req, res) => {
         const answerId = mongoose.Types.ObjectId(req.params.id);
         const userId = mongoose.Types.ObjectId(req.user);
 
-        Answer.findOneAndDelete({_id: answerId, answeredById: userId})
-        .then((answers) => {
-            if(answers){
-                res.send("Answer deleted successfully");
-            }
+        Answer.findOneAndDelete({_id: answerId, answeredById: userId}, function(err, answer) {
+            if (err) throw err;
             else{
-                res.send("Didint delete");
+                Comment.deleteMany({answerId: answerId}, function(err, comment) {
+                    if (err) {
+                        res.send("Didint delete");
+                    }
+                    else{
+                        res.send("Answer deleted successfully");
+                    }
+                })
             }
         })
-
     }
     catch (err) {
         console.error(err);
@@ -67,12 +89,30 @@ const likeAnswer = async (req, res) => {
         )
         .then((answers) => {
             if(answers){
+
+                // socket.on("madeChange", () => {
+                //     socket.emit('madeChange');
+                // })
+                
                 res.send("Liked successfully");
             }
             else{
                 res.send("Didint like");
             }
         })  
+
+        const {answeredById} = req.body
+        
+        const newNotification = new Notification({
+            forUserId: answeredById,
+            fromUserId: userId,
+            propertyId: answerId, 
+            seen: false,
+            type: 'liked'
+        });
+
+        const savedNotification = await newNotification.save();
+        
   
     }
     catch (err) {
@@ -851,6 +891,7 @@ const getAnswersForUser = async (req, res) => {
                 $project:
                 {
                     answer: 1,
+                    answeredById: 1,
                     Class: "$user_details.Class",
                     branch: "$user_details.branch",
                     userName: "$user_details.userName",
@@ -1144,7 +1185,8 @@ const unblockAnyAnswerByAdmin = async (req, res) => {
             {
                 $set: 
                 {
-                    removedById: []
+                    removedById: [],
+                    reportedById: []
                 }
             }
         )
@@ -1216,13 +1258,105 @@ const reportAnswerByUser = async (req, res) => {
         )
         .then((answers) => {
             if(answers){
-                res.send("Romoved answer successfully");
+                res.send("Reported answer successfully");
             }
             else{
-                res.send("Didn't remove answer");
+                res.send("Didn't report answer");
             }
         })  
+
+        const newNotification = new Notification({
+            forAdmin: true,
+            fromUserId: userId,
+            propertyId: answerId, 
+            seen: false,
+            type: 'reportedAnswer'
+        });
+
+        const savedNotification = await newNotification.save();
   
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+
+const getAllFlaggedAnswers = async (req, res) => {
+    try {
+        Answer.aggregate([ 
+            {
+                $match: 
+                {
+                    "reportedById": {$ne: []}
+                }
+            },
+            {
+                $lookup: 
+                {
+                    from: "users", 
+                    localField: "answeredById", 
+                    foreignField: "_id",
+                    as: "user_details"
+                }
+            },
+            {$unwind: "$user_details"},
+
+            {
+                $lookup: 
+                {
+                    from: "users", 
+                    localField: "reportedById", 
+                    foreignField: "_id",
+                    as: "detail_of_reporter"
+                }
+            },
+            {$unwind: "$detail_of_reporter"},
+    
+            {
+                $lookup: 
+                {
+                    from: "answers", 
+                    localField: "_id", 
+                    foreignField: "_id",
+                    as: "answer_stats"
+                }
+            },
+            {$unwind: "$answer_stats"},
+    
+            {
+                $project:
+                {
+                    answer: 1,
+                    Class: "$user_details.Class",
+                    branch: "$user_details.branch",
+                    email: "$user_details.email",
+                    fullName: "$user_details.fullName",
+                    likeCount: {
+                        $size: "$answer_stats.likedById"
+                    },
+                    dislikeCount: {
+                        $size: "$answer_stats.dislikedById"
+                    },
+                    nameOfReporter: "$detail_of_reporter.fullName",
+                    reporterClass: "$detail_of_reporter.Class",
+                    reporterBranch: "$detail_of_reporter.branch",
+                    removed: {
+                        $size: "$removedById"
+                    }
+                }
+            }
+        ])
+        .then((answers) => 
+        {
+            if(answers){
+                res.json(answers);
+            }
+            else {
+                res.json({answers: null});
+            }
+        })
     }
     catch (err) {
         console.error(err);
@@ -1259,7 +1393,9 @@ module.exports = answerListController = {
     removeAnswerByAdmin,
     unblockAnyAnswerByAdmin,
     unblockMyBlockedAnswerByAdmin,
-    reportAnswerByUser
+    reportAnswerByUser,
+
+    getAllFlaggedAnswers
 };
 
 //findOneAndUpdate  $push(second arg) or $addToSet

@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const User = require('../models/User.model')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const nodemailer = require('nodemailer')
 
 // REGISTER
 const signupUser = async (req, res) => {
@@ -39,7 +40,7 @@ const signupUser = async (req, res) => {
         res.cookie("token", token, {httpOnly: true}).send();
 
 
-        console.log(token);
+        // console.log(token);
 
     } 
     catch (err) {
@@ -87,7 +88,7 @@ const login = async (req, res) => {
                 res.cookie("token", token, {httpOnly: true}).send();
 
 
-                console.log(token);
+                // console.log(token);
             }
         })
 

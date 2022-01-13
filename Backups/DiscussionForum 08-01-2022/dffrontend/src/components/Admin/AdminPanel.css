@@ -1,0 +1,57 @@
+/* .row{
+    display: inline-grid;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    position: absolute;
+}
+
+.optionButtons{
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: black;
+    border: 2px solid black;
+    background-color: rgb(232, 233, 233);
+} */
+
+.optionButtons{
+    border: 2rem solid white;
+    border-radius: 50px;
+    padding: 3rem;
+
+    text-decoration: none;
+    text-align: center;
+    font-weight: bold;
+    font-size: 2rem;
+    color: black;
+
+}
+
+.optionButtons:hover {
+    background-color: black;
+    color: white;
+}
+
+.answersBtn{
+    background-color: rgb(99, 255, 68);
+}
+
+.commentsBtn{
+    background-color: rgb(250, 107, 143);
+}
+
+.questionsBtn{
+    background-color: rgb(68, 196, 255);
+}
+
+.flagsBtn{
+    background-color: rgb(252, 90, 90);
+}
+
+.usersBtn{
+    background-color: rgb(164, 227, 243);
+}
+
+.adminsBtn{
+    background-color: rgb(164, 243, 204);
+}

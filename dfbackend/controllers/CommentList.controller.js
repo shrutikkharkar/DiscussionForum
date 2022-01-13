@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Comment = require('../models/CommentList.model')
+const Notification = require('../models/NotificationList.model')
 
 const addComment = async (req, res) => {
     try {
@@ -7,18 +8,32 @@ const addComment = async (req, res) => {
         const answerId = mongoose.Types.ObjectId(req.params.id)
         const userId = mongoose.Types.ObjectId(req.user)
 
-        const {comment} = req.body
+        const {comment, questionID, answeredById} = req.body
 
-        
+        // Logic for notification
+        const newNotification = new Notification({
+            forUserId: answeredById,
+            fromUserId: userId,
+            propertyId: answerId, 
+            seen: false,
+            type: 'commented'
+        });
+
+        const savedNotification = await newNotification.save();
+        // Logic for notification
+
         if(!comment)
             return res.status(400).json({errorMessage: 'Enter all required fields'});
 
         const newComment = new Comment({
-            answerId: answerId, commentById: userId, comment: comment
+            answerId: answerId, commentById: userId, comment: comment, questionId: questionID
         });
 
         const savedComment = await newComment.save();
-        return res.json(savedComment);
+        // return res.json(savedComment);
+        return res.send("Comment added successfully!");
+
+        
     }
     catch (err) {
         console.error(err);
@@ -56,14 +71,108 @@ const getComments = async (req, res) => {
                     "user_details.blockedById" : {$eq: []}
                 }
             },
+
+            {
+                $lookup: 
+                {
+                    from: "answers", 
+                    localField: "answerId", 
+                    foreignField: "_id",
+                    as: "answer_details"
+                }
+            },
+
     
             {
                 $project:
                 {
-                        comment: 1,
-                        Class: "$user_details.Class",
-                        branch: "$user_details.branch",
-                        userName: "$user_details.userName",
+                    answer : "$answer_details.answer",
+                    comment: 1,
+                    Class: "$user_details.Class",
+                    branch: "$user_details.branch",
+                    userName: "$user_details.userName",
+                    isAdmin: "$user_details.isAdmin"
+                }
+            }
+        ])
+        .then((comments) => 
+        {
+            if(comments){
+                res.json(comments);
+            }
+            else {
+                res.json({comments: null});
+            }
+        })
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+};
+
+
+const getCommentsForUser = async (req, res) => {
+
+    try {
+        let answerId = mongoose.Types.ObjectId(req.params.id);
+        let userId = mongoose.Types.ObjectId(req.user);
+
+        Comment.aggregate([
+            {
+                $match: 
+                {
+                    "answerId": answerId,
+                    "removedById": {$eq: []}
+                }
+            }, 
+            {
+                $lookup: 
+                {
+                    from: "users", 
+                    localField: "commentById", 
+                    foreignField: "_id",
+                    as: "user_details"
+                }
+            },
+            {$unwind: "$user_details"},
+
+            {
+                $match:
+                {
+                    "user_details.blockedById" : {$eq: []}
+                }
+            },
+
+            {
+                $lookup: 
+                {
+                    from: "answers", 
+                    localField: "answerId", 
+                    foreignField: "_id",
+                    as: "answer_details"
+                }
+            },
+
+            {
+                $addFields:
+                {
+                    "commentedByMe": {
+                        "$eq": [userId, "$commentById"]
+                    }
+                }
+            },
+
+            {
+                $project:
+                {
+                    answer : "$answer_details.answer",
+                    comment: 1,
+                    Class: "$user_details.Class",
+                    branch: "$user_details.branch",
+                    userName: "$user_details.userName",
+                    isAdmin: "$user_details.isAdmin",
+                    commentedByMe: 1
                 }
             }
         ])
@@ -395,9 +504,91 @@ const getAllMeBlockedCommentDetails = async (req, res) => {
 }
 
 
+const getAllFlaggedComments = async (req, res) => {
+    try {
+        Comment.aggregate([ 
+            {
+                $match: 
+                {
+                    "reportedById": {$ne: []}
+                }
+            },
+            {
+                $lookup: 
+                {
+                    from: "users", 
+                    localField: "commentById", 
+                    foreignField: "_id",
+                    as: "user_details"
+                }
+            },
+            {$unwind: "$user_details"},
+
+            {
+                $lookup: 
+                {
+                    from: "users", 
+                    localField: "reportedById", 
+                    foreignField: "_id",
+                    as: "detail_of_reporter"
+                }
+            },
+            {$unwind: "$detail_of_reporter"},
+    
+            {
+                $lookup: 
+                {
+                    from: "comments", 
+                    localField: "_id", 
+                    foreignField: "_id",
+                    as: "comment_stats"
+                }
+            },
+            {$unwind: "$comment_stats"},
+    
+            {
+                $project:
+                {
+                    comment: 1,
+                    Class: "$user_details.Class",
+                    branch: "$user_details.branch",
+                    email: "$user_details.email",
+                    // likeCount: {
+                    //     $size: "$comment_stats.likedById"
+                    // },
+                    // dislikeCount: {
+                    //     $size: "$comment_stats.dislikedById"
+                    // },
+                    nameOfReporter: "$detail_of_reporter.fullName",
+                    reporterClass: "$detail_of_reporter.Class",
+                    reporterBranch: "$detail_of_reporter.branch",
+                    removed: {
+                        $size: "$removedById"
+                    }
+                }
+            }
+        ])
+        .then((comment) => 
+        {
+            if(comment){
+                res.json(comment);
+            }
+            else {
+                res.json({comment: null});
+            }
+        })
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+
 module.exports = commentListController = {
     addComment, 
     getComments,
+    getCommentsForUser,
     deleteComment,
 
     getAllCommentDetails,
@@ -405,5 +596,7 @@ module.exports = commentListController = {
     unblockAnyCommentByAdmin,
     unblockMyBlockedCommentByAdmin,
     getAllBlockedCommentDetails,
-    getAllMeBlockedCommentDetails
+    getAllMeBlockedCommentDetails,
+
+    getAllFlaggedComments
 };

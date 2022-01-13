@@ -1,16 +1,23 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect, useContext, useRef} from 'react'
 import axios from 'axios'
 import './TopQAns.css'
 import AuthContext from '../context/AuthContext'
 import IsAdminContext from '../context/IsAdminContext';
 import { BiLike, BiDislike, BiCommentDetail, BiBookmark } from "react-icons/bi";
-import { MdBlock, MdReportProblem, MdVerified } from "react-icons/md";
+import { HiDotsVertical } from "react-icons/hi";
+import { MdBlock, MdReportProblem, MdVerified, MdRemoveCircle } from "react-icons/md";
 import { HiDotsHorizontal } from "react-icons/hi";
 import Modal from 'react-bootstrap/Modal';
+import Overlay from 'react-bootstrap/Overlay';
+import Tooltip from 'react-bootstrap/Tooltip';
+import Button from 'react-bootstrap/Button';
 import {Link, useHistory} from 'react-router-dom'
 import CKEditorArea from "./CKEditor";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+import io from 'socket.io-client'
+let socket = io(`http://localhost:3001`)
 
 
 function TopQAns() {
@@ -22,6 +29,10 @@ function TopQAns() {
 
     const [answer, setAnswer] = useState('')
     const [comment, setComment] = useState('')
+
+    const [answerByIdForNotification, setAnswerByIdForNotification] = useState('')
+    
+
     const [answerIdForComment, setAnswerIdForComment] = useState('')
     const [answers, setAnswers] = useState([])
     const questionID = queryParams.get('query')
@@ -29,11 +40,47 @@ function TopQAns() {
     const [comments, setComments] = useState([]);
     const [show, setShow] = useState(false);
 
+    // For block btn
+    const [showPop, setShowPop] = useState(false);
+    const target = useRef(null);
+
+    
+
+    /*
+    socket.on('message', (data) => {
+        document.querySelector('h1').innerHTML = data
+    })
+
+    const sendMessage = () => {
+      const messageInput = document.querySelector('.message')
+      const message = messageInput.value
+      socket.emit('message', message)
+    }
+    
+    */
+
+
     useEffect(() => {
         getQuestion()
         getAnswers()
     }, []);
 
+
+    socket.on('madeChange', (data) => {
+        getAnswers()
+    })
+
+    // socket.on("new_msg", function(data) {
+    //     toast.dark(data.msg, {
+    //         position: "bottom-left",
+    //         autoClose: 2000,
+    //         hideProgressBar: false,
+    //         closeOnClick: true,
+    //         pauseOnHover: true,
+    //         draggable: true,
+    //         progress: undefined,
+    //     });
+    // });
 
     async function getQuestion() {
         try 
@@ -42,6 +89,7 @@ function TopQAns() {
             .then(response => {
                 // console.log(response.data)
                 setQuestion(response.data);
+                // console.log(response.data[0].questionById);
             })
         } 
         catch (err) {
@@ -78,9 +126,13 @@ function TopQAns() {
         e.preventDefault()
 
         try {
-            const answerData = {questionID, answer};
+            const questionById = question[0].questionById
+
+            const answerData = {questionID, answer, questionById};
+            
             await axios.post('http://localhost:3001/answer/post', answerData)
             .then(res => {
+
                 toast.success('Answer submitted successfully!', {
                     position: "top-center",
                     autoClose: 5000,
@@ -91,12 +143,14 @@ function TopQAns() {
                     progress: undefined,
                     });
                 getAnswers()  
+                socket.emit('makeChange', "Hello");
+                
             })
                
 
         }
         catch (err) {
-            toast.dark(err.response.data, {
+            toast.dark(err.response, {
                 position: "bottom-left",
                 autoClose: 2000,
                 hideProgressBar: false,
@@ -114,12 +168,23 @@ function TopQAns() {
         e.preventDefault()
 
         try {
-            const commentData = {comment};
+
+            const answeredById = answerByIdForNotification
+            const commentData = {comment, questionID, answeredById};
             
             await axios.post(`http://localhost:3001/comment/addComment/${answerIdForComment}`, commentData)
             .then(res => {
-                setShow(true);
-                getComments() 
+                getComments(answerIdForComment) 
+                toast.success(`${res.data}`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                
             })
                
 
@@ -131,14 +196,19 @@ function TopQAns() {
     }
 
 
-    async function likeAnswer(ansId) {
+    async function likeAnswer(ansId, answeredById) {
 
         try {
+            const notificationData = {answeredById}
+
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/like/${answerId}`)
+            await axios.post(`http://localhost:3001/answer/like/${answerId}`, notificationData)
             .then(res => {
                 getAnswers()
+
+                // socket.emit('makeChange', "Hello")
+
                 toast.success('Liked successfully!', {
                     position: "bottom-left",
                     autoClose: 3000,
@@ -148,7 +218,9 @@ function TopQAns() {
                     draggable: true,
                     progress: undefined,
                 });
-                
+
+                // socket.emit('sendLikedNotification', {id: answerId});
+
             })
 
         }
@@ -299,6 +371,30 @@ function TopQAns() {
         }
     }
 
+    async function deleteComment(cmtId) {
+
+        try {
+            const commentId = cmtId
+
+            await axios.post(`http://localhost:3001/comment/deleteComment/${commentId}`)
+            .then(res => {
+                getComments(answerIdForComment)
+                toast.dark(`${res.data}`, {
+                    position: "bottom-left",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            })
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
     async function reportAnswerByUser(ansId) {
 
         try {
@@ -323,23 +419,34 @@ function TopQAns() {
     }
 
 
-    async function getComments(ansId){
+    async function getComments(ansId, answeredById){
         const answerId = ansId
         setAnswerIdForComment(answerId)
-        if(show == true){
-            setShow(false); 
-        }
-        if(show == false){
-            setShow(true); 
-        }
+        setAnswerByIdForNotification(answeredById)
+        // if(show == true){
+        //     setShow(false); 
+        // }
+        // if(show == false){
+        //     setShow(true); 
+        // }
+
+        setShow(true);
         
         try 
         { 
-            await axios.get(`http://localhost:3001/comment/getComments/${answerId}`)
-            .then(response => {
-                setComments(response.data);
-                console.log(response.data);
-            })
+            if(loggedIn===true){
+                await axios.get(`http://localhost:3001/comment/getCommentsForUser/${answerId}`)
+                .then(response => {
+                    setComments(response.data);
+                    console.log(response.data);
+                })
+            }
+            else{
+                await axios.get(`http://localhost:3001/comment/getComments/${answerId}`)
+                .then(response => {
+                    setComments(response.data);
+                })
+            }
         } 
         catch (err) {
             console.error(err);
@@ -414,7 +521,7 @@ function TopQAns() {
                         {
                             answer.liked === false && (
                             <>
-                                <BiLike className="likeIcon" onClick={() => likeAnswer(answer._id)} />
+                                <BiLike className="likeIcon" onClick={() => likeAnswer(answer._id, answer.answeredById)} />
                                 <span className="vote_count"> {answer.likeCount}</span>
                             </>
                             )
@@ -460,7 +567,7 @@ function TopQAns() {
 
                         &nbsp; &nbsp; &nbsp; &nbsp;
                    
-                        <BiCommentDetail className="commentIcon" onClick={() => getComments(answer._id)} />
+                        <BiCommentDetail className="commentIcon" onClick={() => getComments(answer._id, answer.answeredById)} />
                         <span className="comment_count"> {answer.commentCount}</span>
  
                         &nbsp; &nbsp; &nbsp; &nbsp;
@@ -471,6 +578,20 @@ function TopQAns() {
                             <>
                                 {/* Remove answer button here */}
                                 <MdBlock onClick={() => removeAnswerByAdmin(answer._id)} />
+
+                                {/* <HiDotsVertical ref={target} onClick={() => setShowPop(!showPop)} /> */}
+                                
+                                {/* <Button ref={target} onClick={() => setShowPop(!showPop)}>
+                                  Click me!
+                                </Button>
+
+                                <Overlay target={target.current} show={showPop} placement="top">
+                                  {(props) => (
+                                    <Tooltip id="overlay-example" {...props}>
+                                      My Tooltip
+                                    </Tooltip>
+                                  )}
+                                </Overlay> */}
                             </>
                         )}
 
@@ -520,7 +641,12 @@ function TopQAns() {
                         >
                           <Modal.Header closeButton>
                             <Modal.Title id="example-custom-modal-styling-title">
-                              Answer will be here
+                            {comments.map(comment => (
+                                <>
+                                    {comment.answer[0]}
+                                </>
+                            ))}
+                              
                             </Modal.Title>
                           </Modal.Header>
                           <Modal.Body>
@@ -529,9 +655,20 @@ function TopQAns() {
                               {comments.map(comment => (
                                 <>
                                 <span style={{color:"dodgerblue"}}>{comment.userName} ({comment.Class} - {comment.branch})</span>
+                                {
+                                    comment.isAdmin === true && (
+                                    <>
+                                        &nbsp;
+                                        <MdVerified className="verifiedIcon" />
+                                    </>
+                                    )
+                                }
                                 &nbsp;&nbsp;
                                 <span key={comment.id}>
                                   {comment.comment}
+                                  {comment.commentedByMe == true && (
+                                      <MdRemoveCircle className="deleteCommentIcon" onClick={() => deleteComment(comment._id)} />
+                                  )}
                                 </span>
                                 <hr />
                                 </>

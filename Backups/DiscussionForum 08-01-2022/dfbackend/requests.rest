@@ -1,0 +1,23 @@
+GET http://localhost:3001/
+
+###
+
+POST http://localhost:3001/
+Content-Type: application/json
+
+{
+    "name": "Shrutik",
+    "password": "xyz"
+}
+
+###
+POST http://localhost:3001/localhost:3001/questions/post
+Content-Type: application/json
+
+{
+    "questionById": "6107a2aee36f650cbc6c1849",
+    "question": req.body.question,
+    "answersCount": req.body.answersCount,
+    "viewCount": req.body.viewCount,
+    "votesCount": req.body.votesCount
+}
