@@ -1,0 +1,28 @@
+.countStat{
+    font-size:0.8rem;
+  }
+  
+  .questionListContainer{
+    text-align: center;
+    /* border-right: 2px solid rgb(212, 208, 208);
+    border-left: 2px solid rgb(212, 208, 208); */
+  }
+
+
+  .answerCount, .viewCount, .voteCount, .questionDiscussion, .updateDate{
+    display: table-cell;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+
+  .questionDiscussion{
+    font-size: 1.3rem;
+    text-decoration: none;
+    text-align: justify;
+    cursor: pointer;
+  }
+
+  /* .updatedOnText{
+    white-space: nowrap;
+  } */

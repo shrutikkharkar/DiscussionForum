@@ -8,18 +8,22 @@ Summation: Content matching Levenshtein Distance algorithm, Question-answer pair
 
 BUGS:
 1. when question is deleted, user who has asked can also view it
+2. Blocked answer shows wrong blocked by
 
 Functions to add:
 -priviledges - 1(normal user), 2(College student), 3(Faculty/admin)
-Comment on answer
-toggle like dislike and save
 -google signup
 -tags
 -image bar
-report
 -search algo
-notification
 -update profile
+-Add comments logo in side panel
+-Admin notifications
+
+Comment on answer
+toggle like dislike and save
+report
+notification
 Delete answers when question is deleted 
 Admin panel - User list(Take down questions, Take down answers, Take down comments, Block activity, Block Everything), 
                All questions(Take down and Bring back TOGGLE), 
@@ -30,7 +34,7 @@ Admin panel - User list(Take down questions, Take down answers, Take down commen
 Answered(Show if answer was removed)
 USE REACT TOASTIFY FOR ALERT
 If answer should be visible to admin even if user is blocked
--Add comments logo in side panel
+
 
 LOGIC FOR NOTIFICATIONS:
 when liked store likedById, answerId, answerById, seen(true/false)
