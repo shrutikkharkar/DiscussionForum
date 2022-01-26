@@ -31,6 +31,10 @@ const QuestionListTemplates = new mongoose.Schema({
         }
     ],
 
+    tagsForQuestion: [{
+        type: String
+    }],
+
     updatedOnDate: {
         type: 'date',
         default: Date.now

@@ -37,6 +37,10 @@ const AnswerListSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId
     }],
 
+    tagsForAnswer: [{
+        type: String
+    }],
+
     updatedOnDate: {
         type: 'date',
         default: Date.now

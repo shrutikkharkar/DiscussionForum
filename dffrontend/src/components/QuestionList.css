@@ -41,3 +41,21 @@
   .dropdown-styling{
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   }
+
+  .tagClass{
+    background-color: #0AA2FA47;
+    padding: 3px;
+    border-radius: 3px;
+    margin: 4px;
+    
+    cursor: pointer;
+    border: 2px solid white;
+    font-size: 1.1rem;
+}
+.tagClass:hover{
+    border: 2px solid #0AA2FA47;
+}
+
+.tagClassPTag{
+    margin-top:0px;
+}

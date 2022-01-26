@@ -2,13 +2,34 @@ const mongoose = require('mongoose')
 const Question = require('../models/QuestionList.model')
 const Answer = require('../models/AnswerList.model')
 const Comment = require('../models/CommentList.model')
+const Tag = require('../models/TagList.model')
 
 const askQuestion = (req, res) => {
     try {
+        var {tagsForQuestion} = req.body
         const submittedQuestion = new Question({
             questionById: req.user,
-            question: req.body.question
+            question: req.body.question,
+            tagsForQuestion: tagsForQuestion
         })
+
+        //For tag
+        tagsForQuestion.map(tag => {
+            const addTag = new Tag({
+                tagName: tag
+            })
+            addTag.save()
+        })
+
+        // for(var i in tagsForQuestion){
+        //     const addTag = new Tag({
+        //         tagName: tagsForQuestion[i]
+        //     })
+        //     addTag.save()
+        // }
+        
+        
+
         submittedQuestion.save()
         .then(data => {
             res.json({message: 'Question submitted successfully'})
@@ -117,6 +138,8 @@ const getQuestions = (req, res) => {
 
                      updatedDate: "$updatedOnDate",
 
+                     tagsForQuestion: 1,
+
                      getDate: { $dateToString: { format: "%d/%m/%Y", date: "$updatedOnDate" } }
         
                 }
@@ -209,7 +232,8 @@ const getUserAskedQuestions = (req, res) => {
                     },
                     isBlocked: {
                         $size: "$removedById"
-                    }
+                    },
+                    tagsForQuestion: 1,
                  
                 }
             }
@@ -269,7 +293,8 @@ const getAllQuestionDetails = (req, res) => {
                     fullName: "$user_details.fullName",
                     removed: {
                         $size: "$removedById"
-                    }
+                    },
+                    tagsForQuestion: 1
                 }
             }  
         ])
@@ -345,7 +370,8 @@ const getAllBlockedQuestionDetails = async (req, res) => {
                     },
                     nameOfRemover: "$detail_of_remover.fullName",
                     removerClass: "$detail_of_remover.Class",
-                    removerBranch: "$detail_of_remover.branch"
+                    removerBranch: "$detail_of_remover.branch",
+                    tagsForQuestion: 1
                 }
             }
         ])
@@ -408,7 +434,8 @@ const getAllMeBlockedQuestionDetails = async (req, res) => {
                         fullName: "$user_details.fullName",
                         answerCount: {
                             $size: "$question_details.answer"
-                        }
+                        },
+                        tagsForQuestion: 1
                 }
             }
         ])
@@ -554,7 +581,8 @@ const getQuestionForAnswer = async(req, res) => {
                     branch: "$user_details.branch",
                     Class: "$user_details.Class",
                     questionByEmail: "$user_details.email",
-                    questionById: 1
+                    questionById: 1,
+                    tagsForQuestion: 1
                 }
             }
         ])
@@ -633,7 +661,8 @@ const getAllFlaggedQuestions = async (req, res) => {
                     reporterBranch: "$detail_of_reporter.branch",
                     removed: {
                         $size: "$removedById"
-                    }
+                    },
+                    tagsForQuestion: 1
                 }
             }
         ])

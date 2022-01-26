@@ -6,6 +6,8 @@ const notificationListController = require('../controllers/NotificationList.cont
 
 router.get('/getNotificationsForUser', auth, notificationListController.getNotificationsForUser);
 
+router.get('/getNotificationsForAdmin', adminAuth, notificationListController.getNotificationsForAdmin);
+
 router.post('/clearAllNotifications', auth, notificationListController.clearAllNotifications);
 
 module.exports = router

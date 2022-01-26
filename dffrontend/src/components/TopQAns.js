@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useRef} from 'react'
+import React, {useState, useEffect, useContext, useRef, useCallback} from 'react'
 import axios from 'axios'
 import './TopQAns.css'
 import AuthContext from '../context/AuthContext'
@@ -19,8 +19,12 @@ import { WithContext as ReactTags } from 'react-tag-input';
 import {usePopper} from 'react-popper';
 import { createPopper } from '@popperjs/core';
 import Dropdown from "react-bootstrap/Dropdown";
-
 import 'react-toastify/dist/ReactToastify.css';
+import {LoaderProvider, useLoading, BallTriangle} from '@agney/react-loading';
+
+import Tagify from '@yaireo/tagify'
+import Tags from "@yaireo/tagify/dist/react.tagify" // React-wrapper file
+import "@yaireo/tagify/dist/tagify.css" // Tagify CSS
 
 import io from 'socket.io-client'
 let socket = io(`http://localhost:3001`)
@@ -44,13 +48,10 @@ function TopQAns() {
     const questionID = queryParams.get('query')
     const [question, setQuestion] = useState([])
     const [comments, setComments] = useState([]);
+    const [allTagNames, setAllTagNames] = useState([]);
     const [show, setShow] = useState(false);
 
     // For block btn
-    const [showPop, setShowPop] = useState(false);
-    const target = useRef(null);
-
-
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         <span
           ref={ref}
@@ -61,23 +62,70 @@ function TopQAns() {
         >
           {children}
           <HiDotsVertical className="menuIcon" />
-          {/* <span className="threedots" /> */}
         </span>
       ));
 
-    // const boxRef = useRef()
-    // const tooltipRef = useRef()
+      const { containerProps, indicatorEl } = useLoading({
+        loading: true,
+        indicator: <BallTriangle width="20" />
+      });
 
-    // const {styles, attributes} = usePopper(boxRef.current, tooltipRef.current, {
-    //     placement: 'top'
-    // });
 
-    let [referenceElement, setReferenceElement] = useState();
-    let [popperElement, setPopperElement] = useState();
+      
+      const baseTagifySettings = {
+        blacklist: ["xxx", "yyy", "zzz"],
+        whitelist: allTagNames,
+        maxTags: 6,
+        //backspace: "edit",
+        placeholder: "add tags (optional)",
+        dropdown: {
+            enabled: 1, // a;ways show suggestions dropdown
+            searchKeys: ["tagName"]
+        }
+      }
 
-    let {styles, attributes} = usePopper(referenceElement, popperElement, {
-        placement: "bottom-start"
-    })
+    const tagifyRef1 = useRef()
+    const tagifyRefDragSort = useRef()
+
+    const [tagifySettings, setTagifySettings] = useState([])
+    const [tagifyProps, setTagifyProps] = useState({})
+
+    const settings = {
+        ...baseTagifySettings,
+        ...tagifySettings
+    }
+
+    // const [answerTags, setAnswerTags] = useState();
+    var [getTagsForAnswer, setTagsForAnswer] = useState();
+    const onChange = useCallback(e => {
+        // setTagsForAnswer(e.detail.value)
+        setTagsForAnswer(e.detail.tagify.value)
+    }, [])
+
+
+    
+    // access Tagify internal methods example:
+    const clearAll = () => {
+      tagifyRef1.current && tagifyRef1.current.removeAllTags()
+    }
+
+
+    // callbacks for all of Tagify's events:
+    // onTagifyAdd = e => {
+    //     console.log('added:', e.detail);
+    // }
+
+    // onTagifyRemove = e => {
+    //     console.log('remove:', e.detail);
+    // }
+
+    // onTagifyInput = e => {
+    //     console.log('input:', e.detail);
+    // }
+
+    // onTagifyInvalid = e => {
+    //     console.log('invalid:', e.detail);
+    // }
 
 
     /*
@@ -97,12 +145,16 @@ function TopQAns() {
     useEffect(() => {
         getQuestion()
         getAnswers()
+        getAllTagNames()
+
     }, []);
 
 
     socket.on('madeChange', (data) => {
         getAnswers()
     })
+
+    
 
     // socket.on("new_msg", function(data) {
     //     toast.dark(data.msg, {
@@ -115,6 +167,19 @@ function TopQAns() {
     //         progress: undefined,
     //     });
     // });
+
+    async function getAllTagNames() {
+        try {
+            await axios.get(`http://localhost:3001/tag/getAllTagNames`)
+            .then(response => {
+                setAllTagNames(response.data);
+                console.log(response.data);
+            })
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
 
     async function getQuestion() {
         try 
@@ -163,8 +228,11 @@ function TopQAns() {
             const questionById = question[0].questionById
             const questionByEmail = question[0].questionByEmail
 
-            const answerData = {questionID, answer, questionById, questionByEmail};
+            // var resultTagsForAnswer = JSON.parse(getTagsForAnswer);
+            let tagsForAnswer = getTagsForAnswer.map(a => a.value);
+            const answerData = {questionID, answer, questionById, questionByEmail, tagsForAnswer};
             
+
             await axios.post('http://localhost:3001/answer/post', answerData)
             .then(res => {
 
@@ -578,15 +646,37 @@ function TopQAns() {
         }     
     }
 
+    function getTagContents(tagName){
+        history.push( `/tagPage/?tagName=${tagName}` );
+    }
 
+    if(question.length!=0){
     return (
+        
         <>
-        <div className="container topQAnsList w-75">
+        
+        {/* <section {...containerProps}>
+            {indicatorEl}
+        </section> */}
+
+        <div className="container col-xs-12 w-75 topQAnsList">
             {
             question.map(question => (
                 <div key={question.id}>
-                <p className="topQuesAnsPageAnswer">{question.question}<p style={{float: 'right', color: 'cornflowerblue'}}>-{question.userName} ({question.Class} - {question.branch})</p></p>
+                <p className="topQuesAnsPageAnswer">{question.question}
+
+                <p style={{float: 'right', color: 'cornflowerblue'}}>-{question.userName} ({question.Class} - {question.branch})</p>
                 
+                </p>
+                {question.tagsForQuestion && (
+                <>
+                    <p className="tagClassPTag">
+                    {question.tagsForQuestion.map(tag => (
+                        <span onClick={() => getTagContents(tag)} className="tagClass">{tag}</span>
+                    ))} 
+                    </p>
+                </>
+                )}
                 {loggedIn===true && isAdmin===true && (
                         
                     <Dropdown style={{display: 'inline'}}>
@@ -626,6 +716,7 @@ function TopQAns() {
                 <div>
                     <span className="answer">{answer.answer}</span>
                     
+                    
                     <span className="answeredBy"  style={{ marginLeft: '10px'}}>({answer.Class} - {answer.branch})
                     
                     {
@@ -643,6 +734,21 @@ function TopQAns() {
                     
                     
                 </div>
+                {answer.tagsForAnswer && (
+                <>
+                    {/* <Tags 
+                        defaultValue={answer.tagsForAnswer} 
+                        readOnly
+                    /> */}
+                    <p className="tagClassPTag">
+                    {answer.tagsForAnswer.map(tag => (
+                        <span onClick={() => getTagContents(tag)} className="tagClass">{tag}</span>
+                    ))} 
+                    </p>
+                </>
+                )}
+                
+                {/* <p>{(answer.tagsForAnswer).length}</p> */}
                 <div>
                     {
                         answer.liked === true && (
@@ -734,11 +840,6 @@ function TopQAns() {
                     
                 </div>
                 {show===true && (
-                    // <p>
-                    //     {comments.map(comment => (
-                    //         <p>{comment.comment}</p>
-                    //     ))}
-                    // </p>
                     <Modal
                       show={show}
                       size="lg"
@@ -828,8 +929,13 @@ function TopQAns() {
                 <form onSubmit={giveAnswer}>
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1">Post an answer to this question, it will help this community grow!</label>
-                        <textarea onChange={(e) => setAnswer(e.target.value)} class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
-                        
+                        <textarea onChange={(e) => setAnswer(e.target.value)} class="form-control" id="exampleFormControlTextarea1" rows="2"
+                        placeholder="Answer here..." ></textarea>
+                        <Tags 
+                            tagifyRef={tagifyRef1}
+                            settings={settings}
+                            {...tagifyProps}
+                            onChange={onChange} />
                     </div>
                     <br />
                     <button type="submit" className="btn btn-secondary">Post</button>
@@ -840,6 +946,14 @@ function TopQAns() {
             
         </>
     )
+    }
+    else{
+        return (
+            <>
+                <h1 style={{display: 'flex',justifyContent: 'center'}}>loading...</h1>
+            </>
+        )
+    }
 }
 
 export default TopQAns

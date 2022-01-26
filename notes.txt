@@ -6,6 +6,8 @@ Results shows that KNN has better output then Naive bayes also it takes lesser t
 
 Summation: Content matching Levenshtein Distance algorithm, Question-answer pair generation and ranking using KNN considering like count and comment polarity AND using answer features.
 
+https://reactjsexample.com/a-modular-table-based-on-a-css-grid-layout-optimized-for-customization/
+
 BUGS:
 1. when question is deleted, user who has asked can also view it
 2. Blocked answer shows wrong blocked by

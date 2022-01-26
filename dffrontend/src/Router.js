@@ -13,6 +13,7 @@ import Questioned from './components/Questioned';
 import NavigationFunctions from './components/NavigationFunctions';
 import CommentBox from './components/CommentBox';
 import UpdateProfile from './components/UpdateProfile';
+import TagPage from './components/TagPage';
 
 import AdminPanel from './components/Admin/AdminPanel';
 import AllAnswers from './components/Admin/AllAnswers';
@@ -33,6 +34,7 @@ function Router() {
     return (
         <BrowserRouter>
         <Navbar />
+        <Route path="/tagPage"><TagPage /></Route>
             <Switch>
 
                 {loggedIn === false && isAdmin === false && (
@@ -55,21 +57,21 @@ function Router() {
 
                 {loggedIn === true && isAdmin === true && (
                     <>
-                        <Route path="/saved"><NavigationFunctions /><Saved /></Route>
+                        <NavigationFunctions />
 
-                        <Route path="/liked"><NavigationFunctions /><Liked /></Route>
+                        <Route path="/saved"><Saved /></Route>
 
-                        <Route path="/answered"><NavigationFunctions /><Answered /></Route>
+                        <Route path="/liked"><Liked /></Route>
 
-                        <Route path="/questioned"><NavigationFunctions /><Questioned /></Route>
+                        <Route path="/answered"><Answered /></Route>
 
-                        <Route exact path="/"><NavigationFunctions /><Home /></Route>
+                        <Route path="/questioned"><Questioned /></Route>
 
-                        <Route path="/topqans"><NavigationFunctions /><TopQAns /></Route>
+                        <Route exact path="/"><Home /></Route>
 
-                        <Route path="/searchResult"><NavigationFunctions /><SearchResult /></Route>
+                        <Route path="/topqans"><TopQAns /></Route>
 
-                        <Route path="/comments"><CommentBox /></Route>
+                        <Route path="/searchResult"><SearchResult /></Route>
 
                         <Route path="/updateProfile"><UpdateProfile /></Route>
 
@@ -94,21 +96,21 @@ function Router() {
 
                 {loggedIn === true && isAdmin === false && (
                     <>
-                        <Route path="/saved"><NavigationFunctions /><Saved /></Route>
+                        <NavigationFunctions />
 
-                        <Route path="/liked"><NavigationFunctions /><Liked /></Route>
+                        <Route path="/saved"><Saved /></Route>
 
-                        <Route path="/answered"><NavigationFunctions /><Answered /></Route>
+                        <Route path="/liked"><Liked /></Route>
 
-                        <Route path="/questioned"><NavigationFunctions /><Questioned /></Route>
+                        <Route path="/answered"><Answered /></Route>
 
-                        <Route exact path="/"><NavigationFunctions /><Home /></Route>
+                        <Route path="/questioned"><Questioned /></Route>
 
-                        <Route path="/topqans"><NavigationFunctions /><TopQAns /></Route>
+                        <Route exact path="/"><Home /></Route>
 
-                        <Route path="/searchResult"><NavigationFunctions /><SearchResult /></Route>
+                        <Route path="/topqans"><TopQAns /></Route>
 
-                        <Route path="/comments"><CommentBox /></Route>
+                        <Route path="/searchResult"><SearchResult /></Route>
 
                         <Route path="/updateProfile"><UpdateProfile /></Route>
                     </>

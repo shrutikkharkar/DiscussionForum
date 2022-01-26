@@ -3,6 +3,7 @@ const User = require('../models/User.model')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
+const http = require('url');
 
 // REGISTER
 const signupUser = async (req, res) => {
@@ -333,6 +334,29 @@ const getAllUserDetails = async (req, res) => {
     try {
         await User.aggregate([
             {
+                $match:
+                { 
+                    blockedById:{$exists:true}
+                }
+            },
+
+            {
+                $lookup: 
+                {
+                    from: "users",
+                    localField: "blockedById", 
+                    foreignField: "_id",
+                    as: "detail_of_remover"
+                }
+            },
+            {$unwind:
+                {
+                    path: "$detail_of_remover", 
+                    preserveNullAndEmptyArrays: true
+                },
+            },
+
+            {
                 $project:
                 {
                     fullName:1,
@@ -342,7 +366,14 @@ const getAllUserDetails = async (req, res) => {
                     isAdmin:1,
                     blocked: {
                         $size: "$blockedById"
-                    }
+                    },
+                    // nameOfBlocker: "$detail_of_remover.fullName",
+                    nameOfBlocker: { $ifNull: [ "$detail_of_remover.fullName", "none" ] },
+                    blockerClass: "$detail_of_remover.Class",
+                    blockerBranch: "$detail_of_remover.branch"
+                    
+                    // blockerClass: { $ifNull: [ "$detail_of_remover.Class", "none" ] },
+                    // blockerBranch: { $ifNull: [ "$detail_of_remover.branch", "none" ] }
                 }
             }
         ])
@@ -360,6 +391,66 @@ const getAllUserDetails = async (req, res) => {
         res.status(500).send();
     }
 }
+
+// const getAllUserDetails = async (req, res) => {
+//     try {
+//         await User.aggregate([
+//             {
+//                 $lookup: 
+//                 {
+//                     from: "users", 
+//                     pipeline: [
+//                         {
+//                             $match: 
+//                             {
+//                                 "blockedById": {$ne: []}
+//                             }
+//                         },
+//                         {
+//                             $lookup: 
+//                             {
+//                                 from: "users", 
+//                                 localField: "blockedById", 
+//                                 foreignField: "_id",
+//                                 as: "detail_of_remover"
+//                             }
+//                         },
+//                     ]
+//                 }
+//             },
+//             {$unwind: "$detail_of_remover"},
+            
+//             {
+//                 $project:
+//                 {
+//                     fullName:1,
+//                     email:1,
+//                     Class:1,
+//                     branch:1,
+//                     isAdmin:1,
+//                     blocked: {
+//                         $size: "$blockedById"
+//                     },
+//                     nameOfBlocker: { $ifNull: [ "$detail_of_remover.fullName", "none" ] },
+//                     blockerClass: { $ifNull: [ "$detail_of_remover.Class", "none" ] },
+//                     blockerBranch: { $ifNull: [ "$detail_of_remover.branch", "none" ] },
+//                 }
+//             }
+//         ])
+//         .then((users) => {
+//             if(users){
+//                 res.json(users);
+//             }
+//             else{
+//                 res.json(null);
+//             }
+//         })
+//     }
+//     catch (err) {
+//         console.error(err);
+//         res.status(500).send();
+//     }
+// }
 
 
 

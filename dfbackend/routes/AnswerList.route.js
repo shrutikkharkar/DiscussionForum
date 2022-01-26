@@ -74,7 +74,7 @@ router.post('/reportAnswerByUser/:id', auth, answerListController.reportAnswerBy
 
 router.get('/getAllFlaggedAnswers', adminAuth, answerListController.getAllFlaggedAnswers);
 
-
+router.get('/test', answerListController.test)
 
 
 module.exports = router

@@ -2,13 +2,34 @@ const mongoose = require('mongoose')
 const Answer = require('../models/AnswerList.model')
 const Comment = require('../models/CommentList.model')
 const Notification = require('../models/NotificationList.model')
+const Tag = require('../models/TagList.model')
 const nodemailer = require('nodemailer')
 
+const test = (req, res) => {
+    try{
+    var testArray = [{"value":"Shrutik"},{"value":"Kharkar"}];
+    console.log(typeof testArray)
+    let result = testArray.map(a => a.value);
+    console.log(result);
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
 const postAnswer = async (req, res) => {
     try {
 
-        const {questionID, answer, questionById, questionByEmail} = req.body;
+        const {questionID, answer, questionById, questionByEmail, tagsForAnswer} = req.body;
 
+        //For tag
+        tagsForAnswer.map(tag => {
+            const addTag = new Tag({
+                tagName: tag
+            })
+            addTag.save()
+        })
+    
         // Logic for notification
         const newNotification = new Notification({
             forUserId: questionById,
@@ -28,7 +49,7 @@ const postAnswer = async (req, res) => {
             return res.status(400).json({errorMessage: 'Enter all required fields'});
 
         const newAnswer = new Answer({
-            questionID, answeredById: req.user, answer
+            questionID, answeredById: req.user, answer, tagsForAnswer: tagsForAnswer
         });
 
         const savedAnswer = await newAnswer.save();
@@ -686,6 +707,7 @@ const getAnswersForQuestionID = (req, res) => {
                 $project:
                 {
                         answer: 1,
+                        tagsForAnswer: 1,
                         Class: "$user_details.Class",
                         branch: "$user_details.branch",
                         userName: "$user_details.userName",
@@ -924,6 +946,7 @@ const getAnswersForUser = async (req, res) => {
                 {
                     answer: 1,
                     answeredById: 1,
+                    tagsForAnswer: 1,
                     Class: "$user_details.Class",
                     branch: "$user_details.branch",
                     userName: "$user_details.userName",
@@ -1427,7 +1450,8 @@ module.exports = answerListController = {
     unblockMyBlockedAnswerByAdmin,
     reportAnswerByUser,
 
-    getAllFlaggedAnswers
+    getAllFlaggedAnswers,
+    test
 };
 
 //findOneAndUpdate  $push(second arg) or $addToSet

@@ -5,6 +5,8 @@ import  { Redirect, useHistory } from 'react-router-dom';
 import {Link} from 'react-router-dom'
 import AuthContext from '../context/AuthContext';
 import IsAdminContext from '../context/IsAdminContext';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -37,7 +39,16 @@ function Signup() {
             await axios.post('http://localhost:3001/user/signup', registerData)
             await getLoggedIn()
             await getIsAdmin()
-            history.push('/')
+            toast.success('Verification mail sent to your email!', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            history.push('/login')
 
         } catch (err) {
             console.error(err);
@@ -62,13 +73,11 @@ function Signup() {
                     <div className="form-group">
                         <label for="exampleInputEmail1">Username</label>
                         <input onChange={(e) => setUserName(e.target.value)} value={userName} type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter username" />
-                        <small id="emailHelp" className="form-text text-muted">Following username will be displayed to public.</small>
                     </div>
                     <br />
                     <div className="form-group">
                         <label for="exampleInputEmail1">Email address</label>
                         <input onChange={(e) => setEmail(e.target.value)} value={email} type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-                        <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                     </div>
                     <br />
                         </div>
@@ -125,7 +134,7 @@ function Signup() {
               
                
             </div>
-            
+            <ToastContainer />
         </div>   
     )
     

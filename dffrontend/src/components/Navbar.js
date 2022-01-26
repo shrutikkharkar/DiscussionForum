@@ -8,7 +8,6 @@ import LogoutBtn from './LogoutBtn'
 import SearchBar from './SearchBar'
 import { FaUserCircle } from "react-icons/fa";
 import { MdNotificationsNone } from "react-icons/md";
-
 import Overlay from 'react-bootstrap/Overlay';
 import Popover from 'react-bootstrap/Popover';
 
@@ -76,11 +75,23 @@ function getQuestions(){
 
 async function getNotifications(){
   try{
-    await axios.get('http://localhost:3001/notification/getNotificationsForUser')
-    .then((res) => {
-      setNotificationData(res.data);
-      console.log(res.data);
-    })
+
+    if(isAdmin===true){
+      await axios.get('http://localhost:3001/notification/getNotificationsForAdmin')
+      .then((res) => {
+        setNotificationData(res.data);
+        console.log("Admin block" + res.data);
+      })
+    }
+    if(isAdmin===false){
+      await axios.get('http://localhost:3001/notification/getNotificationsForUser')
+      .then((res) => {
+        setNotificationData(res.data);
+        console.log("User block" + res.data);
+      })
+    }
+      
+
   }
   catch (e) {
     console.error(e)
@@ -106,7 +117,7 @@ function goToAnswer(questionId){
 }
 
 function goToReportedAnswers(){
-  history.push("/allAnswers")
+  history.push("/allFlags")
 }
 
 function gotoHome() {
@@ -119,7 +130,8 @@ function gotoHome() {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
         
         <nav className="navbar navbar-light" style={{backgroundColor: "#f2f2f2", marginBottom: "2%"}}>
-        <p className="logo" onClick={gotoHome} >VCETDFORUM</p>
+        
+        <p className="logo" onClick={gotoHome} > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VCETDFORUM</p>
           
           <SearchBar placeholder="Search..." data={QuestionData} />
 
@@ -284,8 +296,8 @@ function gotoHome() {
 
 
             <button onClick={Search} class="btn btn-primary">Ask a Question</button>
-            &nbsp; &nbsp;
-              <Link to = "/admin" className="btn btn-outline-dark">Admin Panel</Link>
+            &nbsp;
+              {/* <Link to = "/admin" className="btn btn-outline-dark">Admin Panel</Link> */}
 
               <LogoutBtn />
               <FaUserCircle className='fas fa-user-circle userNameIcon' style={{fontSize:'30px', color:'#0bccda'}}/>

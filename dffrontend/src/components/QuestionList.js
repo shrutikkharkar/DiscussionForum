@@ -107,11 +107,15 @@ async function reportQuestionByUser(quesId) {
     }
 }
 
+function getTagContents(tagName){
+    history.push( `/tagPage/?tagName=${tagName}` );
+}
+
 
     if(questions){
     return (
         <>
-        <div className="container w-75 questionListContainer">
+        <div className="container w-75 col-xs-12 questionListContainer">
         {
         questions.map(question => 
         (
@@ -130,11 +134,23 @@ async function reportQuestionByUser(quesId) {
                     <p>{question.likeCount + question.dislikeCount}</p>
                     <p className="countStat">Votes</p>
                 </div>
-                <a onClick={(e) => gotoAnswers(question._id)} className="questionDiscussion">
-                    <p>
+
+                <p className="questionDiscussion">
+                    <a onClick={(e) => gotoAnswers(question._id)} style={{color: 'royalblue'}} >
                          {question.question}
-                    </p>
-                </a>
+                    </a>
+                    {question.tagsForQuestion && (
+                    <>
+                        <p className="tagClassPTag">
+                        {question.tagsForQuestion.map(tag => (
+                            <span onClick={() => getTagContents(tag)} className="tagClass">{tag}</span>
+                        ))} 
+                        </p>
+                    </>
+                    )}
+                </p>
+
+                
 
                 <div className="updateDate">
                     <p>Updated on: </p>

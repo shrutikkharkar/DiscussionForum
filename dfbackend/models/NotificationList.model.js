@@ -3,8 +3,7 @@ const mongoose = require('mongoose')
 const NotificationListSchema = new mongoose.Schema({
 
     forUserId: {
-        type: mongoose.Types.ObjectId,
-        required: true
+        type: mongoose.Types.ObjectId
     },
 
     forAdmin: {
