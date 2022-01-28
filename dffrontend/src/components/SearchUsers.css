@@ -1,4 +1,6 @@
-.searchInputs {
+
+
+/* .searchInputs {
     display: inline-flex;
     flex-direction: row;
     position: absolute;
@@ -74,11 +76,10 @@
   }
   
   p:hover {
-    /* background-color: lightgrey; */
     cursor: pointer;
   }
   
   #clearBtn {
     cursor: pointer;
   }
-  
+   */

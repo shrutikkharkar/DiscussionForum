@@ -219,6 +219,12 @@ const getAllCommentDetails = (req, res) => {
     try {
         Comment.aggregate([
             {
+                $match:
+                { 
+                    removedById:{$exists:true}
+                }
+            },
+            {
                 $lookup: 
                 {
                     from: "users", 
@@ -235,6 +241,22 @@ const getAllCommentDetails = (req, res) => {
                     "user_details.blockedById" : {$eq: []}
                 }
             },
+
+            {
+                $lookup: 
+                {
+                    from: "users", 
+                    localField: "removedById", 
+                    foreignField: "_id",
+                    as: "detail_of_remover"
+                }
+            },
+            {$unwind: 
+                {
+                    path: "$detail_of_remover", 
+                    preserveNullAndEmptyArrays: true
+                }
+            },
     
             {
                 $project:
@@ -243,9 +265,13 @@ const getAllCommentDetails = (req, res) => {
                         Class: "$user_details.Class",
                         branch: "$user_details.branch",
                         email: "$user_details.email",
+                        fullName: "$user_details.fullName",
                         removed: {
                             $size: "$removedById"
-                        }
+                        },
+                        nameOfRemover: { $ifNull: [ "$detail_of_remover.fullName", "none" ] },
+                        removerClass: "$detail_of_remover.Class",
+                        removerBranch: "$detail_of_remover.branch"
                 }
             }
         ])

@@ -80,3 +80,10 @@ p:hover {
 #clearBtn {
   cursor: pointer;
 }
+
+@media screen and (max-width: 480px) {
+  .searchInputs {
+    display: none;
+  }
+}
+

@@ -69,16 +69,6 @@ const signupUser = async (req, res) => {
 
         // SEND USER VERIFICATION MAIL
 
-
-
-
-        
-        // Send the token in a HTTP only cookie
-        // res.cookie("token", token, {httpOnly: true}).send();
-
-
-        // console.log(token);
-
     } 
     catch (err) {
         console.error(err);
@@ -119,6 +109,7 @@ const verifyEmail = async (req, res) => {
         res.status(500).send();
     }
 }
+
 
 
 //LOGIN
@@ -353,7 +344,7 @@ const getAllUserDetails = async (req, res) => {
                 {
                     path: "$detail_of_remover", 
                     preserveNullAndEmptyArrays: true
-                },
+                }
             },
 
             {
@@ -747,6 +738,123 @@ const unblockMyBlockedUserByAdmin = async (req, res) => {
 }
 
 
+// Logics for forgot password
+
+const sendEmailForResetPassword = async (req, res) => {
+    try {
+        const {email} = req.body;
+
+        if(!email)
+            return res
+                .status(400)
+                .json({errorMessage: 'Please enter valid credentials'});
+
+                      
+        const existingUser = await User.findOne({email});
+        if(!existingUser)
+            return res.status(400).json({errorMessage: 'User does not exists! Create an account'});  
+        
+        if(existingUser){
+            const token = jwt.sign({user: existingUser._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10 minutes'});
+
+            // SEND USER VERIFICATION MAIL
+
+            var transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                  user: process.env.MY_EMAIL,
+                  pass: process.env.MY_PASSWORD
+                }
+              });
+
+              var mailOptions = {
+                from: process.env.MY_EMAIL,
+                // to: savedUser.email,
+                to: existingUser.email,
+                subject: 'Reset password for VCETDFORUM account',
+                //text: 'That was easy!'
+                html: 
+                `<h1>Click <a href="http://localhost:3001/user/verifyResetPassword/${token}">here</a> to reset your password.</h1>
+                <p>Note: This link is valid only for 10 minutes.</p>`
+              };
+
+              transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                  console.log(error);
+                } else {
+                  console.log('Email sent: ' + info.response);
+                  res.status(200).send("Sent mail to reset your password")
+                }
+              });
+
+            // SEND USER VERIFICATION MAIL
+        }
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+const verifyResetPassword = (req, res) => {
+    try {
+        let tokenToVerify = req.params.id
+
+        const verified = jwt.verify(tokenToVerify, process.env.ACCESS_TOKEN_SECRET);
+        let userId = verified.user;
+
+        if(verified) {
+            res.send(`<script>window.location.href="http://localhost:3000/resetPassword/?user=${tokenToVerify}";</script>`);
+        }
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+const resetPassword = async (req, res) => {
+    try {
+        const {tokenToResetPassword, password} = req.body;
+
+        // Verify token
+        let tokenToVerify = tokenToResetPassword
+
+        const verified = jwt.verify(tokenToVerify, process.env.ACCESS_TOKEN_SECRET);
+        let userId = verified.user;
+
+        const userID = mongoose.Types.ObjectId(userId);
+        
+        const saltPassword = await bcrypt.genSalt(10)
+        const passwordHashed = await bcrypt.hash(password, saltPassword)   
+
+        if(verified){
+            User.findOneAndUpdate(
+                {
+                    _id: userID
+                }, 
+                {
+                    $set: {"password": passwordHashed}
+                }
+            )
+            .then((users) => {
+                if(users){
+                    res.send("Password reset successfully!");
+                }
+                else{
+                    res.send("Didn't reset password!");
+                }
+            }) 
+        }   
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+// Logics for forgot password
+
 module.exports = userController = {
     signupUser,
     login, logout, verifyEmail,
@@ -763,7 +871,10 @@ module.exports = userController = {
     getAllMeBlockedUserDetails,
     blockUserByAdmin,
     unblockAnyUserByAdmin,
-    unblockMyBlockedUserByAdmin
+    unblockMyBlockedUserByAdmin,
+    sendEmailForResetPassword,
+    verifyResetPassword,
+    resetPassword
 };
 
 

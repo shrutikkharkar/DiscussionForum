@@ -1,0 +1,17 @@
+.tagClass{
+    background-color: #0AA2FA47;
+    padding: 3px;
+    border-radius: 3px;
+    margin: 4px;
+    
+    cursor: pointer;
+    border: 2px solid white;
+    font-size: 1.1rem;
+}
+.tagClass:hover{
+    border: 2px solid #0AA2FA47;
+}
+
+.tagClassPTag{
+    margin-top:6px;
+}

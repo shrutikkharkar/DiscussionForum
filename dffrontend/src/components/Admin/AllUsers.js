@@ -607,6 +607,7 @@ const columns = [
         <GridTable 
             columns={columns}
             rows={rows}
+            isLoading={true}
         />
 
 

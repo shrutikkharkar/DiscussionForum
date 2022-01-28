@@ -25,11 +25,11 @@
 
 .vote_count, .comment_count{
     font-size: 1.2rem;
+    margin-right: 5px;
 }
 
 .answeredBy{
-    float: right;
-    color: rgb(47, 168, 158);
+    color:  rgb(47 123 168);;
 }
 
 hr.hrBelowAns{
@@ -108,4 +108,24 @@ hr.hrBelowAns{
 
 .tagClassPTag{
     margin-top:6px;
+}
+
+@media screen and (max-width: 480px) {
+    .topQuesAnsPageAnswer{
+        font-size: 1.3rem;
+        margin-bottom: 0;
+        color: lightslategray;
+    }
+
+    .vote_count{
+        margin-right: 3px;
+    }
+
+    .answer{
+        font-size: 1.2rem;
+    }
+
+    .answerOnTopQAns{
+        margin-bottom: 5px;
+    }
 }

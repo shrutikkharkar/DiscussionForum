@@ -659,7 +659,7 @@ function TopQAns() {
             {indicatorEl}
         </section> */}
 
-        <div className="container col-xs-12 w-75 topQAnsList">
+        <div className="container col-xs-12 topQAnsList">
             {
             question.map(question => (
                 <div key={question.id}>
@@ -713,25 +713,8 @@ function TopQAns() {
                 ( 
                     
                 <div key={answer.id}>
-                <div>
+                <div className="answerOnTopQAns">
                     <span className="answer">{answer.answer}</span>
-                    
-                    
-                    <span className="answeredBy"  style={{ marginLeft: '10px'}}>({answer.Class} - {answer.branch})
-                    
-                    {
-                        answer.isAdmin === true && (
-                            <>
-                                &nbsp;
-                                <MdVerified className="verifiedIcon" />
-                            </>
-                        )
-                    }
-                    </span>
-            
-                    <span className="answeredBy">by. {answer.userName}</span>
-                    
-                    
                     
                 </div>
                 {answer.tagsForAnswer && (
@@ -747,6 +730,22 @@ function TopQAns() {
                     </p>
                 </>
                 )}
+                <div className="answeredByName">
+                    <span className="answeredBy">by. {answer.userName}</span>
+                    <span className="answeredBy"  style={{ marginLeft: '10px'}}>({answer.Class} - {answer.branch})
+                    {
+                        answer.isAdmin === true && (
+                            <>
+                                &nbsp;
+                                <MdVerified className="verifiedIcon" />
+                            </>
+                        )
+                    }
+                    </span>  
+                </div>
+
+
+                
                 
                 {/* <p>{(answer.tagsForAnswer).length}</p> */}
                 <div>
@@ -755,6 +754,8 @@ function TopQAns() {
                         <>
                             <BiLike className="likeIcon liked" onClick={() => removeLike(answer._id)} />
                             <span className="vote_count"> {answer.likeCount}</span>
+                            <span>&nbsp; &nbsp;</span>
+                            
                         </>
                         )
                     }
@@ -763,6 +764,7 @@ function TopQAns() {
                         <>
                             <BiLike className="likeIcon" onClick={() => likeAnswer(answer._id, answer.answeredById)} />
                             <span className="vote_count"> {answer.likeCount}</span>
+                            <span>&nbsp; &nbsp;</span>
                         </>
                         )
                     }
@@ -774,12 +776,13 @@ function TopQAns() {
                         </>
                         )
                     }
-                    &nbsp; &nbsp; &nbsp; &nbsp;
+                    
                     {
                         answer.disliked === true && (
                             <>
                                 <BiDislike className="dislikeIcon disliked" onClick={() => removeDislike(answer._id)} />
                                 <span className="vote_count"> {answer.dislikeCount}</span>
+                                <span>&nbsp; &nbsp;</span>
                             </>
                         )
                     }
@@ -788,6 +791,7 @@ function TopQAns() {
                             <>
                                 <BiDislike className="dislikeIcon" onClick={() => dislikeAnswer(answer._id)} />
                                 <span className="vote_count"> {answer.dislikeCount}</span>
+                                <span>&nbsp; &nbsp;</span>
                             </>
                         )
                     } 
@@ -796,15 +800,16 @@ function TopQAns() {
                         <>
                             <BiDislike className="dislikeIcon" onClick={() => dislikeAnswer(answer._id)} />
                             <span className="vote_count"> {answer.dislikeCount}</span>
+                            <span>&nbsp; &nbsp;&nbsp; &nbsp;</span>
                         </>
                         )
                     }
-                    &nbsp; &nbsp; &nbsp; &nbsp;
+                    
                
                     <BiCommentDetail className="commentIcon" onClick={() => getComments(answer._id, answer.answeredById)} />
                     <span className="comment_count"> {answer.commentCount}</span>
+                    <span>&nbsp; &nbsp;</span>
 
-                    &nbsp; &nbsp; &nbsp; &nbsp;
                     {loggedIn===true && isAdmin===true && (
                     <Dropdown style={{display: 'inline'}}>
                         <Dropdown.Toggle as={CustomToggle} />

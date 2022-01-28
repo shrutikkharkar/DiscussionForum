@@ -74,5 +74,63 @@
     display: flex;
   }
 
+  .logoForPhone{
+    display: none;
+  }
+
+  .searchIconForPhone{
+    display: none;
+  }
+
+  .NavigationFunctionsForPhone{
+    display: none;
+  }
+
+  .HamburgerIcon{
+    display: none;
+  }
+
+  @media screen and (max-width: 480px) {
+    .logo{
+      display:none;
+    }
+
+    .logoForPhone{
+      display: block;
+      position: absolute;
+      font-size: 2rem;
+      font-weight: 700;
+      color: darkgray;
+      padding-left: 1rem;
+      padding-top: 1rem;
+      cursor: pointer;
+    }
+
+    .askQuestionBtnSpan{
+      display: none;
+    }
+
+    .spaceForDesktop{
+      display: none;
+    }
+
+    .logoutBtnClass{
+      display: none;
+    }
+
+    .searchIconForPhone{
+      display: inline;
+      font-size: 1.6rem;
+    }
+
+    .NavigationFunctionsForPhone{
+      display: inline;
+    }
+
+    .HamburgerIcon{
+      display: inline;
+    }
+  }
+
   
   

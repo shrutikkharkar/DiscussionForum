@@ -3,6 +3,7 @@ import React, {useContext} from 'react'
 import AuthContext from '../context/AuthContext';
 import IsAdminContext from '../context/IsAdminContext'
 import {useHistory} from 'react-router-dom'
+import './Navbar.css'
 
 function LogoutBtn() {
     const {getLoggedIn} = useContext(AuthContext);
@@ -17,10 +18,12 @@ function LogoutBtn() {
         history.push('/');
     }
     return (
-        <button onClick={logout}  className="btn btn-secondary btn-md active"
+    <span className="logoutBtnClass">
+        <button onClick={logout} className="btn btn-secondary btn-md active"
         style={{marginLeft:'1em', marginRight:'1em'}}>
             Logout
         </button>
+    </span>
     )
 }
 

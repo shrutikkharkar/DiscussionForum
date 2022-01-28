@@ -21,7 +21,7 @@ function SearchResult() {
         blacklist: ["xxx", "yyy", "zzz"],
         maxTags: 6,
         //backspace: "edit",
-        placeholder: "add tags",
+        placeholder: "add tags (optional)",
         dropdown: {
           enabled: 0 // a;ways show suggestions dropdown
         }
@@ -78,11 +78,11 @@ function SearchResult() {
 
     return (
         <div>
-            <div className="container w-75">
+            <div className="container searchResultDiv">
             <form onSubmit={submitQuestion}>
                 <div class="form-group">
                     <label for="exampleFormControlTextarea1">Didn't find answer to your question? Post your question here!</label>
-                    <textarea onChange={(e) => setQuestion(e.target.value)} class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
+                    <textarea placeholder="Ask your question here!" onChange={(e) => setQuestion(e.target.value)} class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
                     <Tags 
                         tagifyRef={tagifyRef1}
                         settings={settings}

@@ -3,6 +3,7 @@ import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './AllFlags.css'
+import GridTable from '@nadavshaar/react-grid-table'
 
 function AllFlags() {
 
@@ -10,7 +11,7 @@ function AllFlags() {
         getAllFlaggedAnswers()
     }, []);
 
-    const [allFlagDetails, setAllFlagDetails] = useState([])
+    // const [allFlagDetails, setAllFlagDetails] = useState([])
 
     const [useBgColor1, setBgColor1] = useState('')
     const [useFontColor1, setFontColor1] = useState('black')
@@ -23,8 +24,12 @@ function AllFlags() {
 
     const [toggleState, setToggleState] = useState('answers')
 
+    // let columns = []
+    const [rows, setAllFlagDetails] = useState()
+
     async function getAllFlaggedAnswers() {
         selected(1)
+        // columns = columnsAnswer
         setToggleState('answers')
         try {
             await axios.get('http://localhost:3001/answer/getAllFlaggedAnswers')
@@ -39,6 +44,7 @@ function AllFlags() {
     }
 
     async function getAllFlaggedComments() {
+        // setColumns(columnsComment)
         setToggleState('comments')
         selected(2)
         try {
@@ -55,6 +61,7 @@ function AllFlags() {
 
 
     async function getAllFlaggedQuestions() {
+        // setColumns(columnsQuestion)
         selected(3)
         setToggleState('questions')
         try {
@@ -254,6 +261,156 @@ function AllFlags() {
         }
     }
 
+    const StatusToggler = ({ tableManager, value, field, data, column, colIndex, rowIndex }) => {
+    
+        return (
+            <>
+            <div className='rgt-cell-inner' style={{display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden'}}>
+                {value==0 && (
+                    <div onClick={() => removeQuestionByAdmin(data._id)} className="liveAnswerCell">Live</div>
+                )}
+                {value==1 && (
+                    <div onClick={() => unblockAnyQuestionByAdmin(data._id)} className="blockedAnswerCell">Blocked</div>
+                )}
+            </div>
+            </>
+        )
+    }
+
+    const reportedBy = ({ tableManager, value, field, data, column, colIndex, rowIndex }) => {
+        return (
+            <>
+            {data.removed == 1 && (
+                <div>{value} ({data.reporterClass}-{data.reporterBranch})</div>
+            )}
+            {data.removed == 0 && (
+                <div>{value}</div>
+            )}
+            
+            </>
+        )
+    }
+
+    const fullNameWithClass = ({ tableManager, value, field, data, column, colIndex, rowIndex }) => {
+        return (
+            <div>{value} ({data.Class} - {data.branch})</div>
+        )
+    }
+
+    const columns = [
+        {
+            id: 1, 
+            field: 'answer', 
+            label: 'Answers',
+            headerCellRenderer: ({tableManager, column, mode, ref, checked, disabled, indeterminate, onChange}) => 
+                ( 
+                <>
+                {column.answer && (
+                    <div>Answers</div>
+                )}
+                    
+                </>
+                )
+        },
+        {
+            id: 2, 
+            field: 'fullName', 
+            label: 'Answer by',
+            cellRenderer:fullNameWithClass
+            
+        },
+        {
+            id: 3, 
+            field: 'email', 
+            label: 'Email',
+            
+        },
+        {
+            id: 4, 
+            field: 'nameOfReporter', 
+            label: 'Reported by',
+            searchable: true,
+            cellRenderer: reportedBy
+            
+        },
+        {
+            id: 5, 
+            field: 'removed', 
+            label: 'Status',
+            cellRenderer: StatusToggler   
+        }
+    ];
+
+    const columnsQuestion = [
+        {
+            id: 1, 
+            field: 'question', 
+            label: 'Questions',
+        },
+        {
+            id: 2, 
+            field: 'fullName', 
+            label: 'Question by',
+            cellRenderer:fullNameWithClass
+            
+        },
+        {
+            id: 3, 
+            field: 'email', 
+            label: 'Email',
+            
+        },
+        {
+            id: 4, 
+            field: 'nameOfReporter', 
+            label: 'Reported by',
+            searchable: true,
+            cellRenderer: reportedBy
+            
+        },
+        {
+            id: 5, 
+            field: 'removed', 
+            label: 'Status',
+            cellRenderer: StatusToggler   
+        }
+    ];
+
+    const columnsComment = [
+        {
+            id: 1, 
+            field: 'comment', 
+            label: 'Comments',
+        },
+        {
+            id: 2, 
+            field: 'fullName', 
+            label: 'Comment by',
+            cellRenderer:fullNameWithClass
+            
+        },
+        {
+            id: 3, 
+            field: 'email', 
+            label: 'Email',
+            
+        },
+        {
+            id: 4, 
+            field: 'nameOfReporter', 
+            label: 'Reported by',
+            searchable: true,
+            cellRenderer: reportedBy
+            
+        },
+        {
+            id: 5, 
+            field: 'removed', 
+            label: 'Status',
+            cellRenderer: StatusToggler   
+        }
+    ];
+
     return (
     <>
     <div className="container">
@@ -285,7 +442,15 @@ function AllFlags() {
 
 
         <br />
-        <table class="table table-hover">
+
+        <GridTable 
+            columns={columns}
+            rows={rows}
+            pageSize={10}
+            isLoading={true}
+        />
+
+        {/* <table class="table table-hover">
             <thead>
                 <tr>
                     <th scope="col">Sr.no</th>
@@ -397,7 +562,7 @@ function AllFlags() {
                 </tbody>
             ))
         }
-        </table>
+        </table> */}
 
 
 

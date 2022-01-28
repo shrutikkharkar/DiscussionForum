@@ -4,6 +4,7 @@
   
   .questionListContainer{
     text-align: center;
+    width: 75%;
     /* border-right: 2px solid rgb(212, 208, 208);
     border-left: 2px solid rgb(212, 208, 208); */
   }
@@ -13,6 +14,10 @@
     display: table-cell;
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  .statsBlock{
+    display: table-cell;
   }
 
 
@@ -37,6 +42,10 @@
     display: table-cell;
     cursor: pointer;
   } 
+
+  .menuIconQuestionPageForPhone{
+    display: none;
+  }
   
   .dropdown-styling{
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
@@ -58,4 +67,88 @@
 
 .tagClassPTag{
     margin-top:0px;
+}
+
+.askQuestionBtnInQListDIV{
+  display: none;
+}
+
+.breakForAskBtn{
+  display: none;
+}
+
+.updatedOnDateforPhone{
+  display: none;
+}
+
+
+@media screen and (max-width: 480px) {
+  .questionListContainer{
+    text-align: center;
+    width: 100%;
+  }
+
+  .questionBlock{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: flex-start;
+  }
+
+  .viewCount, .voteCount, .answerCount{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    padding-left: 0;
+  }
+ 
+  .statsBlock{
+    display: flex;
+  }
+
+  .countStat{
+    margin-left: 3px;
+  }
+
+  .updatedOnText{
+    display: none;
+  }
+
+
+  .askQuestionBtnInQListDIV{
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .updatedOnDateforPhone{
+    display: flex;
+  }
+
+  
+.breakForAskBtn{
+  display: inline;
+}
+
+.menuIconQuestionPage{
+  display: none;
+} 
+
+.menuIconQuestionPageForPhone{
+  display: table-cell;
+}
+
+.questionDiscussion{
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.updatedOnDateforPC{
+  display: none;
+}
+
+.updateDate{
+  padding-left: 0; 
+}
+
+  
 }

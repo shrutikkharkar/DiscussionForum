@@ -3,6 +3,7 @@ import axios from 'axios'
 import {useHistory} from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import GridTable from '@nadavshaar/react-grid-table'
 
 function AllQuestions() {
 
@@ -11,7 +12,8 @@ function AllQuestions() {
     }, []);
 
     const history = useHistory();
-    const [allQuestionDetails, setAllQuestionDetails] = useState([])
+    // const [allQuestionDetails, setAllQuestionDetails] = useState([])
+    const [rows, setAllQuestionDetails] = useState()
     const [getToggleState, setToggleState] = useState('') 
 
     async function getAllQuestionDetails() {
@@ -87,7 +89,7 @@ function AllQuestions() {
             await axios.post(`http://localhost:3001/question/unblockAnyQuestionByAdmin/${questionId}`)
             .then(res => {
 
-                getAllBlockedQuestionDetails();
+                getAllQuestionDetails();
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
                     autoClose: 3000,
@@ -153,11 +155,82 @@ function AllQuestions() {
         }
     }
 
+    const StatusToggler = ({ tableManager, value, field, data, column, colIndex, rowIndex }) => {
+    
+        return (
+            <>
+            <div className='rgt-cell-inner' style={{display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden'}}>
+                {value==0 && (
+                    <div onClick={() => removeQuestionByAdmin(data._id)} className="liveAnswerCell">Live</div>
+                )}
+                {value==1 && (
+                    <div onClick={() => unblockAnyQuestionByAdmin(data._id)} className="blockedAnswerCell">Blocked</div>
+                )}
+            </div>
+            </>
+        )
+    }
+
+    const removedBy = ({ tableManager, value, field, data, column, colIndex, rowIndex }) => {
+        return (
+            <>
+            {data.removed == 1 && (
+                <div>{value} ({data.removerClass}-{data.removerBranch})</div>
+            )}
+            {data.removed == 0 && (
+                <div>{value}</div>
+            )}
+            
+            </>
+        )
+    }
+
+    const fullNameWithClass = ({ tableManager, value, field, data, column, colIndex, rowIndex }) => {
+        return (
+            <div>{value} ({data.Class} - {data.branch})</div>
+        )
+    }
+
+    const columns = [
+        {
+            id: 1, 
+            field: 'question', 
+            label: 'Questions',
+        },
+        {
+            id: 2, 
+            field: 'fullName', 
+            label: 'Question by',
+            cellRenderer:fullNameWithClass
+            
+        },
+        {
+            id: 3, 
+            field: 'email', 
+            label: 'Email',
+            
+        },
+        {
+            id: 4, 
+            field: 'nameOfRemover', 
+            label: 'Removed by',
+            searchable: true,
+            cellRenderer: removedBy
+            
+        },
+        {
+            id: 5, 
+            field: 'removed', 
+            label: 'Status',
+            cellRenderer: StatusToggler   
+        }
+    ];
+
 
     return (
         <div className="allAnswers container">
 
-        {getToggleState == "allQuestions" && (
+        {/* {getToggleState == "allQuestions" && (
             <div className="allAnswersToggleBar">
             <button className="allAnswersToggleButtons selectedToggleButton" onClick={() => getAllQuestionDetails()} >
                 All Questions
@@ -195,12 +268,19 @@ function AllQuestions() {
                 Blocked by me
             </button>
         </div>
-        )}
+        )} */}
 
 
         <br />
 
-        <table class="table table-hover">
+        <GridTable 
+            columns={columns}
+            rows={rows}
+            pageSize={10}
+            isLoading={true}
+        />
+
+        {/* <table class="table table-hover">
             <thead>
               <tr>
                 <th scope="col">Sr.no</th>
@@ -268,7 +348,7 @@ function AllQuestions() {
         ))
         }
 
-        </table>
+        </table> */}
 
         <ToastContainer />
         </div>

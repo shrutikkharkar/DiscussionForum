@@ -49,5 +49,12 @@ router.post('/unblockAnyUserByAdmin/:id', adminAuth, userController.unblockAnyUs
 
 router.post('/unblockMyBlockedUserByAdmin/:id', adminAuth, userController.unblockMyBlockedUserByAdmin)
 
+router.post('/sendEmailForResetPassword', userController.sendEmailForResetPassword)
+
+router.get('/verifyResetPassword/:id', userController.verifyResetPassword);
+
+router.post('/resetPassword', userController.resetPassword)
+
+
 
 module.exports = router

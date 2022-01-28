@@ -1,6 +1,7 @@
 import React, { Component, useContext, useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import './Navbar.css'
+import './NavigationFunctions.css'
 import {Link, useHistory} from 'react-router-dom'
 import AuthContext from '../context/AuthContext'
 import IsAdminContext from '../context/IsAdminContext'
@@ -8,8 +9,11 @@ import LogoutBtn from './LogoutBtn'
 import SearchBar from './SearchBar'
 import { FaUserCircle } from "react-icons/fa";
 import { MdNotificationsNone } from "react-icons/md";
+import { BiSearch } from "react-icons/bi";
 import Overlay from 'react-bootstrap/Overlay';
 import Popover from 'react-bootstrap/Popover';
+import Hamburger from 'hamburger-react';
+import NavigationFunctions from './NavigationFunctions'
 
 
 function Navbar() {
@@ -33,6 +37,10 @@ const [show, setShow] = useState(false);
     setTarget(event.target);
     getNotifications()
   };
+
+  const showSearchbarForPhone = (event) => {
+
+  }
 
 useEffect(() => {
   getNotifications()
@@ -124,14 +132,29 @@ function gotoHome() {
     history.push('/');
 }
 
+const [displaySidebar, setDisplaySidebar] = useState('none')
+const [isOpen, setOpen] = useState(false)
+
+const [SideNavForPhone, setSideNavForPhone] = useState('none')
+function openNavbarForPhone() {
+  setSideNavForPhone('inline')
+}
+
     return (
       <>
+
+      {/* <span className="NavigationFunctionsForPhone"><NavigationFunctions displaySidebar={SideNavForPhone} /></span> */}
+      
+      <NavigationFunctions className="NavigationFunctionsForPhone" displaySidebar={SideNavForPhone} />
+
       {/* {getUserName()} */}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
         
         <nav className="navbar navbar-light" style={{backgroundColor: "#f2f2f2", marginBottom: "2%"}}>
         
         <p className="logo" onClick={gotoHome} > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VCETDFORUM</p>
+        <span className="HamburgerIcon"><Hamburger onToggle={toggled => openNavbarForPhone()} /></span>
+        {/* <p className="logoForPhone" onClick={gotoHome} > V</p> */}
           
           <SearchBar placeholder="Search..." data={QuestionData} />
 
@@ -157,9 +180,12 @@ function gotoHome() {
             {getUserName()}
             <div style={{marginLeft:'1em', marginRight:'1em', float: 'right'}}>
 
+            <BiSearch className="searchIconForPhone" />
             <div className="topbarIcons">
+            
               <div className="topbarIconItem">
                 <MdNotificationsNone onClick={handleClick} className="notificationIcon" />
+                
                 <span className="topbarIconBadge">{NotificationData.length}</span>
               </div>
 
@@ -210,12 +236,14 @@ function gotoHome() {
             </div>
 
             
-            <button onClick={Search} class="btn btn-primary">Ask a Question</button>
+            <span className="askQuestionBtnSpan"><button onClick={Search} className="btn btn-primary">Ask a Question</button></span>
               <LogoutBtn />
+              
               <FaUserCircle className='fas fa-user-circle userNameIcon' style={{fontSize:'30px', color:'#0bccda'}}/>
               {/* <i ></i> */}
               &nbsp;&nbsp;
               {userName}
+              {/* <Hamburger onToggle={toggled => openNavbarForPhone()} /> */}
               &nbsp;&nbsp;
               &nbsp;&nbsp;
             </div>
@@ -227,6 +255,8 @@ function gotoHome() {
             {getUserName()}
             <div style={{marginLeft:'1em', marginRight:'1em', float: 'right'}}>
       
+            <BiSearch onClick={showSearchbarForPhone} className="searchIconForPhone" />
+            
             <div className="topbarIcons">
               <div className="topbarIconItem">
                 <MdNotificationsNone onClick={handleClick} className="notificationIcon" />
@@ -293,18 +323,22 @@ function gotoHome() {
 
             </div>
 
+            
 
-
-            <button onClick={Search} class="btn btn-primary">Ask a Question</button>
+            <span className="askQuestionBtnSpan"><button onClick={Search} className="btn btn-primary">Ask a Question</button></span>
             &nbsp;
               {/* <Link to = "/admin" className="btn btn-outline-dark">Admin Panel</Link> */}
 
               <LogoutBtn />
+              
               <FaUserCircle className='fas fa-user-circle userNameIcon' style={{fontSize:'30px', color:'#0bccda'}}/>
               {/* <i ></i> */}
               &nbsp;&nbsp;
               {userName}
-              &nbsp;&nbsp;
+              {/* <Hamburger onToggle={toggled => openNavbarForPhone()} /> */}
+              <span className="spaceForDesktop">&nbsp;&nbsp;
+              </span>
+              
               &nbsp;&nbsp;
             </div>
             </>

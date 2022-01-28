@@ -259,6 +259,12 @@ const getAllQuestionDetails = (req, res) => {
     try {
         Question.aggregate([
             {
+                $match:
+                { 
+                    removedById:{$exists:true}
+                }
+            },
+            {
                 $lookup: 
                 {
                     from: 'answers', 
@@ -277,6 +283,28 @@ const getAllQuestionDetails = (req, res) => {
                     as: "user_details"
                 }
             },
+            {
+                $match:
+                {
+                    "user_details.blockedById" : {$eq: []}
+                }
+            },
+
+            {
+                $lookup: 
+                {
+                    from: "users",
+                    localField: "removedById", 
+                    foreignField: "_id",
+                    as: "detail_of_remover"
+                }
+            },
+            {$unwind:
+                {
+                    path: "$detail_of_remover", 
+                    preserveNullAndEmptyArrays: true
+                }
+            },
             
             
             {
@@ -287,14 +315,17 @@ const getAllQuestionDetails = (req, res) => {
                         $size: "$question_details"
                     },
 
-                    class: "$user_details.Class",
+                    Class: "$user_details.Class",
                     branch: "$user_details.branch",
                     email: "$user_details.email",
                     fullName: "$user_details.fullName",
                     removed: {
                         $size: "$removedById"
                     },
-                    tagsForQuestion: 1
+                    tagsForQuestion: 1,
+                    nameOfRemover: { $ifNull: [ "$detail_of_remover.fullName", "none" ] },
+                    removerClass: "$detail_of_remover.Class",
+                    removerBranch: "$detail_of_remover.branch"
                 }
             }  
         ])

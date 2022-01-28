@@ -13,6 +13,7 @@ import Questioned from './components/Questioned';
 import NavigationFunctions from './components/NavigationFunctions';
 import CommentBox from './components/CommentBox';
 import UpdateProfile from './components/UpdateProfile';
+import ResetPassword from './components/ResetPassword';
 import TagPage from './components/TagPage';
 
 import AdminPanel from './components/Admin/AdminPanel';
@@ -39,6 +40,7 @@ function Router() {
 
                 {loggedIn === false && isAdmin === false && (
                     <>
+                    
                         <Route path="/login"><Login /></Route>
 
                         <Route path="/signup"><Signup /></Route>
@@ -51,13 +53,15 @@ function Router() {
 
                         <Route path="/comments"><CommentBox /></Route>
 
+                        <Route path="/resetPassword"><ResetPassword /></Route>
+
                     </>
                 )}
 
 
                 {loggedIn === true && isAdmin === true && (
                     <>
-                        <NavigationFunctions />
+                        <NavigationFunctions displaySidebar="none" />
 
                         <Route path="/saved"><Saved /></Route>
 
@@ -96,7 +100,7 @@ function Router() {
 
                 {loggedIn === true && isAdmin === false && (
                     <>
-                        <NavigationFunctions />
+                        <NavigationFunctions  displaySidebar="none" />
 
                         <Route path="/saved"><Saved /></Route>
 

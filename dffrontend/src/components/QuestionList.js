@@ -28,10 +28,10 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         e.preventDefault();
         onClick(e);
       }}
+      className="threeDotMenuIcon"
     >
       {children}
-      <HiDotsVertical className="menuIconQuestionPage" />
-      {/* <span className="threedots" /> */}
+      <HiDotsVertical className="menuIcon" />
     </span>
 ));
 
@@ -111,29 +111,68 @@ function getTagContents(tagName){
     history.push( `/tagPage/?tagName=${tagName}` );
 }
 
+function Search(){
+    history.push('/searchResult');
+}
+
 
     if(questions){
     return (
         <>
-        <div className="container w-75 col-xs-12 questionListContainer">
+        <div className="container questionListContainer col-xs-12">
+         <div className="askQuestionBtnInQListDIV">   
+            <button onClick={Search} className="btn btn-primary">Ask a Question</button>
+        </div>
+        <span className="breakForAskBtn"><hr /></span>
+        
+        
+        
         {
         questions.map(question => 
         (
-        <div>
+        <>
             
             <div className="questionBlock" key={question.id}>
-                <div className="answerCount">
-                    <p>{question.answerCount}</p>
-                    <p className="countStat">Answers</p>
+
+                < div className="statsBlock">
+                    <div className="answerCount">
+                        <p>{question.answerCount}</p>
+                        <p className="countStat">Answers</p>
+                    </div>
+                    <div className="viewCount">
+                        <p>{question.viewCount}</p>
+                        <p className="countStat">Views</p>
+                    </div>
+                    <div className="voteCount">
+                        <p>{question.likeCount + question.dislikeCount}</p>
+                        <p className="countStat">Votes</p>
+                    </div>
+
+                    {loggedIn===true && isAdmin===true && (
+              
+              <Dropdown className="menuIconQuestionPageForPhone">
+                  <Dropdown.Toggle as={CustomToggle} />
+                  <Dropdown.Menu className="dropdown-styling" size="sm" title="">
+                    <Dropdown.Item onClick={() => removeQuestionByAdmin(question._id)}><MdBlock style={{fontSize: '1.1rem'}}  /> Block question</Dropdown.Item>
+                  </Dropdown.Menu>
+              </Dropdown>
+
+          )}
+
+          {loggedIn===true && isAdmin===false && (
+          
+              <Dropdown className="menuIconQuestionPageForPhone">
+                  <Dropdown.Toggle as={CustomToggle} />
+                  <Dropdown.Menu className="dropdown-styling" size="sm" title="">
+                    <Dropdown.Item onClick={() => reportQuestionByUser(question._id)}><MdOutlinedFlag style={{fontSize: '1.3rem'}} />  Report question</Dropdown.Item>
+                  </Dropdown.Menu>
+              </Dropdown>
+
+          )}
+          
                 </div>
-                <div className="viewCount">
-                    <p>{question.viewCount}</p>
-                    <p className="countStat">Views</p>
-                </div>
-                <div className="voteCount">
-                    <p>{question.likeCount + question.dislikeCount}</p>
-                    <p className="countStat">Votes</p>
-                </div>
+
+                
 
                 <p className="questionDiscussion">
                     <a onClick={(e) => gotoAnswers(question._id)} style={{color: 'royalblue'}} >
@@ -153,8 +192,9 @@ function getTagContents(tagName){
                 
 
                 <div className="updateDate">
-                    <p>Updated on: </p>
-                    <p>{question.getDate}</p> 
+                    <p className="updatedOnText">Updated on: </p>
+                    <span className="updatedOnDateforPhone">Asked on: {question.getDate}</span>
+                    <p className="updatedOnDate updatedOnDateforPC">{question.getDate}</p> 
                 </div>
 
                 {loggedIn===true && isAdmin===true && (
@@ -206,7 +246,7 @@ function getTagContents(tagName){
             )} */}
             
             <hr />      
-        </div>  
+        </>  
         )
 
         )}

@@ -9,10 +9,13 @@ Summation: Content matching Levenshtein Distance algorithm, Question-answer pair
 https://reactjsexample.com/a-modular-table-based-on-a-css-grid-layout-optimized-for-customization/
 
 BUGS:
-1. when question is deleted, user who has asked can also view it
+1. history.push doesnot update data when in the same route
 2. Blocked answer shows wrong blocked by
 
 Functions to add:
+Priority-
+ Responsiveness
+
 -priviledges - 1(normal user), 2(College student), 3(Faculty/admin)
 -google signup
 -tags
