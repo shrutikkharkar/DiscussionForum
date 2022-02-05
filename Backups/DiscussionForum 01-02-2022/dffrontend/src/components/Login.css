@@ -1,0 +1,17 @@
+.loginContainer, .signupContainer{
+    display: inline-block;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    align-items: center;
+    margin-top: 10vh;
+    margin-bottom: auto;
+    margin-left: 30%;
+}
+
+
+@media screen and (max-width: 480px) {
+    .formForPhone{
+        width: 100%;
+    }   
+}

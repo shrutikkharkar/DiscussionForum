@@ -3,6 +3,7 @@ const Question = require('../models/QuestionList.model')
 const Answer = require('../models/AnswerList.model')
 const Comment = require('../models/CommentList.model')
 const Tag = require('../models/TagList.model')
+const Notification = require('../models/NotificationList.model')
 
 const askQuestion = (req, res) => {
     try {
@@ -160,6 +161,40 @@ const getQuestions = (req, res) => {
     }
 };
 
+const getQuestionsAndTagsForSearchBar = async (req, res) => {
+    try {
+        var allDetails = [];
+
+        Question.find({}, {question: 1})
+        .then((results) => {
+            if(results){
+                for(var i = 0; i < results.length; i++) {
+                    allDetails.push(results[i])  
+                }
+
+                Tag.find({}, {tagName: 1})
+                .then((results) => {
+                    if(results){
+                        for(var i = 0; i < results.length; i++) {
+                            allDetails.push(results[i])
+                        }
+                        res.json(allDetails)
+                    }
+                    else{
+                        res.send(null)
+                    }
+
+                });
+            }
+        });
+ 
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
 
 const deleteQuestion = async (req, res) => {
     try{
@@ -175,7 +210,7 @@ const deleteQuestion = async (req, res) => {
                         Comment.deleteMany({questionId: quesId}, function(err, comment) {
                             if (err) throw err;
                             else {
-                                res.send(true)
+                                res.send("Deleted question successfully")
                             }
                         })
                     }
@@ -203,6 +238,24 @@ const getUserAskedQuestions = (req, res) => {
             },
 
             {
+                $lookup:
+                {
+                    from: 'users', 
+                    localField: 'questionById', 
+                    foreignField: '_id',
+                    as: 'user_details'
+                }
+            },
+            {$unwind: "$user_details"},
+
+            {
+                $match:
+                {
+                    "user_details.blockedById" : {$eq: []}
+                }
+            },
+
+            {
                 $lookup: 
                 {
                     from: 'answers', 
@@ -211,7 +264,9 @@ const getUserAskedQuestions = (req, res) => {
                     as: 'question_details'
                 }
             },
+            
 
+            
             {
                 $project: 
                 {
@@ -219,22 +274,28 @@ const getUserAskedQuestions = (req, res) => {
                     answerCount: {
                         $size: "$question_details.answer"
                     },
-
+    
                     viewCount: {
                         $size: "$viewedById"
                     },
-
+    
                     likeCount: {
                          $size: "$question_details.likedById"
-                    },
-                    dislikeCount: {
+                     },
+                     dislikeCount: {
                          $size: "$question_details.dislikedById"
-                    },
-                    isBlocked: {
+                     },
+
+                     updatedDate: "$updatedOnDate",
+
+                     tagsForQuestion: 1,
+
+                     removed: {
                         $size: "$removedById"
                     },
-                    tagsForQuestion: 1,
-                 
+
+                     getDate: { $dateToString: { format: "%d/%m/%Y", date: "$updatedOnDate" } }
+        
                 }
             }
         ])
@@ -499,6 +560,10 @@ const removeQuestionByAdmin = async (req, res) => {
                 $addToSet: 
                 {
                     removedById: userId
+                },
+                $set:
+                {
+                    reportedById: []
                 }
             }
         )
@@ -608,7 +673,7 @@ const getQuestionForAnswer = async(req, res) => {
                 $project: 
                 {
                     question: 1,
-                    userName: "$user_details.userName",
+                    fullName: "$user_details.fullName",
                     branch: "$user_details.branch",
                     Class: "$user_details.Class",
                     questionByEmail: "$user_details.email",
@@ -755,6 +820,51 @@ const reportQuestionByUser = async (req, res) => {
     }
 }
 
+
+const updateQuestion = async (req, res) => {
+    try {
+        const {question, tagsForQuestion} = req.body;
+
+        if(tagsForQuestion.length > 0) {
+            tagsForQuestion.map(tag => {
+                const addTag = new Tag({
+                    tagName: tag
+                })
+                addTag.save()
+            })
+        }
+        
+        const questionId = mongoose.Types.ObjectId(req.params.id)
+        const userId = mongoose.Types.ObjectId(req.user);
+
+        Question.findOneAndUpdate(
+            {
+                _id: questionId,
+                questionById: userId
+            },
+            {
+                $set: 
+                {
+                    question: question, 
+                    tagsForQuestion: tagsForQuestion
+                }
+            }
+        )
+        .then((question) => {
+            if(question){
+                res.send("Updated question successfully");
+            }
+            else{
+                res.send("Didn't update question");
+            }
+        })  
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
 module.exports = questionListController = {
     askQuestion,
     addView,
@@ -774,5 +884,8 @@ module.exports = questionListController = {
 
     getAllFlaggedQuestions,
 
-    reportQuestionByUser
+    reportQuestionByUser,
+
+    updateQuestion,
+    getQuestionsAndTagsForSearchBar
 };

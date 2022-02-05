@@ -1,0 +1,131 @@
+.topQuesAnsPageAnswer{
+    font-size: 1.6rem;
+    color: lightslategray;
+}
+
+.deleteCommentIcon{
+    color: rgb(255, 0, 0);
+    float: right;
+    cursor: pointer;
+    font-size: 1.6rem;
+}
+
+/* .topQAnsList{
+    border-right: 2px solid rgb(212, 208, 208);
+    border-left: 2px solid rgb(212, 208, 208);
+} */
+
+.verifiedIcon{
+    color: rgb(31, 184, 255);
+}
+
+.answer{
+    font-size: 1.3rem;
+}
+
+.vote_count, .comment_count{
+    font-size: 1.2rem;
+    margin-right: 5px;
+}
+
+.answeredBy{
+    color:  rgb(47 123 168);;
+}
+
+hr.hrBelowAns{
+    border-top: 5px dashed;
+}
+
+.bookmark{
+    float: right;
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.far, .fa-thumbs-up{
+    font-size: 1.4rem;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+.likeIcon, .dislikeIcon, .commentIcon{
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.menuIcon{
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.liked, .disliked{
+    color : rgb(255, 1, 1);
+}
+
+.saved{
+    color : rgb(58, 240, 2);
+}
+
+
+
+
+.inSaved{
+    font-size: 1.4rem;
+    margin-top: 1rem;
+}
+
+.bookmark:active + i{
+    color: greenyellow;
+}
+
+.tooltip{
+    background-color: rgb(153, 214, 173);
+}
+
+.tooltip-hidden{
+    visibility: hidden;
+    pointer-events: none;
+}
+
+
+.dropdown-styling{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.tagClass{
+    background-color: #0AA2FA47;
+    padding: 3px;
+    border-radius: 3px;
+    margin: 4px;
+    
+    cursor: pointer;
+    border: 2px solid white;
+    font-size: 1.1rem;
+}
+.tagClass:hover{
+    border: 2px solid #0AA2FA47;
+}
+
+.tagClassPTag{
+    margin-top:6px;
+}
+
+@media screen and (max-width: 480px) {
+    .topQuesAnsPageAnswer{
+        font-size: 1.3rem;
+        margin-bottom: 0;
+        color: lightslategray;
+    }
+
+    .vote_count{
+        margin-right: 3px;
+    }
+
+    .answer{
+        font-size: 1.2rem;
+    }
+
+    .answerOnTopQAns{
+        margin-bottom: 5px;
+    }
+}

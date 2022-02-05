@@ -1,0 +1,136 @@
+.topbarIconItem {
+  margin-right: 15px;
+  cursor: pointer;
+  position: relative;
+}
+
+.notificationIcon{
+  font-size:2rem;
+}
+.topbarIconBadge {
+  width: 15px;
+  height: 15px;
+  background-color: red;
+  border-radius: 50%;
+  color: white;
+  position: absolute;
+  top: -2px;
+  right: -1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.topbarIcons {
+  /* display: flex; */
+  display: inline-flex;
+}
+
+.searchForm{
+    display: inline-flex;
+    margin-inline: auto;
+  }
+
+  
+.fa-caret-down{
+  font-size: 30px;
+  cursor: pointer;
+}
+
+  .searchBox{
+    width: 40rem;
+  }
+  
+  .logo{
+    position: absolute;
+    font-size: 2rem;
+    font-weight: 700;
+    color: darkgray;
+    padding-left: 1rem;
+    padding-top: 1rem;
+    cursor: pointer;
+    /* color: #0bccda; */
+  }
+
+  .searchButton{
+
+    float: left;
+    width: 20%;
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none;
+    cursor: pointer;
+  }
+  .searchButton:hover{
+    background: #0bda95;
+  }
+
+  
+  .userNameSpan{
+    display: flex;
+  }
+
+  .logoForPhone{
+    display: none;
+  }
+
+  .searchIconForPhone{
+    display: none;
+  }
+
+  .NavigationFunctionsForPhone{
+    display: none;
+  }
+
+  .HamburgerIcon{
+    display: none;
+  }
+
+  @media screen and (max-width: 480px) {
+    .logo{
+      display:none;
+    }
+
+    .logoForPhone{
+      display: block;
+      position: absolute;
+      font-size: 2rem;
+      font-weight: 700;
+      color: darkgray;
+      padding-left: 1rem;
+      padding-top: 1rem;
+      cursor: pointer;
+    }
+
+    .askQuestionBtnSpan{
+      display: none;
+    }
+
+    .spaceForDesktop{
+      display: none;
+    }
+
+    .logoutBtnClass{
+      display: none;
+    }
+
+    .searchIconForPhone{
+      display: inline;
+      font-size: 1.6rem;
+    }
+
+    .NavigationFunctionsForPhone{
+      display: inline;
+    }
+
+    .HamburgerIcon{
+      display: inline;
+    }
+  }
+
+  
+  

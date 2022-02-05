@@ -20,7 +20,7 @@ import {usePopper} from 'react-popper';
 import { createPopper } from '@popperjs/core';
 import Dropdown from "react-bootstrap/Dropdown";
 import 'react-toastify/dist/ReactToastify.css';
-import {LoaderProvider, useLoading, BallTriangle} from '@agney/react-loading';
+import {LoaderProvider, useLoading, Puff} from '@agney/react-loading';
 
 import Tagify from '@yaireo/tagify'
 import Tags from "@yaireo/tagify/dist/react.tagify" // React-wrapper file
@@ -67,7 +67,7 @@ function TopQAns() {
 
       const { containerProps, indicatorEl } = useLoading({
         loading: true,
-        indicator: <BallTriangle width="20" />
+        indicator: <Puff width="20" />
       });
 
 

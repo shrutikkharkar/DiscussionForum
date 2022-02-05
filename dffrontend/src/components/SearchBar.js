@@ -14,7 +14,13 @@ function SearchBar({ placeholder, data }) {
     const searchWord = event.target.value;
     setWordEntered(searchWord);
     const newFilter = data.filter((value) => {
-      return value.question.toLowerCase().includes(searchWord.toLowerCase());
+      if(value.question){
+        return value.question.toLowerCase().includes(searchWord.toLowerCase());
+      }
+      if(value.tagName){
+        return value.tagName.toLowerCase().includes(searchWord.toLowerCase());
+      }
+      
     });
 
     if (searchWord === "") {
@@ -27,6 +33,11 @@ function SearchBar({ placeholder, data }) {
   function gotoAnswers(questionId) {
     history.push( `/topqans/?query=${questionId}` );
     clearInput()
+  }
+
+  function getTagContents(tagName){
+    history.push( `/tagPage/?tagName=${tagName}` );
+    window.location.reload()
   }
 
   const clearInput = () => {
@@ -55,9 +66,17 @@ function SearchBar({ placeholder, data }) {
         <div className="dataResult">
           {filteredData.slice(0, 15).map((value, key) => {
             return (
-              
+              <>
+
+              {value.question && (
                 <p className="dataItem"  onClick={() => gotoAnswers(value._id)}> {value.question} </p>
-              
+              )}
+
+              {value.tagName && (
+                <p className="dataItem" style={{color: 'blue'}}  onClick={() => getTagContents(value.tagName)}># {value.tagName} </p>
+              )}
+
+              </> 
             );
           })}
         </div>

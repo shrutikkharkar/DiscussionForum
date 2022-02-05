@@ -195,7 +195,7 @@ function AllQuestions() {
         {
             id: 1, 
             field: 'question', 
-            label: 'Questions',
+            label: 'Questions'
         },
         {
             id: 2, 
@@ -203,6 +203,11 @@ function AllQuestions() {
             label: 'Question by',
             cellRenderer:fullNameWithClass
             
+        },
+        {
+            id: 1, 
+            field: 'answerCount', 
+            label: 'Answers'
         },
         {
             id: 3, 
