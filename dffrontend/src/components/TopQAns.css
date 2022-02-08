@@ -18,6 +18,7 @@
 .topQuesAnsPageAnswer{
     font-size: 1.6rem;
     color: lightslategray;
+    margin-bottom: 0;
 }
 
 .deleteCommentIcon{
@@ -34,10 +35,9 @@
     align-items: center;
   }
 
-/* .topQAnsList{
-    border-right: 2px solid rgb(212, 208, 208);
-    border-left: 2px solid rgb(212, 208, 208);
-} */
+.topQAnsList{
+    width: 75%;
+}
 
 .verifiedIcon{
     color: rgb(31, 184, 255);
@@ -121,13 +121,14 @@ hr.hrBelowAns{
     padding: 3px;
     border-radius: 3px;
     margin: 4px;
-    
+    margin-top: 6px;
+    display: inline-block;
     cursor: pointer;
-    border: 2px solid white;
+    border: 2px solid #0AA2FA47;
     font-size: 1.1rem;
 }
 .tagClass:hover{
-    border: 2px solid #0AA2FA47;
+    background-color:#0AA2FA47;
 }
 
 .tagClassPTag{
@@ -142,6 +143,14 @@ hr.hrBelowAns{
     width: 80vh;
     /* overflow-y: auto; */
 }
+
+.questionTagAndOptionDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 
 @media screen and (max-width: 480px) {
     .topQuesAnsPageAnswer{
@@ -158,8 +167,12 @@ hr.hrBelowAns{
         font-size: 1.2rem;
     }
 
-    .answerOnTopQAns{
+    /* .answerOnTopQAns{
         margin-bottom: 5px;
+    } */
+
+    .topQAnsList{
+        width: 100%;
     }
 
 }

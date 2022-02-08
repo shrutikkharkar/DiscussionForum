@@ -1,15 +1,17 @@
 .tagClass{
-    background-color: #0AA2FA47;
+    /* background-color: #0AA2FA47; */
+    background-color: hsl(205, 46%, 92%);
     padding: 3px;
     border-radius: 3px;
     margin: 4px;
-    
+    color: hsl(205, 47%, 42%);
     cursor: pointer;
-    border: 2px solid white;
+    border: 2px solid hsl(205, 46%, 92%);
     font-size: 1.1rem;
 }
 .tagClass:hover{
-    border: 2px solid #0AA2FA47;
+    background-color: hsl(205, 53%, 88%);
+    border: 2px solid hsl(205, 53%, 88%);
 }
 
 .tagClassPTag{
@@ -25,6 +27,9 @@
     box-shadow: rgb(0 0 0 / 15%) 0px 3px 10px;
 }
 
+.tagPageMainDiv{
+    width: 75%
+}
 
 
 @media screen and (max-width: 480px) {
@@ -36,5 +41,10 @@
     .tagClass{
         margin: 0px;
         margin-right: 2px;
+        margin-top: 5px;
+    }
+
+    .tagPageMainDiv{
+        width: 100%
     }
 }

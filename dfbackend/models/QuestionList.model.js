@@ -9,7 +9,8 @@ const QuestionListTemplates = new mongoose.Schema({
 
     question: {
         type: 'string',
-        required: true
+        required: true,
+        index: "text"
     },
 
 
@@ -32,7 +33,8 @@ const QuestionListTemplates = new mongoose.Schema({
     ],
 
     tagsForQuestion: [{
-        type: String
+        type: String,
+        index: "text"
     }],
 
     updatedOnDate: {

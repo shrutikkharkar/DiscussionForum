@@ -6,30 +6,37 @@ Results shows that KNN has better output then Naive bayes also it takes lesser t
 
 Summation: Content matching Levenshtein Distance algorithm, Question-answer pair generation and ranking using KNN considering like count and comment polarity AND using answer features.
 
+Summation NEW: Content matching Levenshtein Distance algorithm, 
+                ranking using KNN considering like count AND using answer features.
+
 https://reactjsexample.com/a-modular-table-based-on-a-css-grid-layout-optimized-for-customization/
 
 BUGS:
 1. history.push doesnot update data when in the same route
 2. Blocked answer shows wrong blocked by
+3. Improve latency of like and dislike
 
 Functions to add:
 -Avoid brute force
 
 Priority-
   -searchbar for phone
-  -Notification
   -likedby
   -Add comments logo in side panel
   -search algo
-  -tagPage
+  -remove socket
 
 
-
-
+  
+  
 -priviledges - 1(normal user), 2(College student), 3(Faculty/admin)
 -image bar
 -google signup
 
+tagPage
+Notification
+tags on phone out of screen
+ckeditor
 Hashtags in searchbar 
 update answers, etc
 Tag suggestions

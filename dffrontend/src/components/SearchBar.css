@@ -30,6 +30,11 @@
   place-items: center;
 }
 
+.searchButton{
+  height: 35px;
+  width: 50px;
+}
+
 input:focus {
   outline: none;
 }

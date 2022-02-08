@@ -13,12 +13,19 @@ import Dropdown from "react-bootstrap/Dropdown";
 import 'react-toastify/dist/ReactToastify.css';
 import {LoaderProvider, useLoading, Puff} from '@agney/react-loading';
 import VCETLogo from '../Images/VCETLogo.svg'
+import { Pagination } from "react-pagination-bar"
+import 'react-pagination-bar/dist/index.css'
 
 import Tags from "@yaireo/tagify/dist/react.tagify" // React-wrapper file
 import "@yaireo/tagify/dist/tagify.css" // Tagify CSS
 
 import PureModal from 'react-pure-modal';
 import 'react-pure-modal/dist/react-pure-modal.min.css';
+
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+import CKEditorComponent from './CKEditorComponent'
 
 import io from 'socket.io-client'
 let socket = io(`http://localhost:3001`)
@@ -51,6 +58,8 @@ function TopQAns() {
     const [gotQuestion, setGotQuestion] = useState(false);
     const [gotAnswers, setGotAnswers] = useState(false);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const pagePostsLimit = 3;
     // For block btn
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         <span
@@ -235,6 +244,7 @@ function TopQAns() {
             await axios.post('http://localhost:3001/answer/post', answerData)
             .then(res => {
                 setPosting(false)
+                getAllTagNames()
                 toast.success(`${res.data}`, {
                     position: "top-center",
                     autoClose: 5000,
@@ -309,21 +319,6 @@ function TopQAns() {
             await axios.post(`http://localhost:3001/answer/like/${answerId}`, notificationData)
             .then(res => {
                 getAnswers()
-
-                // socket.emit('makeChange', "Hello")
-
-                toast.success('Liked successfully!', {
-                    position: "bottom-left",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-
-                // socket.emit('sendLikedNotification', {id: answerId});
-
             })
 
         }
@@ -338,15 +333,6 @@ function TopQAns() {
             axios.post(`http://localhost:3001/answer/removeLike/${answerId}`)
             .then(res => {
                 getAnswers()
-                toast.dark('Removed Like!', {
-                    position: "bottom-left",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
             })
         }
         catch (err) {
@@ -362,15 +348,6 @@ function TopQAns() {
             await axios.post(`http://localhost:3001/answer/dislike/${answerId}`)
             .then(res => {
                 getAnswers()
-                toast.success('Disliked answer successfully!', {
-                    position: "bottom-left",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
             })
 
         }
@@ -385,15 +362,6 @@ function TopQAns() {
             axios.post(`http://localhost:3001/answer/removeDislike/${answerId}`)
             .then(res => {
                 getAnswers()
-                toast.dark('Removed dislike!', {
-                    position: "bottom-left",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
             })
         }
         catch (err) {
@@ -673,6 +641,8 @@ function TopQAns() {
                 <p style={{float: 'right', color: 'cornflowerblue'}}>-{question.fullName} ({question.Class} - {question.branch})</p>
                 
                 </p>
+
+                <div className="questionTagAndOptionDiv">
                 {question.tagsForQuestion && (
                 <>
                     <p className="tagClassPTag">
@@ -702,6 +672,8 @@ function TopQAns() {
                     </Dropdown>
                             
                 )}
+                </div>
+
 
                 </div>
             ))
@@ -714,8 +686,11 @@ function TopQAns() {
                 {/* <hr /> */}
                 
                 {
-                answers.map(answer =>
+                answers
+                .slice((currentPage - 1) * pagePostsLimit, currentPage * pagePostsLimit)
+                .map(answer =>
                 ( 
+
                     <div className="tileForAnswers">
                     
                     <div className="answeredByName">
@@ -748,12 +723,12 @@ function TopQAns() {
 
                 <div key={answer.id}>
                 <div className="answerOnTopQAns">
-                    <span className="answer">{answer.answer}</span>
-                    
+                    <span className="answer" dangerouslySetInnerHTML={{ __html: answer.answer }} />
+                        
                 </div>
                 {answer.tagsForAnswer && (
                 <>
-                    <p className="tagClassPTag">
+                    <p className="tagClassPTag ">
                     {answer.tagsForAnswer.map(tag => (
                         <span onClick={() => getTagContents(tag)} className="tagClass">{tag}</span>
                     ))} 
@@ -889,6 +864,7 @@ function TopQAns() {
 
                   isOpen={modal}
                 >
+                    
                   
                   <div>
                           {comments.map(comment => (
@@ -941,9 +917,18 @@ function TopQAns() {
                               )}
 
                             
-
                             </span>
-                            <hr />
+
+                            <Pagination
+                                initialPage={currentPage}
+                                itemsPerPage={pagePostsLimit}
+                                onPageСhange={(pageNumber) => setCurrentPage(pageNumber)}
+                                totalItems={answers.length}
+                                pageNeighbours={1}
+                                withProgressBar={true}
+                            />
+
+                            {/* <hr /> */}
                             </>
                           ))}
 
@@ -967,9 +952,36 @@ function TopQAns() {
                 
                 <form onSubmit={giveAnswer}>
                     <div class="form-group">
+                    
                         <label for="exampleFormControlTextarea1">Post an answer to this question, it will help this community grow!</label>
-                        <textarea onChange={(e) => setAnswer(e.target.value)} class="form-control" id="exampleFormControlTextarea1" rows="2"
-                        placeholder="Answer here..." ></textarea>
+                        {/* <textarea onChange={(e) => setAnswer(e.target.value)} class="form-control" id="exampleFormControlTextarea1" rows="2"
+                        placeholder="Answer here..." ></textarea> */}
+
+                        <CKEditor
+                            editor={ ClassicEditor }
+                            data="<p>Write answer here..</p>"
+                            
+                            onChange={ ( event, editor ) => {
+                                const data = editor.getData();
+                                setAnswer(data)
+                            } }
+
+                        />
+                        {/* <CKEditorComponent data={"Write answer hereee.."}
+                        onChange={() => {setAnswer(data)}}
+                        /> */}
+
+                        {/* <CKEditorComponent 
+                            data={"<p>Write answer here..</p>"} 
+                            onChange={( event, editor ) => 
+                                {
+                                    const data = editor.getData();
+                                    setAnswer(data)
+                                }
+                            }
+                        
+
+                        /> */}
                         <Tags 
                             tagifyRef={tagifyRef1}
                             settings={settings}
@@ -989,6 +1001,8 @@ function TopQAns() {
                     
                 </form>
         </div>  
+
+        <br />
 
         <ToastContainer /> 
         </>

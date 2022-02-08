@@ -21,12 +21,6 @@ router.post('/reportCommentByUser/:id', auth, commentListController.reportCommen
 
 router.post('/unblockAnyCommentByAdmin/:id', adminAuth, commentListController.unblockAnyCommentByAdmin);
 
-router.post('/unblockMyBlockedCommentByAdmin/:id', adminAuth, commentListController.unblockMyBlockedCommentByAdmin);
-
-router.get('/getAllBlockedCommentDetails', adminAuth, commentListController.getAllBlockedCommentDetails);
-
-router.get('/getAllMeBlockedCommentDetails', adminAuth, commentListController.getAllMeBlockedCommentDetails);
-
 router.get('/getAllFlaggedComments', adminAuth, commentListController.getAllFlaggedComments);
 
 

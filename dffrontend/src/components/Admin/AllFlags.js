@@ -11,7 +11,6 @@ function AllFlags() {
         getAllFlaggedAnswers()
     }, []);
 
-    // const [allFlagDetails, setAllFlagDetails] = useState([])
 
     const [useBgColor1, setBgColor1] = useState('')
     const [useFontColor1, setFontColor1] = useState('black')
@@ -26,12 +25,15 @@ function AllFlags() {
 
     const [rows, setAllFlagDetails] = useState()
 
+    const [gotDataFromDatabase, setGotDataFromDatabase] = useState(true);
+
     async function getAllFlaggedAnswers() {
         selected(1)
         setToggleState('answers')
         try {
             await axios.get('http://localhost:3001/answer/getAllFlaggedAnswers')
             .then((res) => {
+                setGotDataFromDatabase(false)
                 setAllFlagDetails(res.data)
                 console.log(res.data)
             })
@@ -48,6 +50,7 @@ function AllFlags() {
         try {
             await axios.get('http://localhost:3001/comment/getAllFlaggedComments')
             .then((res) => {
+                setGotDataFromDatabase(false)
                 setAllFlagDetails(res.data)
                 console.log(res.data)
             })
@@ -65,6 +68,7 @@ function AllFlags() {
         try {
             await axios.get('http://localhost:3001/question/getAllFlaggedQuestions')
             .then((res) => {
+                setGotDataFromDatabase(false)
                 setAllFlagDetails(res.data)
                 console.log(res.data)
             })
@@ -147,81 +151,7 @@ function AllFlags() {
         }
     }
 
-    async function unblockAnyAnswerByAdmin(ansId) {
-
-        try {
-            const answerId = ansId
-
-            await axios.post(`http://localhost:3001/answer/unblockAnyAnswerByAdmin/${answerId}`)
-            .then(res => {
-
-                getAllFlaggedAnswers();
-                toast.dark(`${res.data}`, {
-                    position: "bottom-left",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            })
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
-    async function unblockAnyCommentByAdmin(cmtId) {
-
-        try {
-            const commentId = cmtId
-
-            await axios.post(`http://localhost:3001/comment/unblockAnyCommentByAdmin/${commentId}`)
-            .then(res => {
-
-                getAllFlaggedComments()
-                toast.dark(`${res.data}`, {
-                    position: "bottom-left",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            })
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
-    async function unblockAnyQuestionByAdmin(quesId) {
-
-        try {
-            const questionId = quesId
-
-            await axios.post(`http://localhost:3001/question/unblockAnyQuestionByAdmin/${questionId}`)
-            .then(res => {
-
-                getAllFlaggedQuestions();
-                toast.dark(`${res.data}`, {
-                    position: "bottom-left",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            })
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
-
+    
     
     function selected(num){
 
@@ -288,7 +218,21 @@ function AllFlags() {
     const reportedBy = ({ tableManager, value, field, data, column, colIndex, rowIndex }) => {
         return (
             <>
-                <div>{value} ({data.reporterClass}-{data.reporterBranch})</div>
+            {data.reporterEmail.map( email => (
+                <div>{email}<span>, </span></div>
+            ))}
+            
+            {/* {data.detailOfReporter.map( (detail) => (
+                <div>
+                {detail.nameOfReporter}
+                </div>
+            ))} */}
+                {/* <div>{value}</div> */}
+                {/* <div>{value} ({data.reporterClass}-{data.reporterBranch})<br /></div> */}
+                {/* {value.map((name, index) => {
+                    <div key={index}>{name}</div>
+                })} */}
+                
             </>
         )
     }
@@ -306,6 +250,11 @@ function AllFlags() {
             label: 'Answers'
         },
         {
+            id: 11, 
+            field: 'numberOfreports', 
+            label: 'Reports'
+        },
+        {
             id: 2, 
             field: 'fullName', 
             label: 'Answer by',
@@ -320,7 +269,7 @@ function AllFlags() {
         },
         {
             id: 4, 
-            field: 'nameOfReporter', 
+            field: 'reporterEmail', 
             label: 'Reported by',
             searchable: true,
             cellRenderer: reportedBy
@@ -339,6 +288,11 @@ function AllFlags() {
             id: 1, 
             field: 'question', 
             label: 'Questions',
+        },
+        {
+            id: 11, 
+            field: 'numberOfreports', 
+            label: 'Reports'
         },
         {
             id: 2, 
@@ -374,6 +328,11 @@ function AllFlags() {
             id: 1, 
             field: 'comment', 
             label: 'Comments',
+        },
+        {
+            id: 11, 
+            field: 'numberOfreports', 
+            label: 'Reports'
         },
         {
             id: 2, 
@@ -441,7 +400,7 @@ function AllFlags() {
             columns={columnsAnswers}
             rows={rows}
             pageSize={10}
-            isLoading={true}
+            isLoading={gotDataFromDatabase}
         />
         )}
 
@@ -450,7 +409,7 @@ function AllFlags() {
             columns={columnsComment}
             rows={rows}
             pageSize={10}
-            isLoading={true}
+            isLoading={gotDataFromDatabase}
         />
         )}
 
@@ -459,132 +418,14 @@ function AllFlags() {
             columns={columnsQuestion}
             rows={rows}
             pageSize={10}
-            isLoading={true}
+            isLoading={gotDataFromDatabase}
         />
         )}
         
 
-        {/* <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">Sr.no</th>
-
-                    {toggleState == "answers" && (
-                        <th scope="col">Answers</th>
-                    )}
-
-                    {toggleState == "comments" && (
-                        <th scope="col">Comments</th>
-                    )}
-
-                    {toggleState == "questions" && (
-                        <th scope="col">Questions</th>
-                    )}
-                    
-                    <th scope="col">Email</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Reported by</th>
-
-                    {toggleState == "answers" && (
-                    <>
-                        <th scope="col">Block Answer</th>
-                    </>
-                    )}
-
-                    {toggleState == "comments" && (
-                    <>
-                        <th scope="col">Block Comment</th>
-                    </>
-                    )}
-
-                    {toggleState == "questions" && (
-                    <>
-                        <th scope="col">Block Question</th>
-                    </>
-                    )}
-
-                </tr>
-            </thead>
-
-        {
-            allFlagDetails.map( (flag, index) =>
-            (
-                <tbody>
-                    <tr>
-                        <th scope="row">{index+1}</th>
-
-                        {toggleState == "answers" && (
-                            <td>{flag.answer}</td>
-                        )}
-                        
-                        {toggleState == "comments" && (
-                            <td>{flag.comment}</td>
-                        )}
-
-                        {toggleState == "questions" && (
-                            <td>{flag.question}</td>
-                        )}
-
-                        <td>{flag.email}</td>
-
-                        <td>{flag.fullName} ({flag.Class} - {flag.branch})</td>
-
-                        <td>{flag.nameOfReporter} ({flag.reporterClass} - {flag.reporterBranch})</td>
-
-                        <td>
-
-                        {toggleState == "answers" && flag.removed == 0 && (
-                            <button onClick={() => removeAnswerByAdmin(flag._id)} type="button" class="btn btn-secondary">
-                                Block Answer
-                            </button>
-                        )}
-                        {toggleState == "answers" && flag.removed != 0 && (
-                            <button onClick={() => unblockAnyAnswerByAdmin(flag._id)} type="button" class="btn btn-danger">
-                                Unblock Answer
-                            </button>
-                        )}
-
- 
-
-                        {toggleState == "comments" && flag.removed == 0 && (
-                            <button onClick={() => removeCommentByAdmin(flag._id)} type="button" class="btn btn-secondary">
-                                Block Comment
-                            </button>
-                        )}
-                        {toggleState == "comments" && flag.removed != 0 &&  (
-                            <button onClick={() => unblockAnyCommentByAdmin(flag._id)} type="button" class="btn btn-danger">
-                                Unblock Comment
-                            </button>
-                        )}
-
-
-                        {toggleState == "questions" && flag.removed == 0 && (
-                            <button onClick={() => removeQuestionByAdmin(flag._id)} type="button" class="btn btn-secondary">
-                                Block Question
-                            </button>
-                        )}
-                        {toggleState == "questions" && flag.removed != 0 && (
-                            <button onClick={() => unblockAnyQuestionByAdmin(flag._id)} type="button" class="btn btn-danger">
-                                Unblock Question
-                            </button>
-                        )}
-
-                        </td>
-                     
-
-                    </tr>
-                </tbody>
-            ))
-        }
-        </table> */}
-
-
-
-
-
     </div>
             
-        <ToastContainer />
+    <ToastContainer />
     </>
     )
 }

@@ -14,7 +14,8 @@ const AnswerListSchema = new mongoose.Schema({
 
     answer: {
         type: 'string',
-        required: true
+        required: true,
+        index: "text"
     },
 
     likedById: [
@@ -38,7 +39,8 @@ const AnswerListSchema = new mongoose.Schema({
     }],
 
     tagsForAnswer: [{
-        type: String
+        type: String,
+        index: "text"
     }],
 
     updatedOnDate: {

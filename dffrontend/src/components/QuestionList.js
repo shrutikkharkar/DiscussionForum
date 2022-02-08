@@ -10,7 +10,8 @@ import { HiDotsVertical } from "react-icons/hi";
 import Dropdown from "react-bootstrap/Dropdown";
 import {LoaderProvider, useLoading, Puff} from '@agney/react-loading';
 import SearchBar from './SearchBar'
-
+import { Pagination } from "react-pagination-bar"
+import 'react-pagination-bar/dist/index.css'
 
 function QuestionList() {
 
@@ -43,7 +44,11 @@ const [gotQuestions, setGotQuestions] = useState(false);
 const { containerProps, indicatorEl } = useLoading({
     loading: true,
     indicator: <Puff width="50" />
-  });
+});
+
+
+const [currentPage, setCurrentPage] = useState(1);
+const pagePostsLimit = 4;
 
 
 async function questionList() {
@@ -148,10 +153,12 @@ function Search(){
             </div>
         {questions.length > 0 && (
         <>
-            {
-        questions.map(question => 
-        (
-        <>
+        {
+        questions
+        .slice((currentPage - 1) * pagePostsLimit, currentPage * pagePostsLimit)
+        .map(question => 
+        
+        <div>
             <div className="questionBlock" key={question.id}>
                <div className="specialBlock"> 
 
@@ -248,16 +255,23 @@ function Search(){
             </div>
             
             <hr />      
-        </>  
-        )
+        </div>  
+        
 
         )}
+        <Pagination
+            initialPage={currentPage}
+            itemsPerPage={pagePostsLimit}
+            onPageСhange={(pageNumber) => setCurrentPage(pageNumber)}
+            totalItems={questions.length}
+            pageNeighbours={1}
+            withProgressBar={true}
+        />
         </>
         )}
         {questions.length == 0 && (
             <p><b>No questions asked yet!!</b></p>
         )}
-        
         
         
 

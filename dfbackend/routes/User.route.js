@@ -41,16 +41,9 @@ router.post('/removeUserFromAdmin/:id', adminAuth, userController.removeUserFrom
 
 router.get('/getUserDetailsForUpdate', auth, userController.getUserDetailsForUpdate)
 
-
-router.get('/getAllBlockedUserDetails', adminAuth, userController.getAllBlockedUserDetails)
-
-router.get('/getAllMeBlockedUserDetails', adminAuth, userController.getAllMeBlockedUserDetails)
-
 router.post('/blockUserByAdmin/:id', adminAuth, userController.blockUserByAdmin)
 
 router.post('/unblockAnyUserByAdmin/:id', adminAuth, userController.unblockAnyUserByAdmin)
-
-router.post('/unblockMyBlockedUserByAdmin/:id', adminAuth, userController.unblockMyBlockedUserByAdmin)
 
 router.post('/sendEmailForResetPassword', userController.sendEmailForResetPassword)
 

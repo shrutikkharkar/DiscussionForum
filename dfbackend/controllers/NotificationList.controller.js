@@ -117,14 +117,37 @@ const getNotificationsForAdmin = async(req, res) => {
 const clearAllNotifications = async(req, res) => {
     try {
         const userId = mongoose.Types.ObjectId(req.user);
-        await Notification.deleteMany({
-            forUserId: userId
-        }, function(err, notification) {
-            if (err) throw err;
-            else{
-                res.status(200).send('successful')
+        await Notification.deleteMany(
+            {
+                forUserId: userId, 
+                forAdmin: false
             }
+        )
+        .then(() => {
+            Notification.findOneAndUpdate(
+                {
+                    forUserId: userId, forAdmin: true
+                },
+                {
+                    $pull: 
+                    {
+                        forUserId: userId
+                    }
+                }
+            )
+            .then((notification) => {
+                if(notification)
+                {
+                    res.status(200).send('successful')
+                }
+                else 
+                {
+                    res.status(500).send('unsuccessful')
+                }
+            })
         })
+
+        
     }
     catch (err) {
         console.error(err);

@@ -59,16 +59,10 @@ router.get('/getForUser/:id', auth, answerListController.getAnswersForUser);
 
 
 router.get('/getAllAnswerDetails', adminAuth, answerListController.getAllAnswerDetails);
-
-router.get('/getAllBlockedAnswerDetails', adminAuth, answerListController.getAllBlockedAnswerDetails);
-
-router.get('/getAllMeBlockedAnswerDetails', adminAuth, answerListController.getAllMeBlockedAnswerDetails);
     
 router.post('/removeAnswerByAdmin/:id', adminAuth, answerListController.removeAnswerByAdmin);
 
 router.post('/unblockAnyAnswerByAdmin/:id', adminAuth, answerListController.unblockAnyAnswerByAdmin);
-
-router.post('/unblockMyBlockedAnswerByAdmin/:id', adminAuth, answerListController.unblockMyBlockedAnswerByAdmin);
 
 router.post('/reportAnswerByUser/:id', auth, answerListController.reportAnswerByUser);
 

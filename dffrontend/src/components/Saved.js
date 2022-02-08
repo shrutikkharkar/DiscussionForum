@@ -510,7 +510,7 @@ function Saved() {
                 answers.map(answer =>
                 ( 
                     <div className="tileForAnswers">
-                    <div style={{cursor: 'pointer'}}onClick={() => {history.push(`/topqans/?query=${answer.questionID}`)}}><b>Question: </b>{answer.question}</div><br />
+                    <div style={{cursor: 'pointer'}} onClick={() => {history.push(`/topqans/?query=${answer.questionID}`)}}><b>Question: </b>{answer.question}</div><br />
                     <div className="answeredByName">
                     <span className="answeredBy">{answer.fullName}</span>
                     <span className="answeredBy"  style={{ marginLeft: '10px'}}>({answer.Class} - {answer.branch})

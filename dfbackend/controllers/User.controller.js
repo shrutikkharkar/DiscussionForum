@@ -618,92 +618,6 @@ const removeUserFromAdmin = async (req, res) => {
 }
 
 
-const getAllBlockedUserDetails = async (req, res) => {
-    try {
-        User.aggregate([ 
-            {
-                $match: 
-                {
-                    "blockedById": {$ne: []}
-                }
-            },
-            
-            {
-                $lookup: 
-                {
-                    from: "users", 
-                    localField: "blockedById", 
-                    foreignField: "_id",
-                    as: "detail_of_remover"
-                }
-            },
-            {$unwind: "$detail_of_remover"},
-    
-            {
-                $project:
-                {
-                    fullName: 1,
-                    email: 1,
-                    Class: 1,
-                    branch: 1,
-                    nameOfBlocker: "$detail_of_remover.fullName",
-                    blockerClass:  "$detail_of_remover.Class",
-                    blockerBranch: "$detail_of_remover.branch"
-                }
-            }
-        ])
-        .then((answers) => 
-        {
-            if(answers){
-                res.json(answers);
-            }
-            else {
-                res.json({answers: null});
-            }
-        })
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}
-
-const getAllMeBlockedUserDetails = async(req, res) => {
-    try {
-        const userId = mongoose.Types.ObjectId(req.user)
-        User.aggregate([ 
-            {
-                $match: 
-                {
-                    "blockedById": userId
-                }
-            },
-    
-            {
-                $project:
-                {
-                    fullName: 1,
-                    email: 1,
-                    Class: 1,
-                    branch: 1
-                }
-            }
-        ])
-        .then((answers) => 
-        {
-            if(answers){
-                res.json(answers);
-            }
-            else {
-                res.json({answers: null});
-            }
-        })
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}
 
 const blockUserByAdmin = async(req, res) => {
     try {
@@ -770,37 +684,6 @@ const unblockAnyUserByAdmin = async (req, res) => {
 }
 
 
-const unblockMyBlockedUserByAdmin = async (req, res) => {
-    try {
-        let userId = mongoose.Types.ObjectId(req.params.id)
-        let adminId = mongoose.Types.ObjectId(req.user)
-    
-        await User.findOneAndUpdate(
-            {
-                _id: userId
-            }, 
-            {
-                $set: 
-                {
-                    blockedById: []
-                }
-            }
-        )
-        .then((answers) => {
-            if(answers){
-                res.send("Unblocked user successfully");
-            }
-            else{
-                res.send("Didn't Unblocked user");
-            }
-        })  
-  
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}
 
 
 // Logics for forgot password
@@ -936,11 +819,8 @@ module.exports = userController = {
     removeUserFromAdmin,
     getUserDetailsForUpdate,
 
-    getAllBlockedUserDetails,
-    getAllMeBlockedUserDetails,
     blockUserByAdmin,
     unblockAnyUserByAdmin,
-    unblockMyBlockedUserByAdmin,
     sendEmailForResetPassword,
     verifyResetPassword,
     resetPassword,

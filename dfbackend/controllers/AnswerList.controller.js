@@ -3,6 +3,7 @@ const Answer = require('../models/AnswerList.model')
 const Comment = require('../models/CommentList.model')
 const Notification = require('../models/NotificationList.model')
 const Tag = require('../models/TagList.model')
+const User = require('../models/User.model')
 const nodemailer = require('nodemailer')
 
 const postAnswer = async (req, res) => {
@@ -26,6 +27,7 @@ const postAnswer = async (req, res) => {
             fromUserId: req.user,
             propertyId: questionID, 
             seen: false,
+            forAdmin: false,
             type: 'answered'
         });
 
@@ -148,6 +150,7 @@ const likeAnswer = async (req, res) => {
         
         const newNotification = new Notification({
             forUserId: answeredById,
+            forAdmin: false,
             fromUserId: userId,
             propertyId: answerId, 
             seen: false,
@@ -282,7 +285,7 @@ const saveAnswer = (req, res) => {
             })
         .then((answers) => {
             if(answers){
-                res.send("Saved successfully");
+                res.send("Saved");
             }
             else{
                 res.send("Did not save");
@@ -314,7 +317,7 @@ const removeSavedAnswer = (req, res) => {
             })
         .then((answers) => {
             if(answers){
-                res.send("Removed Saved successfully");
+                res.send("Removed from saved");
             }
             else{
                 res.send("Removed Saved UNSUCCESSFUL");
@@ -581,6 +584,7 @@ const getSavedAnswers = (req, res) => {
 };
 
 
+
 const getLikedAnswers = (req, res) => {
     try {
 
@@ -759,16 +763,6 @@ const getAnswersForQuestionID = (req, res) => {
                 }
             },
     
-            {
-                $lookup: 
-                {
-                    from: "answers", 
-                    localField: "_id", 
-                    foreignField: "_id",
-                    as: "answer_stats"
-                }
-            },
-            {$unwind: "$answer_stats"},
     
             {
                 $project:
@@ -781,10 +775,10 @@ const getAnswersForQuestionID = (req, res) => {
                         isAdmin: "$user_details.isAdmin",
                         isCollegeId: "$user_details.isCollegeId",
                         likeCount: {
-                            $size: "$answer_stats.likedById"
+                            $size: "$likedById"
                         },
                         dislikeCount: {
-                            $size: "$answer_stats.dislikedById"
+                            $size: "$dislikedById"
                         },
                         commentCount: {
                             $size: "$comment_details"
@@ -993,150 +987,6 @@ const getAllAnswerDetails = async (req, res) => {
 }
 
 
-const getAllBlockedAnswerDetails = async (req, res) => {
-    try {
-        // Also provide blocked by name
-        Answer.aggregate([ 
-            {
-                $match: 
-                {
-                    "removedById": {$ne: []}
-                }
-            },
-            {
-                $lookup: 
-                {
-                    from: "users", 
-                    localField: "answeredById", 
-                    foreignField: "_id",
-                    as: "user_details"
-                }
-            },
-            {$unwind: "$user_details"},
-
-            {
-                $lookup: 
-                {
-                    from: "users", 
-                    localField: "removedById", 
-                    foreignField: "_id",
-                    as: "detail_of_remover"
-                }
-            },
-            {$unwind: "$detail_of_remover"},
-    
-            {
-                $lookup: 
-                {
-                    from: "answers", 
-                    localField: "_id", 
-                    foreignField: "_id",
-                    as: "answer_stats"
-                }
-            },
-            {$unwind: "$answer_stats"},
-    
-            {
-                $project:
-                {
-                    answer: 1,
-                    Class: "$user_details.Class",
-                    branch: "$user_details.branch",
-                    email: "$user_details.email",
-                    likeCount: {
-                        $size: "$answer_stats.likedById"
-                    },
-                    dislikeCount: {
-                        $size: "$answer_stats.dislikedById"
-                    },
-                    nameOfRemover: "$detail_of_remover.fullName",
-                    class: "$detail_of_remover.Class",
-                    branch: "$detail_of_remover.branch"
-                }
-            }
-        ])
-        .then((answers) => 
-        {
-            if(answers){
-                res.json(answers);
-            }
-            else {
-                res.json({answers: null});
-            }
-        })
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}
-
-
-const getAllMeBlockedAnswerDetails = async (req, res) => {
-    try {
-
-        let userId = mongoose.Types.ObjectId(req.user);
-
-        Answer.aggregate([ 
-            {
-                $match: 
-                {
-                    "removedById": userId
-                }
-            },
-            {
-                $lookup: 
-                {
-                    from: "users", 
-                    localField: "answeredById", 
-                    foreignField: "_id",
-                    as: "user_details"
-                }
-            },
-            {$unwind: "$user_details"},
-    
-            {
-                $lookup: 
-                {
-                    from: "answers", 
-                    localField: "_id", 
-                    foreignField: "_id",
-                    as: "answer_stats"
-                }
-            },
-            {$unwind: "$answer_stats"},
-    
-            {
-                $project:
-                {
-                        answer: 1,
-                        Class: "$user_details.Class",
-                        branch: "$user_details.branch",
-                        email: "$user_details.email",
-                        likeCount: {
-                            $size: "$answer_stats.likedById"
-                        },
-                        dislikeCount: {
-                            $size: "$answer_stats.dislikedById"
-                        }
-                }
-            }
-        ])
-        .then((answers) => 
-        {
-            if(answers){
-                res.json(answers);
-            }
-            else {
-                res.json({answers: null});
-            }
-        })
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}
 
 
 const removeAnswerByAdmin = async (req, res) => {
@@ -1210,39 +1060,6 @@ const unblockAnyAnswerByAdmin = async (req, res) => {
 }
 
 
-const unblockMyBlockedAnswerByAdmin = async (req, res) => {
-    try {
-        let answerId = mongoose.Types.ObjectId(req.params.id)
-        let userId = mongoose.Types.ObjectId(req.user)
-    
-        await Answer.findOneAndUpdate(
-            {
-                _id: answerId
-            }, 
-            {
-                $set: 
-                {
-                    removedById: []
-                }
-            }
-        )
-        .then((answers) => {
-            if(answers){
-                res.send("Unblocked answer successfully");
-            }
-            else{
-                res.send("Didn't Unblocked answer");
-            }
-        })  
-  
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}
-
-
 const reportAnswerByUser = async (req, res) => {
     try {
         let answerId = mongoose.Types.ObjectId(req.params.id)
@@ -1268,16 +1085,24 @@ const reportAnswerByUser = async (req, res) => {
             }
         })  
 
-        const newNotification = new Notification({
-            forAdmin: true,
-            fromUserId: userId,
-            propertyId: answerId, 
-            seen: false,
-            type: 'reportedAnswer'
-        });
+        var allAdmins = [];
+        User.find({isAdmin: true})
+        .then( res => {
+            for(var i = 0; i < res.length; i++){
+                allAdmins.push(res[i]._id);
+            }
+           
+            const newNotification = new Notification({
+                forAdmin: true,
+                fromUserId: userId,
+                forUserId: allAdmins,
+                propertyId: answerId, 
+                type: 'reportedAnswer'
+            });
+    
+            const savedNotification = newNotification.save();
+        })
 
-        const savedNotification = await newNotification.save();
-  
     }
     catch (err) {
         console.error(err);
@@ -1315,7 +1140,7 @@ const getAllFlaggedAnswers = async (req, res) => {
                     as: "detail_of_reporter"
                 }
             },
-            {$unwind: "$detail_of_reporter"},
+            // {$unwind: "$detail_of_reporter"},
     
             {
                 $lookup: 
@@ -1342,11 +1167,19 @@ const getAllFlaggedAnswers = async (req, res) => {
                     dislikeCount: {
                         $size: "$answer_stats.dislikedById"
                     },
-                    nameOfReporter: "$detail_of_reporter.fullName",
-                    reporterClass: "$detail_of_reporter.Class",
-                    reporterBranch: "$detail_of_reporter.branch",
                     removed: {
                         $size: "$removedById"
+                    },
+                    // detailOfReporter: [
+                    //     {
+                    //         nameOfReporter: "$detail_of_reporter.fullName",
+                    //         reporterClass: "$detail_of_reporter.Class",
+                    //         reporterBranch: "$detail_of_reporter.branch",
+                    //     }
+                    // ],
+                    reporterEmail: "$detail_of_reporter.email",
+                    numberOfreports: {
+                        $size: "$detail_of_reporter.fullName"
                     }
                 }
             }
@@ -1434,12 +1267,9 @@ module.exports = answerListController = {
     getAnswersForUser,
 
     getAllAnswerDetails,
-    getAllBlockedAnswerDetails,
-    getAllMeBlockedAnswerDetails,
 
     removeAnswerByAdmin,
     unblockAnyAnswerByAdmin,
-    unblockMyBlockedAnswerByAdmin,
     reportAnswerByUser,
 
     getAllFlaggedAnswers,

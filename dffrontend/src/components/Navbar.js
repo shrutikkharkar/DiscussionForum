@@ -99,7 +99,7 @@ useEffect(() => {
 const [NotificationData, setNotificationData] = useState([]);
 
 function Search(){
-  history.push('/searchResult');
+  history.push('/askQuestion');
 }
 
 function getFullNameAndIsCollegeId(){
@@ -135,7 +135,7 @@ async function getNotifications(){
   try{
 
     if(isAdmin===true){
-      await axios.get('http://localhost:3001/notification/getNotificationsForAdmin')
+      await axios.get('http://localhost:3001/notification/getNotificationsForUser')
       .then((res) => {
         setNotificationData(res.data);
         console.log("Admin block" + res.data);
@@ -248,7 +248,7 @@ function openNavbarForPhone() {
                 <MdNotificationsNone onClick={handleClick} className="notificationIcon" />
                 
                 {/* <span className="topbarIconBadge">{NotificationData.length}</span> */}
-                <span className="topbarIconBadge">{NotificationData.length}</span>
+                <span className="topbarIconBadge"></span>
               
               </div>
 
@@ -267,22 +267,46 @@ function openNavbarForPhone() {
                     NotificationData.map(notification => (
                       <>
 
-                        {notification.type == "answered" && (
-                          <p onClick={() => goToAnswer(notification.propertyId)} >
-                            {notification.fromName} ({notification.fromClass} - {notification.fromBranch})
-                            answered to your question
-                          </p>
-                        )}
-                        {notification.type == "liked" && (
+                        {notification.type == 'liked' && (
                           <p>
                             {notification.fromName} ({notification.fromClass} - {notification.fromBranch})
                             liked your answer
                           </p>
                         )}
+                         
+                        
+                        {notification.type == "answered" && (
+                          <p onClick={() => goToAnswer(notification.propertyId)}>
+                            {notification.fromName} ({notification.fromClass} - {notification.fromBranch})
+                            answered to your question
+                          </p>
+                        )}
+                        
                         {notification.type == "commented" && (
                           <p>
                             {notification.fromName} ({notification.fromClass} - {notification.fromBranch})
                             commented on your answer
+                          </p>
+                        )}
+
+                        {notification.type == "reportedAnswer" && (
+                          <p onClick={() => goToReportedAnswers()} >
+                            {notification.fromName} ({notification.fromClass} - {notification.fromBranch})
+                            reported a answer
+                          </p>
+                        )}
+
+                        {notification.type == "reportedQuestion" && (
+                          <p onClick={() => goToReportedAnswers()} >
+                            {notification.fromName} ({notification.fromClass} - {notification.fromBranch})
+                            reported a question
+                          </p>
+                        )}
+
+                        {notification.type == "reportedComment" && (
+                          <p onClick={() => goToReportedAnswers()} >
+                            {notification.fromName} ({notification.fromClass} - {notification.fromBranch})
+                            reported a comment
                           </p>
                         )}
                         
@@ -375,7 +399,7 @@ function openNavbarForPhone() {
                   </Popover.Header>
 
                   <Popover.Body>
-                    {
+                  {
                     NotificationData.map(notification => (
                       <>
 
@@ -385,8 +409,7 @@ function openNavbarForPhone() {
                             liked your answer
                           </p>
                         )}
-                       
-                      
+                         
                         
                         {notification.type == "answered" && (
                           <p onClick={() => goToAnswer(notification.propertyId)}>
@@ -409,8 +432,22 @@ function openNavbarForPhone() {
                           </p>
                         )}
 
+                        {notification.type == "reportedQuestion" && (
+                          <p onClick={() => goToReportedAnswers()} >
+                            {notification.fromName} ({notification.fromClass} - {notification.fromBranch})
+                            reported a question
+                          </p>
+                        )}
+
+                        {notification.type == "reportedComment" && (
+                          <p onClick={() => goToReportedAnswers()} >
+                            {notification.fromName} ({notification.fromClass} - {notification.fromBranch})
+                            reported a comment
+                          </p>
+                        )}
+                        
+
                       <hr />
-                      
                       </>
                     ))}
                     <button type="button" onClick={() => clearAllNotifications()} class="btn btn-secondary">Clear all</button>
@@ -425,9 +462,7 @@ function openNavbarForPhone() {
 
             <span className="askQuestionBtnSpan"><button onClick={Search} className="btn btn-primary">Ask a Question</button></span>
             &nbsp;
-              {/* <Link to = "/admin" className="btn btn-outline-dark">Admin Panel</Link> */}
-
-              {/* <LogoutBtn /> */}
+        
               <span className="logoutBtnClass">
                 <button onClick={logout} className="btn btn-secondary btn-md active logoutBtnClass"
                   style={{marginLeft:'1em', marginRight:'1em'}}>

@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Comment = require('../models/CommentList.model')
 const Notification = require('../models/NotificationList.model')
 const Answer = require('../models/AnswerList.model')
+const User = require('../models/User.model')
 
 const addComment = async (req, res) => {
     try {
@@ -10,13 +11,13 @@ const addComment = async (req, res) => {
         const userId = mongoose.Types.ObjectId(req.user)
 
         const {comment, questionID, answeredById} = req.body
-
         // Logic for notification
         const newNotification = new Notification({
             forUserId: answeredById,
             fromUserId: userId,
             propertyId: answerId, 
             seen: false,
+            forAdmin: false,
             type: 'commented'
         });
 
@@ -348,181 +349,6 @@ const unblockAnyCommentByAdmin = async (req, res) => {
     }
 }
 
-const unblockMyBlockedCommentByAdmin = async (req, res) => {
-    try {
-        let commentId = mongoose.Types.ObjectId(req.params.id)
-    
-        await Comment.findOneAndUpdate(
-            {
-                _id: commentId
-            }, 
-            {
-                $set: 
-                {
-                    removedById: []
-                }
-            }
-        )
-        .then((comment) => {
-            if(comment){
-                res.send("Unblocked comment successfully");
-            }
-            else{
-                res.send("Didn't Unblocked comment");
-            }
-        })  
-  
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}
-
-
-const getAllBlockedCommentDetails = async (req, res) => {
-    try {
-        Comment.aggregate([ 
-            {
-                $match: 
-                {
-                    "removedById": {$ne: []}
-                }
-            },
-            {
-                $lookup: 
-                {
-                    from: "users", 
-                    localField: "commentById", 
-                    foreignField: "_id",
-                    as: "user_details"
-                }
-            },
-            {$unwind: "$user_details"},
-
-            {
-                $lookup: 
-                {
-                    from: "users", 
-                    localField: "removedById", 
-                    foreignField: "_id",
-                    as: "detail_of_remover"
-                }
-            },
-            {$unwind: "$detail_of_remover"},
-    
-            {
-                $lookup: 
-                {
-                    from: "comments", 
-                    localField: "_id", 
-                    foreignField: "_id",
-                    as: "comment_stats"
-                }
-            },
-            {$unwind: "$comment_stats"},
-    
-            {
-                $project:
-                {
-                    comment: 1,
-                    Class: "$user_details.Class",
-                    branch: "$user_details.branch",
-                    email: "$user_details.email",
-                    // likeCount: {
-                    //     $size: "$comment_stats.likedById"
-                    // },
-                    // dislikeCount: {
-                    //     $size: "$comment_stats.dislikedById"
-                    // },
-                    nameOfRemover: "$detail_of_remover.fullName",
-                    removerClass: "$detail_of_remover.Class",
-                    removerBranch: "$detail_of_remover.branch"
-                }
-            }
-        ])
-        .then((comment) => 
-        {
-            if(comment){
-                res.json(comment);
-            }
-            else {
-                res.json({comment: null});
-            }
-        })
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}
-
-
-const getAllMeBlockedCommentDetails = async (req, res) => {
-    try {
-
-        let userId = mongoose.Types.ObjectId(req.user);
-
-        Comment.aggregate([ 
-            {
-                $match: 
-                {
-                    "removedById": userId
-                }
-            },
-            {
-                $lookup: 
-                {
-                    from: "users", 
-                    localField: "commentById", 
-                    foreignField: "_id",
-                    as: "user_details"
-                }
-            },
-            {$unwind: "$user_details"},
-    
-            {
-                $lookup: 
-                {
-                    from: "comments", 
-                    localField: "_id", 
-                    foreignField: "_id",
-                    as: "comment_stats"
-                }
-            },
-            {$unwind: "$comment_stats"},
-    
-            {
-                $project:
-                {
-                        comment: 1,
-                        Class: "$user_details.Class",
-                        branch: "$user_details.branch",
-                        email: "$user_details.email",
-                        // likeCount: {
-                        //     $size: "$comment_stats.likedById"
-                        // },
-                        // dislikeCount: {
-                        //     $size: "$comment_stats.dislikedById"
-                        // }
-                }
-            }
-        ])
-        .then((comment) => 
-        {
-            if(comment){
-                res.json(comment);
-            }
-            else {
-                res.json({comment: null});
-            }
-        })
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}
 
 
 const getAllFlaggedComments = async (req, res) => {
@@ -578,7 +404,10 @@ const getAllFlaggedComments = async (req, res) => {
                     nameOfReporter: "$detail_of_reporter.fullName",
                     reporterClass: "$detail_of_reporter.Class",
                     reporterBranch: "$detail_of_reporter.branch",
-                    
+                    reporterEmail: "$detail_of_reporter.email",
+                    numberOfreports: {
+                        $size: "$detail_of_reporter"
+                    } 
                 }
             }
         ])
@@ -623,16 +452,23 @@ const reportCommentByUser = async (req, res) => {
             }
         })  
 
-        const newNotification = new Notification({
-            forAdmin: true,
-            fromUserId: userId,
-            propertyId: commentId, 
-            seen: false,
-            type: 'reportedComment'
-        });
+        var allAdmins = [];
+        User.find({isAdmin: true})
+        .then( res => {
+            for(var i = 0; i < res.length; i++){
+                allAdmins.push(res[i]._id);
+            }
 
-        const savedNotification = await newNotification.save();
-  
+            const newNotification = new Notification({
+                forAdmin: true,
+                fromUserId: userId,
+                forUserId: allAdmins,
+                propertyId: commentId, 
+                type: 'reportedComment'
+            });
+
+            const savedNotification = newNotification.save();
+        })
     }
     catch (err) {
         console.error(err);
@@ -650,9 +486,6 @@ module.exports = commentListController = {
     getAllCommentDetails,
     removeCommentByAdmin,
     unblockAnyCommentByAdmin,
-    unblockMyBlockedCommentByAdmin,
-    getAllBlockedCommentDetails,
-    getAllMeBlockedCommentDetails,
 
     getAllFlaggedComments,
     reportCommentByUser

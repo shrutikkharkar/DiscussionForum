@@ -5,7 +5,7 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import TopQAns from './components/TopQAns';
-import SearchResult from './components/SearchResult';
+import AskQuestion from './components/AskQuestion';
 import Saved from './components/Saved';
 import Liked from './components/Liked';
 import Answered from './components/Answered';
@@ -15,14 +15,13 @@ import CommentBox from './components/CommentBox';
 import UpdateProfile from './components/UpdateProfile';
 import ResetPassword from './components/ResetPassword';
 import TagPage from './components/TagPage';
+import SearchResult from './components/SearchResult';
 
-import AdminPanel from './components/Admin/AdminPanel';
 import AllAnswers from './components/Admin/AllAnswers';
 import AllComments from './components/Admin/AllComments'
 import AllQuestions from './components/Admin/AllQuestions';
 import AllFlags from './components/Admin/AllFlags';
 import AllUsers from './components/Admin/AllUsers';
-import AllAdmins from './components/Admin/AllAdmins';
 
 import AuthContext from './context/AuthContext';
 import IsAdminContext from './context/IsAdminContext';
@@ -50,6 +49,7 @@ function Router() {
         <BrowserRouter>
         <Navbar />
         <Route path="/tagPage"><TagPage /></Route>
+        <Route path="/searchResult"><SearchResult /></Route>
             <Switch>
 
                 {loggedIn === false && isAdmin === false && (
@@ -63,7 +63,7 @@ function Router() {
 
                         <Route path="/topqans"><TopQAns /></Route>
 
-                        <Route path="/searchResult"><SearchResult /></Route>
+                        <Route path="/askQuestion"><AskQuestion /></Route>
 
                         <Route path="/comments"><CommentBox /></Route>
 
@@ -89,13 +89,12 @@ function Router() {
 
                         <Route path="/topqans"><TopQAns /></Route>
 
-                        <Route path="/searchResult"><SearchResult /></Route>
+                        <Route path="/askQuestion"><AskQuestion /></Route>
 
                         <Route path="/updateProfile"><UpdateProfile /></Route>
 
 
                         {/* Admin side */}
-                        <Route path="/admin"><AdminPanel /></Route>
 
                         <Route path="/allAnswers"><AllAnswers /></Route>
 
@@ -107,7 +106,6 @@ function Router() {
 
                         <Route path="/allUsers"><AllUsers /></Route>
 
-                        <Route path="/allAdmins"><AllAdmins /></Route>
                     </>
                 )}
 
@@ -128,7 +126,7 @@ function Router() {
 
                         <Route path="/topqans"><TopQAns /></Route>
 
-                        <Route path="/searchResult"><SearchResult /></Route>
+                        <Route path="/askQuestion"><AskQuestion /></Route>
 
                         <Route path="/updateProfile"><UpdateProfile /></Route>
 

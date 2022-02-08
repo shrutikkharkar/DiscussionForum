@@ -45,6 +45,11 @@ function SearchBar({ placeholder, data }) {
     setWordEntered("");
   };
 
+  function searchForResults(wordEntered){
+    history.push(`/searchResult/?query=${wordEntered}`)
+    clearInput()
+  }
+
   return (
     <div className="search">
       <div className="searchInputs" style={{border: '1px solid cyan'}}>
@@ -56,11 +61,12 @@ function SearchBar({ placeholder, data }) {
         />
         <div className="searchIcon">
           {filteredData.length === 0 ? (
-            <MdSearch />
+            <></>
           ) : (
             <MdClose id="clearBtn" onClick={clearInput} />
           )}
         </div>
+        <MdSearch className="searchButton" onClick={() => searchForResults(wordEntered) } />
       </div>
       {filteredData.length != 0 && (
         <div className="dataResult">

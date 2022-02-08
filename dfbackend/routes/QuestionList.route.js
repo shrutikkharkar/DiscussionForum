@@ -20,15 +20,9 @@ router.get('/questioned', auth, questionListController.getUserAskedQuestions);
 
 router.get('/getAllQuestionDetails', adminAuth, questionListController.getAllQuestionDetails);
 
-router.get('/getAllBlockedQuestionDetails', adminAuth, questionListController.getAllBlockedQuestionDetails);
-
-router.get('/getAllMeBlockedQuestionDetails', adminAuth, questionListController.getAllMeBlockedQuestionDetails);
-
 router.post('/removeQuestionByAdmin/:id', adminAuth, questionListController.removeQuestionByAdmin);
 
 router.post('/unblockAnyQuestionByAdmin/:id', adminAuth, questionListController.unblockAnyQuestionByAdmin);
-
-router.post('/unblockMeBlockedQuestionByAdmin/:id', adminAuth, questionListController.unblockMeBlockedQuestionByAdmin);
 
 router.get('/getAllFlaggedQuestions', adminAuth, questionListController.getAllFlaggedQuestions);
 
@@ -38,21 +32,6 @@ router.post('/reportQuestionByUser/:id', auth, questionListController.reportQues
 
 router.post('/updateQuestion/:id', auth, questionListController.updateQuestion);
 
-
-router.patch('/update/:id', auth, async (req, res) => {
-
-    try{
-        const _id = req.params.id;
-        const updateQuestion = await Question.findByIdAndUpdate(_id, req.body, {
-            new : true
-        });
-        res.send(updateQuestion)
-    }
-    catch(err){
-        res.status(404).send(err);
-
-    }
-
-})
+router.get('/search/:text', questionListController.search)
 
 module.exports = router

@@ -1,6 +1,7 @@
 import React, { Component, useContext, useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
+import './Signup.css'
 import  { Redirect, useHistory } from 'react-router-dom';
 import {Link} from 'react-router-dom'
 import AuthContext from '../context/AuthContext';
@@ -86,10 +87,9 @@ function UpdateProfile() {
                 <br />
 
                 
-                <div className="form-row align-items-center">
-                    <div className="col-auto my-2">
-                        <label className="mr-sm-3" for="inlineFormCustomSelect">Class:</label>
-                        <select value={Class} onChange={(e) => setClass(e.target.value)} className="custom-select mr-sm-2" id="inlineFormCustomSelect">
+             
+                        <label className="mr-sm-3" for="inlineFormCustomSelect">Class</label>
+                        <select value={Class} onChange={(e) => setClass(e.target.value)} className="classSelect custom-select mr-sm-2" id="inlineFormCustomSelect">
                         <option selected>Choose...</option>
                         <option value="FE">FE</option>
                         <option value="SE">SE</option>
@@ -97,14 +97,11 @@ function UpdateProfile() {
                         <option value="BE">BE</option>
                         <option value="Alumni">Alumni</option>
                         </select>
-                    </div>
-                </div>
-                <br />
+                    
+                        <br /><br />
 
-                <div className="form-row align-items-center"> 
-                    <div className="col-auto my-2">
-                        <label className="mr-sm-3" for="inlineFormCustomSelect">Branch : </label>
-                        <select value={branch} onChange={(e) => setBranch(e.target.value)} className="custom-select mr-sm-2" id="inlineFormCustomSelect">
+                        <label className="mr-sm-3" for="inlineFormCustomSelect">Branch </label>
+                        <select value={branch} onChange={(e) => setBranch(e.target.value)} className="branchSelect custom-select mr-sm-2" id="inlineFormCustomSelect">
                         <option selected>Choose...</option>
                         <option value="Comps">Comps</option>
                         <option value="IT">INFT</option>
@@ -115,9 +112,8 @@ function UpdateProfile() {
                         <option value="AI/DS">AI/DS</option>
                         <option value="DS">DS</option>
                         </select>
-                    </div>
-                </div>
-                <br />
+                
+                <br /><br />
 
                 <button type="submit" className="btn btn-primary">Update</button>
                          

@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 
 const NotificationListSchema = new mongoose.Schema({
 
-    forUserId: {
+    forUserId: [{
         type: mongoose.Types.ObjectId
-    },
+    }],
 
     forAdmin: {
         type: 'boolean'

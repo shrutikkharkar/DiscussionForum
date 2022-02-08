@@ -22,6 +22,7 @@
     "react-google-login": "^5.2.2",
     "react-icons": "^4.3.1",
     "react-mentions": "^4.3.0",
+    "react-pagination-bar": "^1.0.8",
     "react-popper": "^2.2.5",
     "react-pure-modal": "^2.1.0",
     "react-responsive": "^9.0.0-beta.6",

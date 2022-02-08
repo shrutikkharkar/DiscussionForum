@@ -577,8 +577,8 @@ function Answered() {
 
                 <div key={answer.id}>
                 <div className="answerOnTopQAns">
-                    <span className="answer">{answer.answer}</span>
-                    
+                    {/* <span className="answer">{answer.answer}</span> */}
+                    <span className="answer" dangerouslySetInnerHTML={{ __html: answer.answer }} />
                 </div>
                 {answer.removed !=0 && (
                     <div style={{color: 'red'}}>Removed by moderators</div>
