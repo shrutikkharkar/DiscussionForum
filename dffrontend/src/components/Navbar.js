@@ -17,7 +17,7 @@ import Popover from 'react-bootstrap/Popover';
 import Hamburger from 'hamburger-react';
 import { BsFillQuestionSquareFill, BsShieldFillCheck, BsBookmarkFill } from "react-icons/bs";
 import { TiHome } from "react-icons/ti";
-import NavigationFunctions from './NavigationFunctions'
+import NavigationFunctionsForPhone from './NavigationFunctionsForPhone'
 import Dropdown from "react-bootstrap/Dropdown";
 import VCETLogo from '../Images/VCETLogo.svg'
 import UserIcon from '../Images/UserIcon.svg'
@@ -40,6 +40,7 @@ const [fullName, setFullName] = useState('');
 const [isCollegeId, setIsCollegeId] = useState(false);
 
 const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
+const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
 const isDesktopOrLaptop = useMediaQuery({query: '(min-width: 1224px)'})
 
 const [show, setShow] = useState(false);
@@ -76,19 +77,19 @@ const [show, setShow] = useState(false);
 ));
 
 
-const CustomToggleForNav = React.forwardRef(({ children, onClick }, ref) => (
-  <span
-    ref={ref}
-    onClick={e => {
-      e.preventDefault();
-      onClick(e);
-    }}
-  >
-    {children}
-    {isPortrait && (<Hamburger toggled={false} className="HamburgerIcon" />)}
+// const CustomToggleForNav = React.forwardRef(({ children, onClick }, ref) => (
+//   <span
+//     ref={ref}
+//     onClick={e => {
+//       e.preventDefault();
+//       onClick(e);
+//     }}
+//   >
+//     {children}
+//     {isPortrait && (<Hamburger toggled={false} className="HamburgerIcon" />)}
     
-  </span>
-));
+//   </span>
+// ));
 
 
 useEffect(() => {
@@ -138,14 +139,12 @@ async function getNotifications(){
       await axios.get('http://localhost:3001/notification/getNotificationsForUser')
       .then((res) => {
         setNotificationData(res.data);
-        console.log("Admin block" + res.data);
       })
     }
     if(isAdmin===false){
       await axios.get('http://localhost:3001/notification/getNotificationsForUser')
       .then((res) => {
         setNotificationData(res.data);
-        console.log("User block" + res.data);
       })
     }
       
@@ -189,18 +188,24 @@ async function logout() {
   history.push('/');
 }
 
-const [displaySidebar, setDisplaySidebar] = useState('none')
+const [openSidenavForPhone, setOpenSidenavForPhone] = useState('none')
 
-
-const [SideNavForPhone, setSideNavForPhone] = useState('none')
-function openNavbarForPhone() {
-  
+function toggleSidenavForPhone(){
+  if(openSidenavForPhone == 'none'){
+    setOpenSidenavForPhone('inline')
+  }
+  if(openSidenavForPhone == 'inline'){
+    setOpenSidenavForPhone('none')
+  }
 }
 
     return (
-      <>
+      <>  
+      {isTabletOrMobile && (
+        <NavigationFunctionsForPhone show={openSidenavForPhone} />
+      )}
+    
 
-      
       {/* {getUserName()} */}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
         
@@ -263,7 +268,9 @@ function openNavbarForPhone() {
                 <Popover id="popover-contained">
                   <Popover.Header as="h3">Notifications</Popover.Header>
                   <Popover.Body>
-                  {
+                  {NotificationData.length > 0 && (
+                    <>
+                    {
                     NotificationData.map(notification => (
                       <>
 
@@ -314,7 +321,17 @@ function openNavbarForPhone() {
                       <hr />
                       </>
                     ))}
+                    </>
+                  )}
+                  {NotificationData.length == 0 && (
+                    <>
+                      <p>No notifications for now!</p>
+                      <hr />
+                    </>
+                  )}
+                  
                     <button type="button" onClick={() => clearAllNotifications()} class="btn btn-secondary">Clear all</button>
+                    
                   </Popover.Body>
                 </Popover>
               </Overlay>
@@ -399,6 +416,8 @@ function openNavbarForPhone() {
                   </Popover.Header>
 
                   <Popover.Body>
+                  {NotificationData.length > 0 && (
+                    <>
                   {
                     NotificationData.map(notification => (
                       <>
@@ -450,6 +469,14 @@ function openNavbarForPhone() {
                       <hr />
                       </>
                     ))}
+                    </>
+                  )}
+                  {NotificationData.length == 0 && (
+                    <>
+                      <p>No notifications for now!</p>
+                      <hr />
+                    </>
+                  )}
                     <button type="button" onClick={() => clearAllNotifications()} class="btn btn-secondary">Clear all</button>
                   </Popover.Body>
                 </Popover>
@@ -508,7 +535,23 @@ function openNavbarForPhone() {
             </>
           )}
 
-          {loggedIn === true && (
+
+          {/* For sidenav on phone  */}
+          {isTabletOrMobile && (
+            <Hamburger toggled={false}
+            onToggle={toggled => {
+              if (toggled) {
+                toggleSidenavForPhone()
+              } else {
+                toggleSidenavForPhone()
+              } 
+            }}
+            
+            className="HamburgerIcon" />
+          )}
+          
+
+          {/* {loggedIn === true && (
             <Dropdown  style={{display: 'inline'}} >
             <Dropdown.Toggle as={CustomToggleForNav} />
             <Dropdown.Menu style={{backgroundColor: 'black'}} className="dropdown-styling" size="sm" title="">
@@ -519,25 +562,21 @@ function openNavbarForPhone() {
                   </Dropdown.Item>
                     
                   <Dropdown.Item>
-                    {/* <i className="fas fa-bookmark" style={{ fontSize: '1.5em' }} /> Saved answers */}
                     <BsBookmarkFill className="classForPhoneNavIcons" style={{fontSize: '1.5rem'}} />
                     <Link to = "/saved" className="navbarForPhoneLinks" > Saved Answers</Link>
                   </Dropdown.Item>
 
                   <Dropdown.Item >
-                    {/* <i className="fas fa-heart" style={{ fontSize: '1.5em' }} />  Liked answers */}
                     <FaHeart className="classForPhoneNavIcons" style={{fontSize: '1.5rem'}} />
                     <Link to = "/liked" className="navbarForPhoneLinks" > Liked Answers</Link>
                   </Dropdown.Item>
 
                   <Dropdown.Item >
-                    {/* <i className="fas fa-check-square" style={{ fontSize: '1.5em' }} /> Answered */}
                     <FaCheckSquare className="classForPhoneNavIcons" style={{fontSize: '1.5rem'}} />
                     <Link to = "/answered" className="navbarForPhoneLinks" > My Answers</Link>
                   </Dropdown.Item>
 
                   <Dropdown.Item >
-                    {/* <BsFillQuestionSquareFill className="fas fa-heart" style={{ fontSize: '1.5em' }} /> My Questions */}
                     <BsFillQuestionSquareFill className="classForPhoneNavIcons" style={{ fontSize: '1.5rem' }} />
                     <Link to = "/questioned" className="navbarForPhoneLinks" > My Questions</Link>
                   </Dropdown.Item>
@@ -549,7 +588,6 @@ function openNavbarForPhone() {
                   </Dropdown.Item>
 
                   <Dropdown.Item onClick={() => logout()} >
-                    {/* <BsFillQuestionSquareFill className="fas fa-heart" style={{ fontSize: '1.5em' }} /> My Questions */}
                     <AiOutlinePoweroff className="classForPhoneNavIcons" style={{ fontSize: '1.5rem' }} />
                     <span className="navbarForPhoneLinks" style={{ fontSize: '1.5rem' }}> Logout</span>
                   </Dropdown.Item>
@@ -583,7 +621,7 @@ function openNavbarForPhone() {
                   
             </Dropdown.Menu>
           </Dropdown>
-          )}
+          )} */}
           
 
         </nav>

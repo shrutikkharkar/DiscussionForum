@@ -1,0 +1,50 @@
+.tagClass{
+    /* background-color: #0AA2FA47; */
+    background-color: hsl(205, 46%, 92%);
+    padding: 3px;
+    border-radius: 3px;
+    margin: 4px;
+    color: hsl(205, 47%, 42%);
+    cursor: pointer;
+    border: 2px solid hsl(205, 46%, 92%);
+    font-size: 1.1rem;
+}
+.tagClass:hover{
+    background-color: hsl(205, 53%, 88%);
+    border: 2px solid hsl(205, 53%, 88%);
+}
+
+.tagClassPTag{
+    margin-top:6px;
+}
+
+.tileForAnswers {
+    /* border: 2px solid cadetblue; */
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 10px;
+    /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
+    box-shadow: rgb(0 0 0 / 15%) 0px 3px 10px;
+}
+
+.tagPageMainDiv{
+    width: 75%
+}
+
+
+@media screen and (max-width: 480px) {
+    .tagClassPTag{
+        margin-top:0px;
+        margin-bottom: 3px;
+    }
+
+    .tagClass{
+        margin: 0px;
+        margin-right: 2px;
+        margin-top: 5px;
+    }
+
+    .tagPageMainDiv{
+        width: 100%
+    }
+}

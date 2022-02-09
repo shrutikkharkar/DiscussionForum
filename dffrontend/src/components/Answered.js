@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useContext, useRef, useCallback} from 'react'
 import axios from 'axios'
 import './TopQAns.css'
+import {likeAnswer} from '../Controllers.js'
 import AuthContext from '../context/AuthContext'
 import IsAdminContext from '../context/IsAdminContext';
 import { BiLike, BiDislike, BiCommentDetail, BiBookmark } from "react-icons/bi";
@@ -23,10 +24,15 @@ import 'react-pure-modal/dist/react-pure-modal.min.css';
 import io from 'socket.io-client'
 let socket = io(`http://localhost:3001`)
 
+
+
 function Answered() {
 
     useEffect(() => {
-        getAnswers()
+        getAnswers((res) => {
+            setAnswers(res)
+            setGotAnswers(true);
+        }) 
         getAllTagNames()
     }, []);
 
@@ -169,35 +175,35 @@ function Answered() {
     }
 
 
-    async function likeAnswer(ansId, answeredById) {
+    // async function likeAnswer(ansId, answeredById) {
 
-        try {
-            const notificationData = {answeredById}
+    //     try {
+    //         const notificationData = {answeredById}
 
-            const answerId = ansId
+    //         const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/like/${answerId}`, notificationData)
-            .then(res => {
-                getAnswers()
+    //         await axios.post(`http://localhost:3001/answer/like/${answerId}`, notificationData)
+    //         .then(res => {
+    //             getAnswers()
 
-                toast.success('Liked successfully!', {
-                    position: "bottom-left",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+    //             toast.success('Liked successfully!', {
+    //                 position: "bottom-left",
+    //                 autoClose: 3000,
+    //                 hideProgressBar: false,
+    //                 closeOnClick: true,
+    //                 pauseOnHover: true,
+    //                 draggable: true,
+    //                 progress: undefined,
+    //             });
 
-            })
+    //         })
 
-        }
-        catch (err) {
-            alert("Login or Register first")
-            console.error(err);
-        }
-    }
+    //     }
+    //     catch (err) {
+    //         alert("Login or Register first")
+    //         console.error(err);
+    //     }
+    // }
 
     function removeLike(answerId) {
         try {
@@ -577,7 +583,6 @@ function Answered() {
 
                 <div key={answer.id}>
                 <div className="answerOnTopQAns">
-                    {/* <span className="answer">{answer.answer}</span> */}
                     <span className="answer" dangerouslySetInnerHTML={{ __html: answer.answer }} />
                 </div>
                 {answer.removed !=0 && (

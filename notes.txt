@@ -23,16 +23,17 @@ Priority-
   -searchbar for phone
   -likedby
   -Add comments logo in side panel
-  -search algo
   -remove socket
-
-
   
+
+-search algo
   
 -priviledges - 1(normal user), 2(College student), 3(Faculty/admin)
 -image bar
 -google signup
 
+Sidenav for phone
+subpart doesnot reload route
 tagPage
 Notification
 tags on phone out of screen

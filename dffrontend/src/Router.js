@@ -11,6 +11,7 @@ import Liked from './components/Liked';
 import Answered from './components/Answered';
 import Questioned from './components/Questioned';
 import NavigationFunctions from './components/NavigationFunctions';
+import NavigationFunctionsForPhone from './components/NavigationFunctionsForPhone';
 import CommentBox from './components/CommentBox';
 import UpdateProfile from './components/UpdateProfile';
 import ResetPassword from './components/ResetPassword';

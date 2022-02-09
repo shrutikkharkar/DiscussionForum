@@ -127,15 +127,14 @@ function getTagContents(tagName){
     history.push( `/tagPage/?tagName=${tagName}` );
 }
 
-function Search(){
-    history.push('/searchResult');
-}
 
     if(gotQuestions === false){
         return(
+        <div className="container questionListContainer col-xs-12">
             <section className="classForLoader" {...containerProps}>
                 {indicatorEl}
             </section>
+        </div>
         )
     }
     else{
@@ -145,7 +144,7 @@ function Search(){
         <div className="container questionListContainer col-xs-12">
             <div className="askQuestionBtnInQListDIV">  
          
-            <button onClick={Search} className="btn btn-primary">
+            <button onClick={() => history.push('/askQuestion')} className="btn btn-primary">
             Ask a Question
             </button>
 
