@@ -9,6 +9,11 @@ import '@nadavshaar/react-grid-table/dist/index.css'
 
 function AllAnswers() {
 
+    const BEPORT = process.env.REACT_APP_BEPORT
+    const BEHOST = process.env.REACT_APP_BEHOST
+    const FEPORT = process.env.REACT_APP_FEPORT
+    const FEHOST = process.env.REACT_APP_FEHOST
+
     useEffect(() => {
         getAllAnswerDetails()
     }, []);
@@ -21,7 +26,7 @@ function AllAnswers() {
 
     async function getAllAnswerDetails() {
         try {
-            await axios.get('http://localhost:3001/answer/getAllAnswerDetails')
+            await axios.get(`${BEHOST}:${BEPORT}/answer/getAllAnswerDetails`)
             .then((res) => {
                 setAllAnswerDetails(res.data)
                 setToggleState('allAnswers')
@@ -40,7 +45,7 @@ function AllAnswers() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/removeAnswerByAdmin/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/removeAnswerByAdmin/${answerId}`)
             .then(res => {
                 getAllAnswerDetails()
                 toast.dark(`${res.data}`, {
@@ -65,7 +70,7 @@ function AllAnswers() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/unblockAnyAnswerByAdmin/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/unblockAnyAnswerByAdmin/${answerId}`)
             .then(res => {
 
                 getAllAnswerDetails();

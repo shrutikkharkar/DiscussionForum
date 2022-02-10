@@ -14,9 +14,14 @@ const AnswerListSchema = new mongoose.Schema({
 
     answer: {
         type: 'string',
-        required: true,
-        index: "text"
+        required: true
     },
+
+    tagsForAnswer: [
+        {
+            type: String
+        }
+    ],
 
     likedById: [
         {type: mongoose.Types.ObjectId}
@@ -38,15 +43,12 @@ const AnswerListSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId
     }],
 
-    tagsForAnswer: [{
-        type: String,
-        index: "text"
-    }],
-
     updatedOnDate: {
         type: 'date',
         default: Date.now
     }
 })
+
+AnswerListSchema.index({answer: 'text', tagsForAnswer: 'text'})
 
 module.exports = mongoose.model('answer', AnswerListSchema)

@@ -1,5 +1,9 @@
 const mongoose = require('mongoose')
 const Notification = require('../models/NotificationList.model')
+const BEPORT = process.env.BEPORT
+const BEHOST = process.env.BEHOST
+const FEPORT = process.env.FEPORT
+const FEHOST = process.env.FEHOST
 
 const getNotificationsForUser = async(req, res) => {
     try {

@@ -6,6 +6,11 @@ function CommentBox(props) {
     const [show, setShow] = useState(true);
     const [comments, setComment] = useState();
 
+    const BEPORT = process.env.REACT_APP_BEPORT
+    const BEHOST = process.env.REACT_APP_BEHOST
+    const FEPORT = process.env.REACT_APP_FEPORT
+    const FEHOST = process.env.REACT_APP_FEHOST
+
     useEffect(() => {
       getComments()
     }, []);
@@ -13,8 +18,8 @@ function CommentBox(props) {
     function getComments() {
       try 
       { 
-          //await axios.get(`http://localhost:3001/comment/getComments/${props.answerId}`)
-          axios.get(`http://localhost:3001/comment/getComments/6155fc61a5ae5b2e20f8605e`)
+          //await axios.get(`${BEHOST}:${BEPORT}/comment/getComments/${props.answerId}`)
+          axios.get(`${BEHOST}:${BEPORT}/comment/getComments/6155fc61a5ae5b2e20f8605e`)
           .then(response => {
               setComment(response.data);
               console.log(response.data);

@@ -4,6 +4,11 @@ const Notification = require('../models/NotificationList.model')
 const Answer = require('../models/AnswerList.model')
 const User = require('../models/User.model')
 
+const BEPORT = process.env.BEPORT
+const BEHOST = process.env.BEHOST
+const FEPORT = process.env.FEPORT
+const FEHOST = process.env.FEHOST
+
 const addComment = async (req, res) => {
     try {
 

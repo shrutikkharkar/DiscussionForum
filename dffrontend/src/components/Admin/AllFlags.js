@@ -7,6 +7,11 @@ import GridTable from '@nadavshaar/react-grid-table'
 
 function AllFlags() {
 
+    const BEPORT = process.env.REACT_APP_BEPORT
+    const BEHOST = process.env.REACT_APP_BEHOST
+    const FEPORT = process.env.REACT_APP_FEPORT
+    const FEHOST = process.env.REACT_APP_FEHOST
+
     useEffect(() => {
         getAllFlaggedAnswers()
     }, []);
@@ -31,7 +36,7 @@ function AllFlags() {
         selected(1)
         setToggleState('answers')
         try {
-            await axios.get('http://localhost:3001/answer/getAllFlaggedAnswers')
+            await axios.get(`${BEHOST}:${BEPORT}/answer/getAllFlaggedAnswers`)
             .then((res) => {
                 setGotDataFromDatabase(false)
                 setAllFlagDetails(res.data)
@@ -48,7 +53,7 @@ function AllFlags() {
         setToggleState('comments')
         selected(2)
         try {
-            await axios.get('http://localhost:3001/comment/getAllFlaggedComments')
+            await axios.get(`${BEHOST}:${BEPORT}/comment/getAllFlaggedComments`)
             .then((res) => {
                 setGotDataFromDatabase(false)
                 setAllFlagDetails(res.data)
@@ -66,7 +71,7 @@ function AllFlags() {
         selected(3)
         setToggleState('questions')
         try {
-            await axios.get('http://localhost:3001/question/getAllFlaggedQuestions')
+            await axios.get(`${BEHOST}:${BEPORT}/question/getAllFlaggedQuestions`)
             .then((res) => {
                 setGotDataFromDatabase(false)
                 setAllFlagDetails(res.data)
@@ -83,7 +88,7 @@ function AllFlags() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/removeAnswerByAdmin/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/removeAnswerByAdmin/${answerId}`)
             .then(res => {
                 getAllFlaggedAnswers()
                 toast.dark(`${res.data}`, {
@@ -107,7 +112,7 @@ function AllFlags() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/removeCommentByAdmin/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/removeCommentByAdmin/${commentId}`)
             .then(res => {
                 getAllFlaggedComments()
                 toast.dark(`${res.data}`, {
@@ -132,7 +137,7 @@ function AllFlags() {
         try {
             const questionId = quesId
 
-            await axios.post(`http://localhost:3001/question/removeQuestionByAdmin/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/removeQuestionByAdmin/${questionId}`)
             .then(res => {
                 getAllFlaggedQuestions()
                 toast.dark(`${res.data}`, {

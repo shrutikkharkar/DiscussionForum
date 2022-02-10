@@ -8,6 +8,11 @@ import GridTable from '@nadavshaar/react-grid-table'
 
 function AllComments() {
 
+    const BEPORT = process.env.REACT_APP_BEPORT
+    const BEHOST = process.env.REACT_APP_BEHOST
+    const FEPORT = process.env.REACT_APP_FEPORT
+    const FEHOST = process.env.REACT_APP_FEHOST
+
     useEffect(() => {
         getAllCommentDetails()
     }, []);
@@ -20,7 +25,7 @@ function AllComments() {
 
     async function getAllCommentDetails() {
         try {
-            await axios.get('http://localhost:3001/comment/getAllCommentDetails')
+            await axios.get(`${BEHOST}:${BEPORT}/comment/getAllCommentDetails`)
             .then((res) => {
                 setGotDataFromDatabase(false)
                 setToggleState('allComments')
@@ -40,7 +45,7 @@ function AllComments() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/removeCommentByAdmin/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/removeCommentByAdmin/${commentId}`)
             .then(res => {
                 getAllCommentDetails()
                 toast.dark(`${res.data}`, {
@@ -64,7 +69,7 @@ function AllComments() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/unblockAnyCommentByAdmin/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/unblockAnyCommentByAdmin/${commentId}`)
             .then(res => {
 
                 getAllCommentDetails()

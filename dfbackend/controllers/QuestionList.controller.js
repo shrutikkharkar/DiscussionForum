@@ -754,12 +754,22 @@ const search = async (req, res) => {
 
         Question.aggregate([
             {
-                $match: 
+                $match:
                 {
-                    $text: { $search: textToSearch },
-                    "removedById" : {$eq: []}
+                    $or: 
+                    [ 
+                        { "question" : { $search: textToSearch }}, 
+                        { "tagsForQuestion" : { $search: textToSearch }}
+                    ]
                 }
             },
+            // {
+            //     $match: 
+            //     {
+            //         $text: { $search: textToSearch },
+            //         "removedById" : {$eq: []}
+            //     }
+            // },
             
             //for answer count 
             {
@@ -823,11 +833,21 @@ const search = async (req, res) => {
                 }
 
                 Answer.aggregate([
+                    // {
+                    //     $match: 
+                    //     {
+                    //         $text: { $search: textToSearch },
+                    //         "removedById" : {$eq: []}
+                    //     }
+                    // },
                     {
-                        $match: 
+                        $match:
                         {
-                            $text: { $search: textToSearch },
-                            "removedById" : {$eq: []}
+                            $or: 
+                            [ 
+                                { "answer" : { $search: textToSearch }}, 
+                                { "tagsForAnswer" : { $search: textToSearch }}
+                            ]
                         }
                     },
 
@@ -926,7 +946,7 @@ const search = async (req, res) => {
 
 const searchForUser = async (req, res) => {
     try {
-        let textToSearch = req.params.text
+        const textToSearch = req.params.text
         let userId = mongoose.Types.ObjectId(req.user)
         var searchResult = [];
 

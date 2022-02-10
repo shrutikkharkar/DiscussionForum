@@ -28,10 +28,17 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CKEditorComponent from './CKEditorComponent'
 
 import io from 'socket.io-client'
-let socket = io(`http://localhost:3001`)
+
 
 
 function TopQAns() {
+
+const BEPORT = process.env.REACT_APP_BEPORT
+const BEHOST = process.env.REACT_APP_BEHOST
+const FEPORT = process.env.REACT_APP_FEPORT
+const FEHOST = process.env.REACT_APP_FEHOST
+
+let socket = io(`${BEHOST}:${BEPORT}`)
 
     const {loggedIn} = useContext(AuthContext);
     const {isAdmin} = useContext(IsAdminContext);
@@ -54,10 +61,12 @@ function TopQAns() {
     const [answerForComment, setAnswerForComment] = useState('');
 
     const [modal, setModal] = useState(false);
-
+    const [modalForLikedBy, setModalForLikedBy] = useState(false);
+    
     const [gotQuestion, setGotQuestion] = useState(false);
     const [gotAnswers, setGotAnswers] = useState(false);
 
+    const [likedBy, setLikedBy] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const pagePostsLimit = 5;
     // For block btn
@@ -178,7 +187,7 @@ function TopQAns() {
 
     async function getAllTagNames() {
         try {
-            await axios.get(`http://localhost:3001/tag/getAllTagNames`)
+            await axios.get(`${BEHOST}:${BEPORT}/tag/getAllTagNames`)
             .then(response => {
                 setAllTagNames(response.data);
                 console.log(response.data);
@@ -192,7 +201,7 @@ function TopQAns() {
     async function getQuestion() {
         try 
         {
-            await axios.get(`http://localhost:3001/question/get/${questionID}`)
+            await axios.get(`${BEHOST}:${BEPORT}/question/get/${questionID}`)
             .then(response => {
                 setQuestion(response.data);
                 setGotQuestion(true);
@@ -208,14 +217,14 @@ function TopQAns() {
         try 
         {
             if(loggedIn===true){ //this is for toggling like and dislike
-                await axios.get(`http://localhost:3001/answer/getForUser/${questionID}`)
+                await axios.get(`${BEHOST}:${BEPORT}/answer/getForUser/${questionID}`)
                 .then(response => {
                     setAnswers(response.data);
                     setGotAnswers(true);
                 })
             }
             else{
-                await axios.get(`http://localhost:3001/answer/get/${questionID}`)
+                await axios.get(`${BEHOST}:${BEPORT}/answer/get/${questionID}`)
                 .then(response => {
                     setAnswers(response.data);
                     setGotAnswers(true);
@@ -241,7 +250,7 @@ function TopQAns() {
             const answerData = {questionID, answer, questionById, questionByEmail, tagsForAnswer};
             
 
-            await axios.post('http://localhost:3001/answer/post', answerData)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/post`, answerData)
             .then(res => {
                 setPosting(false)
                 getAllTagNames()
@@ -285,7 +294,7 @@ function TopQAns() {
             const answeredById = answerByIdForNotification
             const commentData = {comment, questionID, answeredById};
             
-            await axios.post(`http://localhost:3001/comment/addComment/${answerIdForComment}`, commentData)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/addComment/${answerIdForComment}`, commentData)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment) 
                 toast.success(`${res.data}`, {
@@ -316,7 +325,7 @@ function TopQAns() {
 
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/like/${answerId}`, notificationData)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/like/${answerId}`, notificationData)
             .then(res => {
                 getAnswers()
             })
@@ -330,7 +339,7 @@ function TopQAns() {
 
     function removeLike(answerId) {
         try {
-            axios.post(`http://localhost:3001/answer/removeLike/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeLike/${answerId}`)
             .then(res => {
                 getAnswers()
             })
@@ -345,7 +354,7 @@ function TopQAns() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/dislike/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/dislike/${answerId}`)
             .then(res => {
                 getAnswers()
             })
@@ -359,7 +368,7 @@ function TopQAns() {
 
     function removeDislike(answerId) {
         try {
-            axios.post(`http://localhost:3001/answer/removeDislike/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeDislike/${answerId}`)
             .then(res => {
                 getAnswers()
             })
@@ -374,7 +383,7 @@ function TopQAns() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/save/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/save/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.success('Saved answer successfully!', {
@@ -398,7 +407,7 @@ function TopQAns() {
     function removeSave(answerId) {
 
         try{
-            axios.post(`http://localhost:3001/answer/removeSave/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeSave/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.dark('Removed saved answer!', {
@@ -423,7 +432,7 @@ function TopQAns() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/removeAnswerByAdmin/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/removeAnswerByAdmin/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.dark(`${res.data}`, {
@@ -447,7 +456,7 @@ function TopQAns() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/deleteComment/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/deleteComment/${commentId}`)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment)
                 toast.dark(`${res.data}`, {
@@ -471,7 +480,7 @@ function TopQAns() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/reportAnswerByUser/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/reportAnswerByUser/${answerId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -494,7 +503,7 @@ function TopQAns() {
         try {
             const questionId = quesId
 
-            await axios.post(`http://localhost:3001/question/removeQuestionByAdmin/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/removeQuestionByAdmin/${questionId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -517,7 +526,7 @@ function TopQAns() {
         try {
             const questionId = quesId
 
-            await axios.post(`http://localhost:3001/question/reportQuestionByUser/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/reportQuestionByUser/${questionId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -541,7 +550,7 @@ function TopQAns() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/removeCommentByAdmin/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/removeCommentByAdmin/${commentId}`)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment)
                 toast.dark(`${res.data}`, {
@@ -565,7 +574,7 @@ function TopQAns() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/reportCommentByUser/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/reportCommentByUser/${commentId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -596,7 +605,7 @@ function TopQAns() {
         try 
         { 
             if(loggedIn===true){
-                await axios.get(`http://localhost:3001/comment/getCommentsForUser/${answerId}`)
+                await axios.get(`${BEHOST}:${BEPORT}/comment/getCommentsForUser/${answerId}`)
                 .then(response => {
                     setComments(response.data);
                     console.log(response.data);
@@ -604,7 +613,7 @@ function TopQAns() {
                 })
             }
             else{
-                await axios.get(`http://localhost:3001/comment/getComments/${answerId}`)
+                await axios.get(`${BEHOST}:${BEPORT}/comment/getComments/${answerId}`)
                 .then(response => {
                     setComments(response.data);
                 })
@@ -618,6 +627,21 @@ function TopQAns() {
     function getTagContents(tagName){
         history.push( `/tagPage/?tagName=${tagName}` );
     }
+
+    async function getLikedByList(answerId){
+        try {
+
+            await axios.get(`${BEHOST}:${BEPORT}/answer/getLikedByList/${answerId}`)
+            .then(response => {
+                setLikedBy(response.data);
+                setModalForLikedBy(true)
+            })
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
 
     if( gotQuestion == false && gotAnswers == false ){
         return ( 
@@ -744,7 +768,7 @@ function TopQAns() {
                         answer.liked === true && (
                         <>
                             <BiLike className="likeIcon liked" onClick={() => removeLike(answer._id)} />
-                            <span className="vote_count"> {answer.likeCount}</span>
+                            <span className="vote_count" onClick={() => getLikedByList(answer._id)}  > {answer.likeCount}</span>
                             <span>&nbsp; &nbsp;</span>
                             
                         </>
@@ -754,7 +778,7 @@ function TopQAns() {
                         answer.liked === false && (
                         <>
                             <BiLike className="likeIcon" onClick={() => likeAnswer(answer._id, answer.answeredById)} />
-                            <span className="vote_count"> {answer.likeCount}</span>
+                            <span className="vote_count" onClick={() => getLikedByList(answer._id)} > {answer.likeCount}</span>
                             <span>&nbsp; &nbsp;</span>
                         </>
                         )
@@ -763,7 +787,7 @@ function TopQAns() {
                         loggedIn === false && (
                         <>
                             <BiLike className="likeIcon" onClick={() => likeAnswer(answer._id)} />
-                            <span className="vote_count"> {answer.likeCount}</span>
+                            <span className="vote_count" onClick={() => getLikedByList(answer._id)} > {answer.likeCount}</span>
                             <span>&nbsp; &nbsp;</span>
                         </>
                         )
@@ -933,6 +957,62 @@ function TopQAns() {
                         )}
                         
                         </div>
+
+
+                </PureModal>
+
+
+                {/* Modal for liked by */}
+                <PureModal
+                    header={"Liked by"}
+                    width={"500px"}
+                    scrollable={true}
+                  
+
+                onClose={() => {
+                    setModalForLikedBy(false);
+                    return true;
+                }}
+                closeButton={<AiFillCloseCircle style={{fontSize: '2rem'}} />}
+                closeButtonPosition="header"
+
+                  isOpen={modalForLikedBy}
+                >
+                  
+                <div>
+                    {likedBy.length == 0 && (
+                        <p>No likes yet..</p>
+                    )}
+                    {likedBy.map(name => (
+                        <>
+                            <span className="answeredBy">{name.fullName}</span>
+                            <span className="answeredBy"  style={{ marginLeft: '10px'}}>({name.Class} - {name.branch})
+                            {
+                                name.isAdmin === true && (
+                                    <>
+                                        &nbsp;
+                                        <MdVerified className="verifiedIcon" />
+                                    </>
+                                )
+                            }
+                            {
+                                name.isAdmin === false && name.isCollegeId === true && (
+                                    <>
+                                        &nbsp;&nbsp;
+                                        {/* College logo here */}
+                                        <img
+                                          src={VCETLogo}
+                                          style={{ height: 20, width: 20 }}
+                                          alt="Verified college Id"
+                                        />
+                                    </>
+                                )
+                            }
+                            </span>
+                            <hr />
+                        </>
+                    ))}
+                </div>
 
 
                 </PureModal>

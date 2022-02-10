@@ -70,4 +70,6 @@ router.get('/getAllFlaggedAnswers', adminAuth, answerListController.getAllFlagge
 
 router.post('/updateAnswer/:id', auth, answerListController.updateAnswer);
 
+router.get('/getLikedByList/:id', answerListController.getLikedByList)
+
 module.exports = router

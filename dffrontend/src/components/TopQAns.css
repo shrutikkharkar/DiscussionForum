@@ -50,6 +50,7 @@
 .vote_count, .comment_count{
     font-size: 1.2rem;
     margin-right: 5px;
+    cursor: pointer;
 }
 
 .answeredBy{

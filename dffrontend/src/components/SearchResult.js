@@ -27,6 +27,11 @@ function SearchResult() {
         search()
     }, []);
 
+const BEPORT = process.env.REACT_APP_BEPORT
+const BEHOST = process.env.REACT_APP_BEHOST
+const FEPORT = process.env.REACT_APP_FEPORT
+const FEHOST = process.env.REACT_APP_FEHOST
+
     const [searchResult, setSearchResult] = useState([])
 
     const {loggedIn} = useContext(AuthContext);
@@ -49,7 +54,7 @@ function SearchResult() {
     async function search() {
         try {
             if(loggedIn === false){
-                await axios.get(`http://localhost:3001/question/search/${textToSearch}`)
+                await axios.get(`${BEHOST}:${BEPORT}/question/search/${textToSearch}`)
                 .then(response => {
                     setGotTagDetails(true)
                     setSearchResult(response.data);
@@ -57,7 +62,7 @@ function SearchResult() {
                 })
             }
             if(loggedIn === true){
-                await axios.get(`http://localhost:3001/question/searchForUser/${textToSearch}`)
+                await axios.get(`${BEHOST}:${BEPORT}/question/searchForUser/${textToSearch}`)
                 .then(response => {
                     setGotTagDetails(true)
                     setSearchResult(response.data);
@@ -88,7 +93,7 @@ function SearchResult() {
       async function gotoAnswers(questionId) {
         history.push( `/topqans/?query=${questionId}` );
         try {
-            await axios.post(`http://localhost:3001/question/addView/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/addView/${questionId}`)
         }
         catch (err) {
             console.error(err);
@@ -100,7 +105,7 @@ function SearchResult() {
         try {
             const questionId = quesId
     
-            await axios.post(`http://localhost:3001/question/removeQuestionByAdmin/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/removeQuestionByAdmin/${questionId}`)
             .then(res => {
                 search()
                 toast.dark(`${res.data}`, {
@@ -125,7 +130,7 @@ function SearchResult() {
         try {
             const questionId = quesId
     
-            await axios.post(`http://localhost:3001/question/reportQuestionByUser/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/reportQuestionByUser/${questionId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -153,7 +158,7 @@ function SearchResult() {
             const answeredById = answerByIdForNotification
             const commentData = {comment, questionID, answeredById};
             
-            await axios.post(`http://localhost:3001/comment/addComment/${answerIdForComment}`, commentData)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/addComment/${answerIdForComment}`, commentData)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment) 
                 toast.success(`${res.data}`, {
@@ -183,7 +188,7 @@ function SearchResult() {
 
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/like/${answerId}`, notificationData)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/like/${answerId}`, notificationData)
             .then(res => {
                 search()
             })
@@ -197,7 +202,7 @@ function SearchResult() {
 
     function removeLike(answerId) {
         try {
-            axios.post(`http://localhost:3001/answer/removeLike/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeLike/${answerId}`)
             .then(res => {
                 search()
             })
@@ -212,7 +217,7 @@ function SearchResult() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/dislike/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/dislike/${answerId}`)
             .then(res => {
                 search()
             })
@@ -226,7 +231,7 @@ function SearchResult() {
 
     function removeDislike(answerId) {
         try {
-            axios.post(`http://localhost:3001/answer/removeDislike/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeDislike/${answerId}`)
             .then(res => {
                 search()
             })
@@ -241,7 +246,7 @@ function SearchResult() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/save/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/save/${answerId}`)
             .then(res => {
                 search()
                 toast.success('Saved answer successfully!', {
@@ -265,7 +270,7 @@ function SearchResult() {
     function removeSave(answerId) {
 
         try{
-            axios.post(`http://localhost:3001/answer/removeSave/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeSave/${answerId}`)
             .then(res => {
                 search()
                 toast.dark('Removed saved answer!', {
@@ -290,7 +295,7 @@ function SearchResult() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/removeAnswerByAdmin/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/removeAnswerByAdmin/${answerId}`)
             .then(res => {
                 search()
                 toast.dark(`${res.data}`, {
@@ -314,7 +319,7 @@ function SearchResult() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/deleteComment/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/deleteComment/${commentId}`)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment)
                 toast.dark(`${res.data}`, {
@@ -338,7 +343,7 @@ function SearchResult() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/reportAnswerByUser/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/reportAnswerByUser/${answerId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -361,7 +366,7 @@ function SearchResult() {
         try {
             const questionId = quesId
 
-            await axios.post(`http://localhost:3001/question/removeQuestionByAdmin/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/removeQuestionByAdmin/${questionId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -384,7 +389,7 @@ function SearchResult() {
         try {
             const questionId = quesId
 
-            await axios.post(`http://localhost:3001/question/reportQuestionByUser/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/reportQuestionByUser/${questionId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -408,7 +413,7 @@ function SearchResult() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/removeCommentByAdmin/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/removeCommentByAdmin/${commentId}`)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment)
                 toast.dark(`${res.data}`, {
@@ -432,7 +437,7 @@ function SearchResult() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/reportCommentByUser/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/reportCommentByUser/${commentId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -464,7 +469,7 @@ function SearchResult() {
         try 
         { 
             if(loggedIn===true){
-                await axios.get(`http://localhost:3001/comment/getCommentsForUser/${answerId}`)
+                await axios.get(`${BEHOST}:${BEPORT}/comment/getCommentsForUser/${answerId}`)
                 .then(response => {
                     setComments(response.data);
                     console.log(response.data);
@@ -472,7 +477,7 @@ function SearchResult() {
                 })
             }
             else{
-                await axios.get(`http://localhost:3001/comment/getComments/${answerId}`)
+                await axios.get(`${BEHOST}:${BEPORT}/comment/getComments/${answerId}`)
                 .then(response => {
                     setComments(response.data);
                 })
@@ -510,7 +515,13 @@ function SearchResult() {
   return (
 
   <div className="container tagPageMainDiv">
-          <p style={{fontSize: '1.5rem'}}>Results..</p>
+        {searchResult.length > 0 && (
+            <p style={{fontSize: '1.5rem'}}>Results..</p>
+        )}
+        {searchResult.length == 0 && (
+            <p style={{fontSize: '1.5rem'}}>No Results found..</p>
+        )}
+          
           
           {
             searchResult

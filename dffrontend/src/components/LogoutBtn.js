@@ -9,10 +9,15 @@ function LogoutBtn() {
     const {getLoggedIn} = useContext(AuthContext);
     const {getIsAdmin} = useContext(IsAdminContext);
 
+    const BEPORT = process.env.REACT_APP_BEPORT
+    const BEHOST = process.env.REACT_APP_BEHOST
+    const FEPORT = process.env.REACT_APP_FEPORT
+    const FEHOST = process.env.REACT_APP_FEHOST
+
     const history = useHistory();
 
     async function logout() {
-        await axios.get('http://localhost:3001/user/logout');
+        await axios.get(`${BEHOST}:${BEPORT}/user/logout`);
         await getLoggedIn();
         await getIsAdmin();
         history.push('/');

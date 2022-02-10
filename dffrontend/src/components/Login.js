@@ -15,6 +15,11 @@ import { useMediaQuery } from 'react-responsive'
 
 function Login() {
    
+    const BEPORT = process.env.REACT_APP_BEPORT
+    const BEHOST = process.env.REACT_APP_BEHOST
+    const FEPORT = process.env.REACT_APP_FEPORT
+    const FEHOST = process.env.REACT_APP_FEHOST
+
     const {getLoggedIn} = useContext(AuthContext);
     const {getIsAdmin} = useContext(IsAdminContext);
     const history = useHistory();
@@ -41,7 +46,7 @@ function Login() {
         setResetLoading(true)
         try {
             const resetPasswordData = {email};
-            await axios.post('http://localhost:3001/user/sendEmailForResetPassword', resetPasswordData)
+            await axios.post(`${BEHOST}:${BEPORT}/user/sendEmailForResetPassword`, resetPasswordData)
             .then(res => {
                 setResetLoading(false);
                 setMessageSent(true)
@@ -81,7 +86,7 @@ function Login() {
                 email, password
             };
 
-            await axios.post('http://localhost:3001/user/login', loginData)
+            await axios.post(`${BEHOST}:${BEPORT}/user/login`, loginData)
             await getLoggedIn()
             await getIsAdmin()
             .then(res => {

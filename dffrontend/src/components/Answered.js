@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useContext, useRef, useCallback} from 'react'
 import axios from 'axios'
 import './TopQAns.css'
-import {likeAnswer} from '../Controllers.js'
 import AuthContext from '../context/AuthContext'
 import IsAdminContext from '../context/IsAdminContext';
 import { BiLike, BiDislike, BiCommentDetail, BiBookmark } from "react-icons/bi";
@@ -22,19 +21,24 @@ import PureModal from 'react-pure-modal';
 import 'react-pure-modal/dist/react-pure-modal.min.css';
 
 import io from 'socket.io-client'
-let socket = io(`http://localhost:3001`)
+
+
 
 
 
 function Answered() {
 
     useEffect(() => {
-        getAnswers((res) => {
-            setAnswers(res)
-            setGotAnswers(true);
-        }) 
+        getAnswers()
         getAllTagNames()
     }, []);
+
+    const BEPORT = process.env.REACT_APP_BEPORT
+    const BEHOST = process.env.REACT_APP_BEHOST
+    const FEPORT = process.env.REACT_APP_FEPORT
+    const FEHOST = process.env.REACT_APP_FEHOST
+
+    let socket = io(`${BEHOST}:${BEPORT}`)
 
     const {loggedIn} = useContext(AuthContext);
     const {isAdmin} = useContext(IsAdminContext);
@@ -115,7 +119,7 @@ function Answered() {
 
     async function getAllTagNames() {
         try {
-            await axios.get(`http://localhost:3001/tag/getAllTagNames`)
+            await axios.get(`${BEHOST}:${BEPORT}/tag/getAllTagNames`)
             .then(response => {
                 setAllTagNames(response.data);
             })
@@ -129,7 +133,7 @@ function Answered() {
     async function getAnswers() {
         try 
         {
-            await axios.get(`http://localhost:3001/answer/getAnswered`)
+            await axios.get(`${BEHOST}:${BEPORT}/answer/getAnswered`)
             .then(response => {
                 setAnswers(response.data);
                 // console.log(response.data);
@@ -151,7 +155,7 @@ function Answered() {
             const answeredById = answerByIdForNotification
             const commentData = {comment, answeredById, questionID};
             
-            await axios.post(`http://localhost:3001/comment/addComment/${answerIdForComment}`, commentData)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/addComment/${answerIdForComment}`, commentData)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment, questionID)
                 toast.success(`${res.data}`, {
@@ -175,39 +179,39 @@ function Answered() {
     }
 
 
-    // async function likeAnswer(ansId, answeredById) {
+    async function likeAnswer(ansId, answeredById) {
 
-    //     try {
-    //         const notificationData = {answeredById}
+        try {
+            const notificationData = {answeredById}
 
-    //         const answerId = ansId
+            const answerId = ansId
 
-    //         await axios.post(`http://localhost:3001/answer/like/${answerId}`, notificationData)
-    //         .then(res => {
-    //             getAnswers()
+            await axios.post(`${BEHOST}:${BEPORT}/answer/like/${answerId}`, notificationData)
+            .then(res => {
+                getAnswers()
 
-    //             toast.success('Liked successfully!', {
-    //                 position: "bottom-left",
-    //                 autoClose: 3000,
-    //                 hideProgressBar: false,
-    //                 closeOnClick: true,
-    //                 pauseOnHover: true,
-    //                 draggable: true,
-    //                 progress: undefined,
-    //             });
+                toast.success('Liked successfully!', {
+                    position: "bottom-left",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
 
-    //         })
+            })
 
-    //     }
-    //     catch (err) {
-    //         alert("Login or Register first")
-    //         console.error(err);
-    //     }
-    // }
+        }
+        catch (err) {
+            alert("Login or Register first")
+            console.error(err);
+        }
+    }
 
     function removeLike(answerId) {
         try {
-            axios.post(`http://localhost:3001/answer/removeLike/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeLike/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.dark('Removed Like!', {
@@ -231,7 +235,7 @@ function Answered() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/dislike/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/dislike/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.success('Disliked answer successfully!', {
@@ -254,7 +258,7 @@ function Answered() {
 
     function removeDislike(answerId) {
         try {
-            axios.post(`http://localhost:3001/answer/removeDislike/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeDislike/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.dark('Removed dislike!', {
@@ -278,7 +282,7 @@ function Answered() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/save/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/save/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.success('Saved answer successfully!', {
@@ -301,7 +305,7 @@ function Answered() {
     function removeSave(answerId) {
 
         try{
-            axios.post(`http://localhost:3001/answer/removeSave/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeSave/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.dark('Removed saved answer!', {
@@ -326,7 +330,7 @@ function Answered() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/deleteAnswer/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/deleteAnswer/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.dark(`${res.data}`, {
@@ -350,7 +354,7 @@ function Answered() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/deleteComment/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/deleteComment/${commentId}`)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment, questionID)
                 toast.dark(`${res.data}`, {
@@ -377,7 +381,7 @@ function Answered() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/removeCommentByAdmin/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/removeCommentByAdmin/${commentId}`)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment, questionID)
                 toast.dark(`${res.data}`, {
@@ -401,7 +405,7 @@ function Answered() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/reportCommentByUser/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/reportCommentByUser/${commentId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -431,7 +435,7 @@ function Answered() {
         
         try 
         { 
-            await axios.get(`http://localhost:3001/comment/getCommentsForUser/${answerId}`)
+            await axios.get(`${BEHOST}:${BEPORT}/comment/getCommentsForUser/${answerId}`)
             .then(response => {
                 setComments(response.data);
                 console.log(response.data);
@@ -480,7 +484,7 @@ function Answered() {
                 let tagsForAnswer = tagsForAnswerUpdate
                 const answerData = {answer, tagsForAnswer };
             
-                await axios.post(`http://localhost:3001/answer/updateAnswer/${answerId}`, answerData)
+                await axios.post(`${BEHOST}:${BEPORT}/answer/updateAnswer/${answerId}`, answerData)
                 .then(res => {
                     getAnswers()
                     setModalForUpdateAnswer(false)
@@ -500,7 +504,7 @@ function Answered() {
                 let tagsForAnswer = getTagsForAnswer.map(a => a.value);
                 const answerData = {answer, tagsForAnswer};
             
-                await axios.post(`http://localhost:3001/answer/updateAnswer/${answerId}`, answerData)
+                await axios.post(`${BEHOST}:${BEPORT}/answer/updateAnswer/${answerId}`, answerData)
                 .then(res => {
                     getAnswers()
                     setModalForUpdateAnswer(false)

@@ -36,7 +36,7 @@
     <div id="root"></div>
 
     <!-- <script>
-      const socket = io('http://localhost:3001');
+      const socket = io('http://localhost:${process.env.REACT_APP_BEPORT}');
       socket.on('connection')
     </script> -->
     <!-- 
@@ -44,7 +44,7 @@
       also use above cdn
 
       <script>
-      const socket = io('http://localhost:3001');
+      const socket = io('http://localhost:${process.env.REACT_APP_BEPORT}');
 
       socket.on('connection')
 

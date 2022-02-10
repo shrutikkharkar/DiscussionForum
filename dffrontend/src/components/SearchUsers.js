@@ -8,6 +8,11 @@ import axios from 'axios'
 
 function SearchUsers({ placeholder, data }) {
 
+const BEPORT = process.env.REACT_APP_BEPORT
+const BEHOST = process.env.REACT_APP_BEHOST
+const FEPORT = process.env.REACT_APP_FEPORT
+const FEHOST = process.env.REACT_APP_FEHOST
+
   const history = useHistory();
 
   const [filteredData, setFilteredData] = useState([]);
@@ -30,7 +35,7 @@ function SearchUsers({ placeholder, data }) {
 
   async function makeUserAdmin(userId) {
     try {
-      await axios.post(`http://localhost:3001/user/makeUserAdmin/${userId}`)
+      await axios.post(`${BEHOST}:${BEPORT}/user/makeUserAdmin/${userId}`)
       .then( (res) => {
         
         toast.dark(`${res.data}`, {

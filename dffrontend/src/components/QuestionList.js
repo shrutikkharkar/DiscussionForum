@@ -15,6 +15,11 @@ import 'react-pagination-bar/dist/index.css'
 
 function QuestionList() {
 
+const BEPORT = process.env.REACT_APP_BEPORT
+const BEHOST = process.env.REACT_APP_BEHOST
+const FEPORT = process.env.REACT_APP_FEPORT
+const FEHOST = process.env.REACT_APP_FEHOST
+
 const history = useHistory();
 
 const [questions, setQuestions] = useState([]); 
@@ -54,7 +59,7 @@ const pagePostsLimit = 4;
 async function questionList() {
     try 
     {
-        await axios.get('http://localhost:3001/question/get/')
+        await axios.get(`${BEHOST}:${BEPORT}/question/get/`)
         .then(response => {
             setGotQuestions(true)
             setQuestions(response.data);
@@ -68,7 +73,7 @@ async function questionList() {
 async function gotoAnswers(questionId) {
     history.push( `/topqans/?query=${questionId}` );
     try {
-        await axios.post(`http://localhost:3001/question/addView/${questionId}`)
+        await axios.post(`${BEHOST}:${BEPORT}/question/addView/${questionId}`)
     }
     catch (err) {
         console.error(err);
@@ -80,7 +85,7 @@ async function removeQuestionByAdmin(quesId) {
     try {
         const questionId = quesId
 
-        await axios.post(`http://localhost:3001/question/removeQuestionByAdmin/${questionId}`)
+        await axios.post(`${BEHOST}:${BEPORT}/question/removeQuestionByAdmin/${questionId}`)
         .then(res => {
             questionList()
             toast.dark(`${res.data}`, {
@@ -105,7 +110,7 @@ async function reportQuestionByUser(quesId) {
     try {
         const questionId = quesId
 
-        await axios.post(`http://localhost:3001/question/reportQuestionByUser/${questionId}`)
+        await axios.post(`${BEHOST}:${BEPORT}/question/reportQuestionByUser/${questionId}`)
         .then(res => {
             toast.dark(`${res.data}`, {
                 position: "bottom-left",

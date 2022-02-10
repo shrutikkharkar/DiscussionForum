@@ -14,6 +14,11 @@ import { useMediaQuery } from 'react-responsive'
 
 function Signup() {
 
+const BEPORT = process.env.REACT_APP_BEPORT
+const BEHOST = process.env.REACT_APP_BEHOST
+const FEPORT = process.env.REACT_APP_FEPORT
+const FEHOST = process.env.REACT_APP_FEHOST
+
     const {getLoggedIn} = useContext(AuthContext);
     const {getIsAdmin} = useContext(IsAdminContext);
     const history = useHistory();
@@ -40,7 +45,7 @@ function Signup() {
                 Class, branch, password, confirmPassword
             };
 
-            await axios.post('http://localhost:3001/user/signup', registerData)
+            await axios.post(`${BEHOST}:${BEPORT}/user/signup`, registerData)
             await getLoggedIn()
             await getIsAdmin()
             toast.success('Verification mail sent to your email!', {

@@ -10,6 +10,11 @@ import { useMediaQuery } from 'react-responsive'
 
 function ResetPassword() {
    
+const BEPORT = process.env.REACT_APP_BEPORT
+const BEHOST = process.env.REACT_APP_BEHOST
+const FEPORT = process.env.REACT_APP_FEPORT
+const FEHOST = process.env.REACT_APP_FEHOST
+
     const history = useHistory();
 
     const isDesktopOrLaptop = useMediaQuery({query: '(min-width: 1224px)'})
@@ -31,7 +36,7 @@ function ResetPassword() {
             if(password == confirmPassword)
             {
                 const resetPasswordData = {tokenToResetPassword, password};
-                await axios.post('http://localhost:3001/user/resetPassword', resetPasswordData)
+                await axios.post(`${BEHOST}:${BEPORT}/user/resetPassword`, resetPasswordData)
                 .then(res => {
                     toast.success(`${res.data}`, {
                         position: "top-center",

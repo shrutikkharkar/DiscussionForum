@@ -22,6 +22,11 @@ import 'react-pure-modal/dist/react-pure-modal.min.css';
 
 function TagPage() {
 
+const BEPORT = process.env.REACT_APP_BEPORT
+const BEHOST = process.env.REACT_APP_BEHOST
+const FEPORT = process.env.REACT_APP_FEPORT
+const FEHOST = process.env.REACT_APP_FEHOST
+
     const {loggedIn} = useContext(AuthContext);
     const {isAdmin} = useContext(IsAdminContext);
     const [gotTagDetails, setGotTagDetails] = useState(false)
@@ -62,7 +67,7 @@ function TagPage() {
       async function gotoAnswers(questionId) {
         history.push( `/topqans/?query=${questionId}` );
         try {
-            await axios.post(`http://localhost:3001/question/addView/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/addView/${questionId}`)
         }
         catch (err) {
             console.error(err);
@@ -74,7 +79,7 @@ function TagPage() {
         try {
             const questionId = quesId
     
-            await axios.post(`http://localhost:3001/question/removeQuestionByAdmin/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/removeQuestionByAdmin/${questionId}`)
             .then(res => {
                 getTagDetails()
                 toast.dark(`${res.data}`, {
@@ -99,7 +104,7 @@ function TagPage() {
         try {
             const questionId = quesId
     
-            await axios.post(`http://localhost:3001/question/reportQuestionByUser/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/reportQuestionByUser/${questionId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -122,7 +127,7 @@ function TagPage() {
         setGotTagDetails(false)
         try{
             if(loggedIn === false){
-                await axios.get(`http://localhost:3001/tag/getTagDetails/${tagName}`)
+                await axios.get(`${BEHOST}:${BEPORT}/tag/getTagDetails/${tagName}`)
                 .then(res => {
                 setGotTagDetails(true)
                 setAllTagDetails(res.data)
@@ -131,7 +136,7 @@ function TagPage() {
             }
 
             if(loggedIn === true){
-                await axios.get(`http://localhost:3001/tag/getTagDetailsForUser/${tagName}`)
+                await axios.get(`${BEHOST}:${BEPORT}/tag/getTagDetailsForUser/${tagName}`)
                 .then(res => {
                 setGotTagDetails(true)
                 setAllTagDetails(res.data)
@@ -154,7 +159,7 @@ function TagPage() {
             const answeredById = answerByIdForNotification
             const commentData = {comment, questionID, answeredById};
             
-            await axios.post(`http://localhost:3001/comment/addComment/${answerIdForComment}`, commentData)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/addComment/${answerIdForComment}`, commentData)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment) 
                 toast.success(`${res.data}`, {
@@ -184,7 +189,7 @@ function TagPage() {
 
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/like/${answerId}`, notificationData)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/like/${answerId}`, notificationData)
             .then(res => {
                 getTagDetails()
             })
@@ -198,7 +203,7 @@ function TagPage() {
 
     function removeLike(answerId) {
         try {
-            axios.post(`http://localhost:3001/answer/removeLike/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeLike/${answerId}`)
             .then(res => {
                 getTagDetails()
             })
@@ -213,7 +218,7 @@ function TagPage() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/dislike/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/dislike/${answerId}`)
             .then(res => {
                 getTagDetails()
             })
@@ -227,7 +232,7 @@ function TagPage() {
 
     function removeDislike(answerId) {
         try {
-            axios.post(`http://localhost:3001/answer/removeDislike/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeDislike/${answerId}`)
             .then(res => {
                 getTagDetails()
             })
@@ -242,7 +247,7 @@ function TagPage() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/save/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/save/${answerId}`)
             .then(res => {
                 getTagDetails()
                 toast.success('Saved answer successfully!', {
@@ -266,7 +271,7 @@ function TagPage() {
     function removeSave(answerId) {
 
         try{
-            axios.post(`http://localhost:3001/answer/removeSave/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeSave/${answerId}`)
             .then(res => {
                 getTagDetails()
                 toast.dark('Removed saved answer!', {
@@ -291,7 +296,7 @@ function TagPage() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/removeAnswerByAdmin/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/removeAnswerByAdmin/${answerId}`)
             .then(res => {
                 getTagDetails()
                 toast.dark(`${res.data}`, {
@@ -315,7 +320,7 @@ function TagPage() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/deleteComment/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/deleteComment/${commentId}`)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment)
                 toast.dark(`${res.data}`, {
@@ -339,7 +344,7 @@ function TagPage() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/reportAnswerByUser/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/reportAnswerByUser/${answerId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -362,7 +367,7 @@ function TagPage() {
         try {
             const questionId = quesId
 
-            await axios.post(`http://localhost:3001/question/removeQuestionByAdmin/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/removeQuestionByAdmin/${questionId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -385,7 +390,7 @@ function TagPage() {
         try {
             const questionId = quesId
 
-            await axios.post(`http://localhost:3001/question/reportQuestionByUser/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/reportQuestionByUser/${questionId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -409,7 +414,7 @@ function TagPage() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/removeCommentByAdmin/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/removeCommentByAdmin/${commentId}`)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment)
                 toast.dark(`${res.data}`, {
@@ -433,7 +438,7 @@ function TagPage() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/reportCommentByUser/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/reportCommentByUser/${commentId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -465,7 +470,7 @@ function TagPage() {
         try 
         { 
             if(loggedIn===true){
-                await axios.get(`http://localhost:3001/comment/getCommentsForUser/${answerId}`)
+                await axios.get(`${BEHOST}:${BEPORT}/comment/getCommentsForUser/${answerId}`)
                 .then(response => {
                     setComments(response.data);
                     console.log(response.data);
@@ -473,7 +478,7 @@ function TagPage() {
                 })
             }
             else{
-                await axios.get(`http://localhost:3001/comment/getComments/${answerId}`)
+                await axios.get(`${BEHOST}:${BEPORT}/comment/getComments/${answerId}`)
                 .then(response => {
                     setComments(response.data);
                 })

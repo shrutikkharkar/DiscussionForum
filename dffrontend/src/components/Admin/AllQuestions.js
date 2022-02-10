@@ -7,6 +7,11 @@ import GridTable from '@nadavshaar/react-grid-table'
 
 function AllQuestions() {
 
+    const BEPORT = process.env.REACT_APP_BEPORT
+    const BEHOST = process.env.REACT_APP_BEHOST
+    const FEPORT = process.env.REACT_APP_FEPORT
+    const FEHOST = process.env.REACT_APP_FEHOST
+
     useEffect(() => {
         getAllQuestionDetails()
     }, []);
@@ -17,7 +22,7 @@ function AllQuestions() {
 
     async function getAllQuestionDetails() {
         try {
-            await axios.get('http://localhost:3001/question/getAllQuestionDetails')
+            await axios.get(`${BEHOST}:${BEPORT}/question/getAllQuestionDetails`)
             .then((res) => {
                 setAllQuestionDetails(res.data)
                 setGotDataFromDatabase(false)
@@ -34,7 +39,7 @@ function AllQuestions() {
         try {
             const questionId = quesId
 
-            await axios.post(`http://localhost:3001/question/removeQuestionByAdmin/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/removeQuestionByAdmin/${questionId}`)
             .then(res => {
                 getAllQuestionDetails()
                 toast.dark(`${res.data}`, {
@@ -59,7 +64,7 @@ function AllQuestions() {
         try {
             const questionId = quesId
 
-            await axios.post(`http://localhost:3001/question/unblockAnyQuestionByAdmin/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/unblockAnyQuestionByAdmin/${questionId}`)
             .then(res => {
 
                 getAllQuestionDetails();

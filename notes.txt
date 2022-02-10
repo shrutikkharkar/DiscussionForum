@@ -21,9 +21,13 @@ Functions to add:
 
 Priority-
   -searchbar for phone
-  -likedby
   -Add comments logo in side panel
   -remove socket
+  -logging in..
+  -search result page search
+  -Update ckeditor toollist
+  Ckeditor in update answer page
+  -pagination error
   
 
 -search algo
@@ -32,6 +36,7 @@ Priority-
 -image bar
 -google signup
 
+likedby
 Sidenav for phone
 subpart doesnot reload route
 tagPage

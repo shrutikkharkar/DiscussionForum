@@ -16,6 +16,11 @@ function AskQuestion() {
         getAllTagNames()
     }, []);
 
+    const BEPORT = process.env.REACT_APP_BEPORT
+    const BEHOST = process.env.REACT_APP_BEHOST
+    const FEPORT = process.env.REACT_APP_FEPORT
+    const FEHOST = process.env.REACT_APP_FEHOST
+
     const history = useHistory();
     const [question, setQuestion] = useState('')
     const [allTagNames, setAllTagNames] = useState([]);
@@ -50,7 +55,7 @@ function AskQuestion() {
 
     async function getAllTagNames() {
         try {
-            await axios.get(`http://localhost:3001/tag/getAllTagNames`)
+            await axios.get(`${BEHOST}:${BEPORT}/tag/getAllTagNames`)
             .then(response => {
                 setAllTagNames(response.data);
             })
@@ -67,7 +72,7 @@ function AskQuestion() {
         let tagsForQuestion = getTagsForQuestion.map(a => a.value);
         const questioned = {question, tagsForQuestion}
 
-        axios.post('http://localhost:3001/question/post', questioned)
+        axios.post(`${BEHOST}:${BEPORT}/question/post`, questioned)
         .then(response => {
             toast.success('Question submitted successfully!', {
                 position: "top-center",

@@ -1,6 +1,10 @@
 const express = require('express');
 const app = express();
 
+const BEPORT = process.env.BEPORT
+const BEHOST = process.env.BEHOST
+const FEPORT = process.env.FEPORT
+const FEHOST = process.env.FEHOST
 /* For socket io
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {cors: {origin: '*'} })
@@ -43,7 +47,7 @@ mongoose.connect(process.env.DATABASE_ACCESS,
 app.use(express.json()); // Hence we have activated bodyParser, helps to accept JSON
 app.use(cookieParser());
 app.use(cors({
-  origin: ['http://localhost:3000'],
+  origin: [`http://localhost:3000`],
   credentials: true
 }));// used to accept http request from front end
 

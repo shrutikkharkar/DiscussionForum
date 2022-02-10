@@ -6,6 +6,11 @@ const Tag = require('../models/TagList.model')
 const User = require('../models/User.model')
 const nodemailer = require('nodemailer')
 
+const BEPORT = process.env.BEPORT
+const BEHOST = process.env.BEHOST
+const FEPORT = process.env.FEPORT
+const FEHOST = process.env.FEHOST
+
 const postAnswer = async (req, res) => {
     try {
 
@@ -66,7 +71,7 @@ const postAnswer = async (req, res) => {
                 subject: 'Someone has answered to your question!',
                 //text: 'That was easy!'
                 html: `<h1>Someone has answered to your question. Click 
-                <a href="http://localhost:3000/topqans/?query=${questionID}">here</a> 
+                <a href="${FEHOST}:${FEPORT}/topqans/?query=${questionID}">here</a> 
                 to view answers to your question.</h1>`
               };
               
@@ -1250,6 +1255,60 @@ const updateAnswer = async (req, res) => {
     }
 }
 
+const getLikedByList = async (req, res) => {
+    try {
+        const answerId = mongoose.Types.ObjectId(req.params.id)
+        Answer.aggregate([
+            {
+                $match:
+                {
+                    _id: answerId
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "users", 
+                    localField: "likedById", 
+                    foreignField: "_id",
+                    as: "user_details"
+                }
+            },
+            {$unwind: "$user_details"},
+
+            {
+                $match:
+                {
+                    "user_details.blockedById" : {$eq: []}
+                }
+            },
+
+            {
+                $project:
+                {
+                    fullName: "$user_details.fullName",
+                    Class: "$user_details.Class",
+                    branch: "$user_details.branch",
+                    isAdmin: "$user_details.isAdmin",
+                    isCollegeId: "$user_details.isCollegeId"
+                }
+            }
+        ])
+        .then((users) => {
+            if(users){
+                res.json(users);
+            }
+            else{
+                res.send("Didn't get users");
+            }
+        }) 
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
 
 module.exports = answerListController = {
     postAnswer,
@@ -1280,7 +1339,9 @@ module.exports = answerListController = {
 
     getAllFlaggedAnswers,
 
-    updateAnswer
+    updateAnswer,
+
+    getLikedByList
 };
 
 //findOneAndUpdate  $push(second arg) or $addToSet

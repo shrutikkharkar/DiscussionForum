@@ -20,7 +20,7 @@ import PureModal from 'react-pure-modal';
 import 'react-pure-modal/dist/react-pure-modal.min.css';
 
 import io from 'socket.io-client'
-let socket = io(`http://localhost:3001`)
+
 
 function Saved() {
 
@@ -28,6 +28,13 @@ function Saved() {
         getAnswers()
         getAllTagNames()
     }, []);
+
+const BEPORT = process.env.REACT_APP_BEPORT
+const BEHOST = process.env.REACT_APP_BEHOST
+const FEPORT = process.env.REACT_APP_FEPORT
+const FEHOST = process.env.REACT_APP_FEHOST
+
+let socket = io(`${BEHOST}:${BEPORT}`)
 
     const {loggedIn} = useContext(AuthContext);
     const {isAdmin} = useContext(IsAdminContext);
@@ -111,7 +118,7 @@ function Saved() {
 
     async function getAllTagNames() {
         try {
-            await axios.get(`http://localhost:3001/tag/getAllTagNames`)
+            await axios.get(`${BEHOST}:${BEPORT}/tag/getAllTagNames`)
             .then(response => {
                 setAllTagNames(response.data);
                 console.log(response.data);
@@ -126,7 +133,7 @@ function Saved() {
     async function getAnswers() {
         try 
         {
-            await axios.get(`http://localhost:3001/answer/getSaved`)
+            await axios.get(`${BEHOST}:${BEPORT}/answer/getSaved`)
             .then(response => {
                 setAnswers(response.data);
                 setGotAnswers(true);
@@ -147,7 +154,7 @@ function Saved() {
             const answeredById = answerByIdForNotification
             const commentData = {comment, answeredById, questionID};
             
-            await axios.post(`http://localhost:3001/comment/addComment/${answerIdForComment}`, commentData)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/addComment/${answerIdForComment}`, commentData)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment, questionID)
                 toast.success(`${res.data}`, {
@@ -178,7 +185,7 @@ function Saved() {
 
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/like/${answerId}`, notificationData)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/like/${answerId}`, notificationData)
             .then(res => {
                 getAnswers()
 
@@ -203,7 +210,7 @@ function Saved() {
 
     function removeLike(answerId) {
         try {
-            axios.post(`http://localhost:3001/answer/removeLike/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeLike/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.dark('Removed Like!', {
@@ -227,7 +234,7 @@ function Saved() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/dislike/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/dislike/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.success('Disliked answer successfully!', {
@@ -250,7 +257,7 @@ function Saved() {
 
     function removeDislike(answerId) {
         try {
-            axios.post(`http://localhost:3001/answer/removeDislike/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeDislike/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.dark('Removed dislike!', {
@@ -274,7 +281,7 @@ function Saved() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/save/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/save/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.success('Saved answer successfully!', {
@@ -297,7 +304,7 @@ function Saved() {
     function removeSave(answerId) {
 
         try{
-            axios.post(`http://localhost:3001/answer/removeSave/${answerId}`)
+            axios.post(`${BEHOST}:${BEPORT}/answer/removeSave/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.dark('Removed saved answer!', {
@@ -322,7 +329,7 @@ function Saved() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/removeAnswerByAdmin/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/removeAnswerByAdmin/${answerId}`)
             .then(res => {
                 getAnswers()
                 toast.dark(`${res.data}`, {
@@ -346,7 +353,7 @@ function Saved() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/deleteComment/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/deleteComment/${commentId}`)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment, questionID)
                 toast.dark(`${res.data}`, {
@@ -370,7 +377,7 @@ function Saved() {
         try {
             const answerId = ansId
 
-            await axios.post(`http://localhost:3001/answer/reportAnswerByUser/${answerId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/answer/reportAnswerByUser/${answerId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -393,7 +400,7 @@ function Saved() {
         try {
             const questionId = quesId
 
-            await axios.post(`http://localhost:3001/question/removeQuestionByAdmin/${questionId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/question/removeQuestionByAdmin/${questionId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -417,7 +424,7 @@ function Saved() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/removeCommentByAdmin/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/removeCommentByAdmin/${commentId}`)
             .then(res => {
                 getComments(answerIdForComment, answerByIdForNotification, answerForComment, questionID)
                 toast.dark(`${res.data}`, {
@@ -441,7 +448,7 @@ function Saved() {
         try {
             const commentId = cmtId
 
-            await axios.post(`http://localhost:3001/comment/reportCommentByUser/${commentId}`)
+            await axios.post(`${BEHOST}:${BEPORT}/comment/reportCommentByUser/${commentId}`)
             .then(res => {
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
@@ -472,7 +479,7 @@ function Saved() {
         
         try 
         { 
-            await axios.get(`http://localhost:3001/comment/getCommentsForUser/${answerId}`)
+            await axios.get(`${BEHOST}:${BEPORT}/comment/getCommentsForUser/${answerId}`)
             .then(response => {
                 setComments(response.data);
                 console.log(response.data);
@@ -746,7 +753,9 @@ function Saved() {
         )}
         else{
             return(
-            <p className="container">No saved answers</p>
+            <div className="container col-xs-12 topQAnsList">
+                    <p style={{fontSize: '1.5rem'}}><b>No saved answers</b></p>
+            </div>
             )
         }
     }

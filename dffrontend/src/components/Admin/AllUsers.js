@@ -10,6 +10,11 @@ import '@nadavshaar/react-grid-table/dist/index.css'
 
 function AllUsers() {
 
+    const BEPORT = process.env.REACT_APP_BEPORT
+    const BEHOST = process.env.REACT_APP_BEHOST
+    const FEPORT = process.env.REACT_APP_FEPORT
+    const FEHOST = process.env.REACT_APP_FEHOST
+
     const [rows, setAllUserDetails] = useState()
     
 
@@ -21,7 +26,7 @@ function AllUsers() {
     async function getAllUserDetails() {
 
         try {
-            await axios.get('http://localhost:3001/user/getAllUserDetails')
+            await axios.get(`${BEHOST}:${BEPORT}/user/getAllUserDetails`)
             .then((res) => {
                 setAllUserDetails(res.data)
                 console.log(res.data)
@@ -32,27 +37,12 @@ function AllUsers() {
         }
     }
 
-    async function getAllBlockedUserDetails() {
-   
-      try {
-          await axios.get('http://localhost:3001/user/getAllBlockedUserDetails')
-          .then((res) => {
-              setAllUserDetails(res.data)
-            //   setToggleState('blockedUsers')
-          })
-      }
-      catch (err) {
-          console.error(err);
-      }
-  }
-
-
   async function blockUserByAdmin(usrId) {
 
     try {
         const userId = usrId
 
-        await axios.post(`http://localhost:3001/user/blockUserByAdmin/${userId}`)
+        await axios.post(`${BEHOST}:${BEPORT}/user/blockUserByAdmin/${userId}`)
         .then(res => {
             getAllUserDetails()
             toast.dark(`${res.data}`, {
@@ -77,10 +67,10 @@ async function unblockAnyUserByAdmin(usrId) {
     try {
         const userId = usrId
 
-        await axios.post(`http://localhost:3001/user/unblockAnyUserByAdmin/${userId}`)
+        await axios.post(`${BEHOST}:${BEPORT}/user/unblockAnyUserByAdmin/${userId}`)
         .then(res => {
 
-            getAllBlockedUserDetails();
+            getAllUserDetails();
             toast.dark(`${res.data}`, {
                 position: "bottom-left",
                 autoClose: 3000,
@@ -100,7 +90,7 @@ async function unblockAnyUserByAdmin(usrId) {
 
 async function removeUserFromAdmin(userId) {
     try {
-      await axios.post(`http://localhost:3001/user/removeUserFromAdmin/${userId}`)
+      await axios.post(`${BEHOST}:${BEPORT}/user/removeUserFromAdmin/${userId}`)
       .then( (res) => {
         
         getAllUserDetails();
@@ -122,7 +112,7 @@ async function removeUserFromAdmin(userId) {
 
 async function makeUserAdmin(userId) {
     try {
-      await axios.post(`http://localhost:3001/user/makeUserAdmin/${userId}`)
+      await axios.post(`${BEHOST}:${BEPORT}/user/makeUserAdmin/${userId}`)
       .then( (res) => {
         getAllUserDetails();
         toast.dark(`${res.data}`, {

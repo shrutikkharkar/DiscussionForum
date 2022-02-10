@@ -9,9 +9,12 @@ const QuestionListTemplates = new mongoose.Schema({
 
     question: {
         type: 'string',
-        required: true,
-        index: "text"
+        required: true
     },
+
+    tagsForQuestion: [{
+        type: String
+    }],
 
 
     viewedById: [
@@ -32,15 +35,13 @@ const QuestionListTemplates = new mongoose.Schema({
         }
     ],
 
-    tagsForQuestion: [{
-        type: String,
-        index: "text"
-    }],
 
     updatedOnDate: {
         type: 'date',
         default: Date.now
     }
 })
+
+QuestionListTemplates.index({question: 'text', tagsForQuestion: 'text'})
 
 module.exports = mongoose.model('question', QuestionListTemplates)

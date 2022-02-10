@@ -18,6 +18,11 @@ import {LoaderProvider, useLoading, Puff} from '@agney/react-loading';
 
 function Questioned() {
 
+const BEPORT = process.env.REACT_APP_BEPORT
+const BEHOST = process.env.REACT_APP_BEHOST
+const FEPORT = process.env.REACT_APP_FEPORT
+const FEHOST = process.env.REACT_APP_FEHOST
+
 const history = useHistory();
 const [modal, setModal] = useState(false);
 const [modalForUpdateQuestion, setModalForUpdateQuestion] = useState(false);
@@ -75,7 +80,7 @@ const { containerProps, indicatorEl } = useLoading({
 
 async function getAllTagNames() {
     try {
-        await axios.get(`http://localhost:3001/tag/getAllTagNames`)
+        await axios.get(`${BEHOST}:${BEPORT}/tag/getAllTagNames`)
         .then(response => {
             setAllTagNames(response.data);
         })
@@ -89,7 +94,7 @@ async function getAllTagNames() {
 async function questionList() {
     try 
     {
-        await axios.get('http://localhost:3001/question/questioned')
+        await axios.get(`${BEHOST}:${BEPORT}/question/questioned`)
         .then(response => {
             setGotQuestioned(true)
             console.log(response.data)
@@ -104,7 +109,7 @@ async function questionList() {
 async function gotoAnswers(questionId) {
     history.push( `/topqans/?query=${questionId}` );
     try {
-        await axios.post(`http://localhost:3001/question/addView/${questionId}`)
+        await axios.post(`${BEHOST}:${BEPORT}/question/addView/${questionId}`)
     }
     catch (err) {
         console.error(err);
@@ -116,7 +121,7 @@ async function deleteQuestion(quesId) {
     try {
         const questionId = quesId
 
-        await axios.post(`http://localhost:3001/question/deleteQuestion/${questionId}`)
+        await axios.post(`${BEHOST}:${BEPORT}/question/deleteQuestion/${questionId}`)
         .then(res => {
             questionList()
             toast.dark(`${res.data}`, {
@@ -168,7 +173,7 @@ const onChange = useCallback(e => {
                 let tagsForQuestion = getTagsForQuestion.map(a => a.value);
                 const questionData = {question, tagsForQuestion};
 
-                await axios.post(`http://localhost:3001/question/updateQuestion/${questionId}`, questionData)
+                await axios.post(`${BEHOST}:${BEPORT}/question/updateQuestion/${questionId}`, questionData)
                 .then(res => {
                     questionList()
                     setModalForUpdateQuestion(false)
@@ -188,7 +193,7 @@ const onChange = useCallback(e => {
                 let tagsForQuestion = tagsForQuestionUpdate
                 const questionData = {question, tagsForQuestion};
 
-                await axios.post(`http://localhost:3001/question/updateQuestion/${questionId}`, questionData)
+                await axios.post(`${BEHOST}:${BEPORT}/question/updateQuestion/${questionId}`, questionData)
                 .then(res => {
                     questionList()
                     setModalForUpdateQuestion(false)
@@ -394,7 +399,10 @@ function Search(){
     );
     }
     else{
-    return <h1>Its not there</h1>;
+    return (
+        <div className="container questionListContainer col-xs-12">
+            <p style={{fontSize: '1.5rem'}}><b>No questions asked</b></p>
+        </div>);
     }
     }
 }

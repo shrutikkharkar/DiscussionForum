@@ -26,6 +26,11 @@ import { useMediaQuery } from 'react-responsive'
 
 function Navbar() {
 
+const BEPORT = process.env.REACT_APP_BEPORT
+const BEHOST = process.env.REACT_APP_BEHOST
+const FEPORT = process.env.REACT_APP_FEPORT
+const FEHOST = process.env.REACT_APP_FEHOST
+
 const {loggedIn} = useContext(AuthContext);
 const {isAdmin} = useContext(IsAdminContext);
 
@@ -106,7 +111,7 @@ function Search(){
 function getFullNameAndIsCollegeId(){
   try {
 
-    axios.get('http://localhost:3001/user/getFullNameAndIsCollegeId')
+    axios.get(`${BEHOST}:${BEPORT}/user/getFullNameAndIsCollegeId`)
     .then((res) => {
       setFullName(res.data[0].fullName);
       setIsCollegeId(res.data[0].isCollegeId);
@@ -120,8 +125,7 @@ function getFullNameAndIsCollegeId(){
 
 function getQuestionsAndTagsForSearchBar(){
   try {
-
-    axios.get('http://localhost:3001/question/getQuestionsAndTagsForSearchBar')
+    axios.get(`${BEHOST}:${BEPORT}/question/getQuestionsAndTagsForSearchBar`)
     .then((res) => {
       setQuestionData(res.data);
     })
@@ -136,13 +140,13 @@ async function getNotifications(){
   try{
 
     if(isAdmin===true){
-      await axios.get('http://localhost:3001/notification/getNotificationsForUser')
+      await axios.get(`${BEHOST}:${BEPORT}/notification/getNotificationsForUser`)
       .then((res) => {
         setNotificationData(res.data);
       })
     }
     if(isAdmin===false){
-      await axios.get('http://localhost:3001/notification/getNotificationsForUser')
+      await axios.get(`${BEHOST}:${BEPORT}/notification/getNotificationsForUser`)
       .then((res) => {
         setNotificationData(res.data);
       })
@@ -157,7 +161,7 @@ async function getNotifications(){
 
 async function clearAllNotifications(){
   try{
-    await axios.post('http://localhost:3001/notification/clearAllNotifications')
+    await axios.post(`${BEHOST}:${BEPORT}/notification/clearAllNotifications`)
     .then((res) => {
       getNotifications()
       setShow(!show)
@@ -182,7 +186,7 @@ function gotoHome() {
 }
 
 async function logout() {
-  await axios.get('http://localhost:3001/user/logout');
+  await axios.get(`${BEHOST}:${BEPORT}/user/logout`);
   await getLoggedIn();
   await getIsAdmin();
   history.push('/');
@@ -550,80 +554,6 @@ function toggleSidenavForPhone(){
             className="HamburgerIcon" />
           )}
           
-
-          {/* {loggedIn === true && (
-            <Dropdown  style={{display: 'inline'}} >
-            <Dropdown.Toggle as={CustomToggleForNav} />
-            <Dropdown.Menu style={{backgroundColor: 'black'}} className="dropdown-styling" size="sm" title="">
-
-                  <Dropdown.Item>
-                    <TiHome className="classForPhoneNavIcons" style={{ fontSize: '1.9rem' }} />
-                    <Link to = "/" className="navbarForPhoneLinks" > Home</Link>
-                  </Dropdown.Item>
-                    
-                  <Dropdown.Item>
-                    <BsBookmarkFill className="classForPhoneNavIcons" style={{fontSize: '1.5rem'}} />
-                    <Link to = "/saved" className="navbarForPhoneLinks" > Saved Answers</Link>
-                  </Dropdown.Item>
-
-                  <Dropdown.Item >
-                    <FaHeart className="classForPhoneNavIcons" style={{fontSize: '1.5rem'}} />
-                    <Link to = "/liked" className="navbarForPhoneLinks" > Liked Answers</Link>
-                  </Dropdown.Item>
-
-                  <Dropdown.Item >
-                    <FaCheckSquare className="classForPhoneNavIcons" style={{fontSize: '1.5rem'}} />
-                    <Link to = "/answered" className="navbarForPhoneLinks" > My Answers</Link>
-                  </Dropdown.Item>
-
-                  <Dropdown.Item >
-                    <BsFillQuestionSquareFill className="classForPhoneNavIcons" style={{ fontSize: '1.5rem' }} />
-                    <Link to = "/questioned" className="navbarForPhoneLinks" > My Questions</Link>
-                  </Dropdown.Item>
-
-                  <Dropdown.Item>
-                    <RiProfileFill className="classForPhoneNavIcons" style={{fontSize: '1.5rem'}} /> 
-                  <Link to = "/updateProfile" className="navbarForPhoneLinks" > Update profile</Link>
-                    
-                  </Dropdown.Item>
-
-                  <Dropdown.Item onClick={() => logout()} >
-                    <AiOutlinePoweroff className="classForPhoneNavIcons" style={{ fontSize: '1.5rem' }} />
-                    <span className="navbarForPhoneLinks" style={{ fontSize: '1.5rem' }}> Logout</span>
-                  </Dropdown.Item>
-
-
-                  <Dropdown.Divider />
-
-                  <Dropdown.Item >
-                    <p style={{color: 'cyan'}}>Admin Panel</p>
-                  </Dropdown.Item>
-
-                  <Dropdown.Item >
-                    <Link to = "/allUsers" className="navbarForPhoneLinks" >All Users</Link>
-                  </Dropdown.Item>
-
-                  <Dropdown.Item >
-                    <Link to = "/allAnswers" className="navbarForPhoneLinks" >All Answers</Link>
-                  </Dropdown.Item>
-
-                  <Dropdown.Item >
-                    <Link to = "/allQuestions" className="navbarForPhoneLinks" >All Questions</Link>
-                  </Dropdown.Item>
-
-                  <Dropdown.Item >
-                    <Link to = "/allComments" className="navbarForPhoneLinks" >All Comments</Link>
-                  </Dropdown.Item>
-
-                  <Dropdown.Item >
-                    <Link to = "/allFlags" className="navbarForPhoneLinks" >All Flags</Link>
-                  </Dropdown.Item>
-                  
-            </Dropdown.Menu>
-          </Dropdown>
-          )} */}
-          
-
         </nav>
 
         </>

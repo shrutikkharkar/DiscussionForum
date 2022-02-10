@@ -4,6 +4,10 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const http = require('url');
+const BEPORT = process.env.BEPORT
+const BEHOST = process.env.BEHOST
+const FEPORT = process.env.FEPORT
+const FEHOST = process.env.FEHOST
 
 // REGISTER
 const signupUser = async (req, res) => {
@@ -65,7 +69,7 @@ const signupUser = async (req, res) => {
             to: savedUser.email,
             subject: 'Vefification email for your account',
             //text: 'That was easy!'
-            html: `<h1>Click <a href="http://localhost:3001/user/verifyEmail/${token}">here</a> to verify your VCETDFORUM account.</h1>`
+            html: `<h1>Click <a href="${BEHOST}:${BEPORT}/user/verifyEmail/${token}">here</a> to verify your VCETDFORUM account.</h1>`
           };
           
           transporter.sendMail(mailOptions, function(error, info){
@@ -210,7 +214,7 @@ const login = async (req, res) => {
             to: existingUser.email,
             subject: 'Vefification email for your account',
             //text: 'That was easy!'
-            html: `<h1>Click <a href="http://localhost:3001/user/verifyEmail/${token}">here</a> to verify your VCETDFORUM account.</h1>`
+            html: `<h1>Click <a href="${BEHOST}:${BEPORT}/user/verifyEmail/${token}">here</a> to verify your VCETDFORUM account.</h1>`
           };
           
           transporter.sendMail(mailOptions, function(error, info){
@@ -722,7 +726,7 @@ const sendEmailForResetPassword = async (req, res) => {
                 subject: 'Reset password for VCETDFORUM account',
                 //text: 'That was easy!'
                 html: 
-                `<h1>Click <a href="http://localhost:3001/user/verifyResetPassword/${token}">here</a> to reset your password.</h1>
+                `<h1>Click <a href="${BEHOST}:${BEPORT}/user/verifyResetPassword/${token}">here</a> to reset your password.</h1>
                 <p>Note: This link is valid only for 10 minutes.</p>`
               };
 
@@ -755,7 +759,7 @@ const verifyResetPassword = (req, res) => {
         }
         
         if(verified) {
-            res.send(`<script>window.location.href="http://localhost:3000/resetPassword/?user=${tokenToVerify}";</script>`);
+            res.send(`<script>window.location.href="${FEHOST}:${FEPORT}/resetPassword/?user=${tokenToVerify}";</script>`);
         }
         
     }

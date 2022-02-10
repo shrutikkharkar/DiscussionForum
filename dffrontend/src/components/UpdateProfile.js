@@ -15,6 +15,11 @@ function UpdateProfile() {
         getUserDetails()
     }, []);
 
+const BEPORT = process.env.REACT_APP_BEPORT
+const BEHOST = process.env.REACT_APP_BEHOST
+const FEPORT = process.env.REACT_APP_FEPORT
+const FEHOST = process.env.REACT_APP_FEHOST
+
     const {getLoggedIn} = useContext(AuthContext);
     const {getIsAdmin} = useContext(IsAdminContext);
     const history = useHistory();
@@ -26,7 +31,7 @@ function UpdateProfile() {
 
     async function getUserDetails() {
         try {
-            await axios.get('http://localhost:3001/user/getUserDetailsForUpdate')
+            await axios.get(`${BEHOST}:${BEPORT}/user/getUserDetailsForUpdate`)
             .then(res => {
                 console.log(res.data)
                 setFullName(res.data.fullName)
@@ -48,7 +53,7 @@ function UpdateProfile() {
                 fullName, Class, branch
             };
 
-            await axios.post('http://localhost:3001/user/updateProfile', updateProfileData)
+            await axios.post(`${BEHOST}:${BEPORT}/user/updateProfile`, updateProfileData)
             .then(res => {
                 toast.success(`Updated successfully`, {
                     position: "top-center",
