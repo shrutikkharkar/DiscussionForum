@@ -21,21 +21,22 @@ Functions to add:
 
 Priority-
   -searchbar for phone
-  -Add comments logo in side panel
-  -remove socket
-  -logging in..
-  -search result page search
-  -Update ckeditor toollist
-  Ckeditor in update answer page
-  -pagination error
-  
+  -remove socket*
+  -DEPLOYMENT
 
 -search algo
-  
+-react controllers
 -priviledges - 1(normal user), 2(College student), 3(Faculty/admin)
 -image bar
 -google signup
+-Add comments logo in side panel
 
+Add pagination on required pages
+logging in..
+pagination error
+Update ckeditor toollist
+Ckeditor in update answer page
+search result page search
 likedby
 Sidenav for phone
 subpart doesnot reload route

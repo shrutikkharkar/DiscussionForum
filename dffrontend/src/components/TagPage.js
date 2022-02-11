@@ -10,7 +10,6 @@ import { MdBlock, MdReportProblem, MdVerified, MdRemoveCircle, MdOutlinedFlag } 
 import { AiFillCloseCircle } from "react-icons/ai";
 import IsAdminContext from '../context/IsAdminContext';
 import {Link, Router, useHistory} from 'react-router-dom'
-// import createHistory from 'history/createBrowserHistory';
 import {createBrowserHistory} from 'history';
 import { ToastContainer, toast } from 'react-toastify';
 import Dropdown from "react-bootstrap/Dropdown";
@@ -19,8 +18,12 @@ import {LoaderProvider, useLoading, Puff} from '@agney/react-loading';
 import VCETLogo from '../Images/VCETLogo.svg'
 import PureModal from 'react-pure-modal';
 import 'react-pure-modal/dist/react-pure-modal.min.css';
-
+import { Pagination } from "react-pagination-bar"
+import 'react-pagination-bar/dist/index.css'
 function TagPage() {
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const pagePostsLimit = 5;
 
 const BEPORT = process.env.REACT_APP_BEPORT
 const BEHOST = process.env.REACT_APP_BEHOST
@@ -64,14 +67,9 @@ const FEHOST = process.env.REACT_APP_FEHOST
       ));
 
 
-      async function gotoAnswers(questionId) {
+    function gotoAnswers(questionId) {
         history.push( `/topqans/?query=${questionId}` );
-        try {
-            await axios.post(`${BEHOST}:${BEPORT}/question/addView/${questionId}`)
-        }
-        catch (err) {
-            console.error(err);
-        }
+        axios.post(`${BEHOST}:${BEPORT}/question/addView/${questionId}`)
     }
     
     async function removeQuestionByAdmin(quesId) {
@@ -517,8 +515,13 @@ const FEHOST = process.env.REACT_APP_FEHOST
       <div className="container tagPageMainDiv">
           <h1>#{tagName}</h1>
           <br />
+
+          {allTagDetails.length > 0 && (
+            <>
+            
           {
             allTagDetails
+            .slice((currentPage - 1) * pagePostsLimit, currentPage * pagePostsLimit)
             .map(tagDetail => (
             <>
             {tagDetail.type == 'answer' && (
@@ -818,7 +821,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
                     
     
                     <p className="questionDiscussion">
-                        <a onClick={(e) => gotoAnswers(tagDetail.questionID)} style={{color: 'royalblue'}} >
+                        <a onClick={() => gotoAnswers(tagDetail.questionID)} style={{color: 'royalblue'}} >
                              {tagDetail.question}
                         </a>
                         {tagDetail.tagsForQuestion && (
@@ -873,6 +876,17 @@ const FEHOST = process.env.REACT_APP_FEHOST
         </>
         )) //map
         }
+        {/* here */}
+        <Pagination
+            initialPage={currentPage}
+            itemsPerPage={pagePostsLimit}
+            onPageСhange={(pageNumber) => setCurrentPage(pageNumber)}
+            totalItems={allTagDetails.length}
+            pageNeighbours={1}
+            withProgressBar={true}
+        />
+        </>
+        )}
         <ToastContainer />
       </div> //container
   ) //return

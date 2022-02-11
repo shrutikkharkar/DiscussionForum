@@ -1,0 +1,16 @@
+.searchResultDiv{
+    /* width: 75%!important;    */
+}
+
+.askQuestionMainDiv{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.askQuestionDiv{
+    background-color: aliceblue;
+    padding: 8%;
+    border-radius: 25px;
+}
+

@@ -756,20 +756,10 @@ const search = async (req, res) => {
             {
                 $match:
                 {
-                    $or: 
-                    [ 
-                        { "question" : { $search: textToSearch }}, 
-                        { "tagsForQuestion" : { $search: textToSearch }}
-                    ]
+                    $text: { $search: textToSearch },
+                    "removedById" : {$eq: []}
                 }
             },
-            // {
-            //     $match: 
-            //     {
-            //         $text: { $search: textToSearch },
-            //         "removedById" : {$eq: []}
-            //     }
-            // },
             
             //for answer count 
             {
@@ -806,6 +796,7 @@ const search = async (req, res) => {
                 {
                     type: "question",
                     question: 1,
+                    questionID: "$_id",
                     tagsForQuestion: { $ifNull: [ "$tagsForQuestion", [] ] },
                     answerCount: {
                         $size: "$question_stats.answer"
@@ -833,21 +824,11 @@ const search = async (req, res) => {
                 }
 
                 Answer.aggregate([
-                    // {
-                    //     $match: 
-                    //     {
-                    //         $text: { $search: textToSearch },
-                    //         "removedById" : {$eq: []}
-                    //     }
-                    // },
                     {
-                        $match:
+                        $match: 
                         {
-                            $or: 
-                            [ 
-                                { "answer" : { $search: textToSearch }}, 
-                                { "tagsForAnswer" : { $search: textToSearch }}
-                            ]
+                            $text: { $search: textToSearch },
+                            "removedById" : {$eq: []}
                         }
                     },
 
@@ -995,7 +976,7 @@ const searchForUser = async (req, res) => {
                     type: "question",
                     question: 1,
                     tagsForQuestion: { $ifNull: [ "$tagsForQuestion", [] ] },
-                    questionId: "$_id",
+                    questionID: "$_id",
                     answerCount: {
                         $size: "$question_stats.answer"
                     },

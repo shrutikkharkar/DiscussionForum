@@ -1,10 +1,6 @@
 const express = require('express');
 const app = express();
 
-const BEPORT = process.env.BEPORT
-const BEHOST = process.env.BEHOST
-const FEPORT = process.env.FEPORT
-const FEHOST = process.env.FEHOST
 /* For socket io
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {cors: {origin: '*'} })
@@ -47,7 +43,7 @@ mongoose.connect(process.env.DATABASE_ACCESS,
 app.use(express.json()); // Hence we have activated bodyParser, helps to accept JSON
 app.use(cookieParser());
 app.use(cors({
-  origin: [`http://localhost:3000`],
+  origin: [`${process.env.FEHOST}:${process.env.FEPORT}`],
   credentials: true
 }));// used to accept http request from front end
 
@@ -60,7 +56,7 @@ app.use('/tag', TagListRouteUrls)
 
 
 
-const PORT = process.env.PORT || 3001
+// const PORT = process.env.PORT || 3001
 
 // app.listen(PORT, () => {
 //     console.log(`I am listening on port ${PORT}`);
@@ -69,7 +65,7 @@ const PORT = process.env.PORT || 3001
 
 
 io.on('connection', (socket) => {
-  console.log("User connected " + socket.id);
+  // console.log("User connected " + socket.id);
 
   // socket.on("message", (data) => {
   //   socket.broadcast.emit('message', data);
@@ -90,13 +86,15 @@ io.on('connection', (socket) => {
   
 
   //A special namespace "disconnect" for when a client disconnects
-  socket.on("disconnect", () => console.log("Client disconnected"));
+  socket.on("disconnect", () => 
+    console.log()
+  );
 
 })
 
 
-server.listen(PORT, () => {
-  console.log(`I am listening on port socket ${PORT}`);
+server.listen(process.env.BEPORT, () => {
+  console.log(`I am listening on port socket ${process.env.BEPORT}`);
 })
 /* For socket io
 

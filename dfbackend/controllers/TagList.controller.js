@@ -104,6 +104,7 @@ const getTagDetails = async (req, res) => {
                             $project:
                             {
                                 type: "question",
+                                questionID: "$question_details._id",
                                 question: { $ifNull: [ "$question_details.question", "none" ] },
                                 answerCount: {
                                     $size: "$question_stats.answer"
@@ -330,7 +331,7 @@ const getTagDetailsForUser = async (req, res) => {
                             {
                                 type: "question",
                                 question: { $ifNull: [ "$question_details.question", "none" ] },
-                                questionId: "$question_details._id",
+                                questionID: "$question_details._id",
                                 answerCount: {
                                     $size: "$question_stats.answer"
                                 },

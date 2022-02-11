@@ -1,4 +1,4 @@
-import React, { Component, useContext, useState } from 'react'
+import React, { Component, useContext, useState, useEffect } from 'react'
 import {Link, useHistory} from 'react-router-dom'
 import axios from "axios";
 import './Login.css'
@@ -10,11 +10,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import loginSvg from '../Images/loginSvg.svg'
 import Loading from '../Images/Loading.svg'
 import { useMediaQuery } from 'react-responsive'
-
+import { Spinner } from 'react-bootstrap';
 
 
 function Login() {
    
+
     const BEPORT = process.env.REACT_APP_BEPORT
     const BEHOST = process.env.REACT_APP_BEHOST
     const FEPORT = process.env.REACT_APP_FEPORT
@@ -157,20 +158,34 @@ function Login() {
                         </div>
 
                         <br />
-                        <button type="submit" class="btn btn-primary">
+                        
                             {loginLoading === false && (
+                            <button type="submit" className="btn btn-primary">
                                 <span>Login</span>
+                            </button>
                             )}
                             {loginLoading === true && (
-                                <span>Logging in...</span>
+                            <button className="btn btn-primary" variant="primary" disabled>
+                                <Spinner
+                                  as="span"
+                                  animation="border"
+                                  size="sm"
+                                  role="status"
+                                  aria-hidden="true"
+                                />
+                                &nbsp;Logging in...
+                            </button>
                             )}
-                        </button>
+                        
                     </form>
                     <br />
                     <Link to="/signup" style={{textDecoration: "none"}}>New User? Signup </Link>
                    
                    {status == 'success' && (
                        <p style={{color: 'green'}}>Password reset successful</p>
+                   )}
+                   {status == 'emailVerified' && (
+                       <p style={{color: 'green'}}>Email verified successfully</p>
                    )}
                 </div>
 
@@ -191,15 +206,24 @@ function Login() {
                         <br />
                         
                         {messageSent === false &&
-                        <button type="submit" class="btn btn-primary">
+                        <>
                             {resetLoading === false && (
-                                <span>Send mail</span>
+                            <button type="submit" class="btn btn-primary">Send mail</button>
                             )}
                             {resetLoading === true && (
-                                <span>Sending mail...</span>
+                            <button className="btn btn-primary" variant="primary" disabled>
+                                <Spinner
+                                  as="span"
+                                  animation="border"
+                                  size="sm"
+                                  role="status"
+                                  aria-hidden="true"
+                                />
+                                &nbsp;Sending mail...
+                            </button>
                             )}
                             
-                        </button>
+                        </>
                         }
                         {messageSent === true &&
                         <button type="submit" class="btn btn-primary" disabled>Send mail</button>

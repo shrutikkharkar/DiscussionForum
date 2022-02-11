@@ -1,0 +1,31 @@
+
+.signupDiv{
+    display: flex;
+    align-items: center;
+    background-color:aliceblue;
+    border-radius: 25px;
+    padding: 5%;
+}
+
+.updateProfileContainer{
+    background-color: aliceblue;
+    padding: 5rem;
+    border-radius: 25px
+}
+
+
+
+.classSelect, .branchSelect{
+    width: 100%;
+    padding: 1%;
+    border: 2px solid gainsboro;
+    border-radius: 5px;
+}
+
+
+@media screen and (max-width: 480px) {
+    .formForPhone{
+        width: 100%;
+        
+    }   
+}

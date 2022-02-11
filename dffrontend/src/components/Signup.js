@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './Signup.css';
 import signupSvg from '../Images/signupSvg.svg'
 import { useMediaQuery } from 'react-responsive'
-
+import { Spinner } from 'react-bootstrap';
 
 function Signup() {
 
@@ -29,7 +29,8 @@ const FEHOST = process.env.REACT_APP_FEHOST
     const [branch, setBranch] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    
+
+    const [signupLoading, setSignupLoading] = useState(false)
     const isDesktopOrLaptop = useMediaQuery({query: '(min-width: 1224px)'})
     const isBigScreen = useMediaQuery({ query: '(min-width: 1824px)' })
     const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
@@ -38,7 +39,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
 
     async function signup(e) {
         e.preventDefault() // prevent default stops page from refreshing on submit
-        
+        setSignupLoading(true)
         try {
             const registerData = {
                 fullName, email,
@@ -46,18 +47,19 @@ const FEHOST = process.env.REACT_APP_FEHOST
             };
 
             await axios.post(`${BEHOST}:${BEPORT}/user/signup`, registerData)
-            await getLoggedIn()
-            await getIsAdmin()
-            toast.success('Verification mail sent to your email!', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            history.push('/login')
+            .then(response => {
+                setSignupLoading(false)
+                toast.success('Verification mail sent to your email!', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            })
+            
 
         } catch (err) {
             console.error(err);
@@ -105,6 +107,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
                           <option value="TE">Third year (TE)</option>
                           <option value="BE">Final year (BE)</option>
                           <option value="Alumni">Alumni</option>
+                          <option value="Faculty">Faculty</option>
                         </select>
                     </div>
                     <br /> 
@@ -135,8 +138,22 @@ const FEHOST = process.env.REACT_APP_FEHOST
                     </div>
                     <br />
                         
+                    {signupLoading === false && (
+                        <button type="submit" className="btn btn-primary">Register</button>
+                    )}
+                    {signupLoading === true && (
+                        <button className="btn btn-primary" variant="primary" disabled>
+                            <Spinner
+                              as="span"
+                              animation="border"
+                              size="sm"
+                              role="status"
+                              aria-hidden="true"
+                            />
+                            &nbsp;Registering...
+                        </button>
+                    )}
                     
-                    <button type="submit" className="btn btn-primary">Register</button>
                     &nbsp; &nbsp;
                     <Link to="/login" style={{textDecoration: "none"}}>Login</Link>
                 </div>

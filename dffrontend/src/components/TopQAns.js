@@ -24,10 +24,11 @@ import 'react-pure-modal/dist/react-pure-modal.min.css';
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import { Spinner } from 'react-bootstrap';
 import CKEditorComponent from './CKEditorComponent'
 
 import io from 'socket.io-client'
+import { auto } from '@popperjs/core';
 
 
 
@@ -94,11 +95,8 @@ let socket = io(`${BEHOST}:${BEPORT}`)
         blacklist: ["xxx", "yyy", "zzz"],
         whitelist: allTagNames,
         maxTags: 6,
-        //backspace: "edit",
         placeholder: "add tags (optional)",
         dropdown: {
-            //enabled: 1, // a;ways show suggestions dropdown
-            // searchKeys: ["tagName"]
         }
       }
 
@@ -254,6 +252,7 @@ let socket = io(`${BEHOST}:${BEPORT}`)
             .then(res => {
                 setPosting(false)
                 getAllTagNames()
+                setAnswer('')
                 toast.success(`${res.data}`, {
                     position: "top-center",
                     autoClose: 5000,
@@ -660,11 +659,10 @@ let socket = io(`${BEHOST}:${BEPORT}`)
             {
             question.map(question => (
                 <div key={question.id}>
-                <p className="topQuesAnsPageAnswer">{question.question}
 
+                <div className="topQuesAnsPageAnswer">{question.question}
                 <p style={{float: 'right', color: 'cornflowerblue'}}>-{question.fullName} ({question.Class} - {question.branch})</p>
-                
-                </p>
+                </div>
 
                 <div className="questionTagAndOptionDiv">
                 {question.tagsForQuestion && (
@@ -704,19 +702,18 @@ let socket = io(`${BEHOST}:${BEPORT}`)
             }
                 
                 <hr className="hrBelowAns"/>
+
                 <p style={{fontWeight: 'bold', fontSize: '1.2rem'}}>Answers: </p>
-                
-                {/* <br /> */}
-                {/* <hr /> */}
-                
-                
+              
+                {answers.length > 0 && (
+                <>
                 {
                 answers
                 .slice((currentPage - 1) * pagePostsLimit, currentPage * pagePostsLimit)
                 .map(answer =>
-                ( 
+                // ( 
 
-                    <div className="tileForAnswers">
+                <div className="tileForAnswers">
                     
                     <div className="answeredByName">
                     <span className="answeredBy">{answer.fullName}</span>
@@ -862,8 +859,9 @@ let socket = io(`${BEHOST}:${BEPORT}`)
                 </div>
 
                 <PureModal
-                    header={answerForComment}
-
+                    // header={answerForComment}
+                    header={<p dangerouslySetInnerHTML={{ __html: answerForComment }} />}
+                    
                     className="modal-body"
 
                 width={"1000px"}
@@ -1017,11 +1015,11 @@ let socket = io(`${BEHOST}:${BEPORT}`)
 
                 </PureModal>
         
-                {/* <hr /> */}
                 </div>
 
                 </div>
-                ))}
+                // )
+                )}
                 <Pagination
                     initialPage={currentPage}
                     itemsPerPage={pagePostsLimit}
@@ -1030,6 +1028,8 @@ let socket = io(`${BEHOST}:${BEPORT}`)
                     pageNeighbours={1}
                     withProgressBar={true}
                 />
+                </>
+                )}
                 <br />
                 
                 <form onSubmit={giveAnswer}>
@@ -1041,6 +1041,9 @@ let socket = io(`${BEHOST}:${BEPORT}`)
 
                         <CKEditor
                             editor={ ClassicEditor }
+                            config={{
+                                removePlugins: ["EasyImage","ImageUpload","MediaEmbed"]
+                            }}
                             data="<p>Write answer here..</p>"
                             onChange={ ( event, editor ) => {
                                 const data = editor.getData();
@@ -1048,21 +1051,7 @@ let socket = io(`${BEHOST}:${BEPORT}`)
                             } }
 
                         />
-                        {/* <CKEditorComponent data={"Write answer hereee.."}
-                        onChange={() => {setAnswer(data)}}
-                        /> */}
-
-                        {/* <CKEditorComponent 
-                            data={"<p>Write answer here..</p>"} 
-                            onChange={( event, editor ) => 
-                                {
-                                    const data = editor.getData();
-                                    setAnswer(data)
-                                }
-                            }
                         
-
-                        /> */}
                         <Tags 
                             tagifyRef={tagifyRef1}
                             settings={settings}
@@ -1076,7 +1065,16 @@ let socket = io(`${BEHOST}:${BEPORT}`)
                     )}
                     
                     {posting === true && (
-                        <button type="submit" className="btn btn-secondary">Posting...</button>
+                    <button className="btn btn-secondary" variant="secondary" disabled>
+                        <Spinner
+                          as="span"
+                          animation="border"
+                          size="sm"
+                          role="status"
+                          aria-hidden="true"
+                        />
+                        &nbsp;Posting...
+                    </button>
                     )}
                     
                     

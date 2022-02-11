@@ -1,0 +1,47 @@
+.loginContainer, .signupContainer{
+    /* display: inline-block;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    align-items: center;
+    margin-top: 10vh;
+    margin-bottom: auto;
+    margin-left: 30%; */
+
+}
+
+.loginDiv{
+    display: flex;
+    align-items: center;
+    background-color:aliceblue;
+    border-radius: 25px;
+}
+
+.signupDiv{
+    display: flex;
+    align-items: center;
+    background-color:aliceblue;
+    border-radius: 25px;
+    padding: 5%;
+}
+
+.classSelect, .branchSelect{
+    border: none;
+    width: 100%;
+    padding: 1%;
+}
+
+@media screen and (max-width: 480px) {
+    .formForPhone{
+        width: 100%;
+        
+    }   
+
+    .loginDiv{
+        display: flex;
+        flex-direction: column;
+        margin-left: 2%;
+        margin-right: 2%;
+        width: 80%;
+    }
+}
