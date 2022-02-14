@@ -12,7 +12,6 @@ import Answered from './components/Answered';
 import Questioned from './components/Questioned';
 import NavigationFunctions from './components/NavigationFunctions';
 import NavigationFunctionsForPhone from './components/NavigationFunctionsForPhone';
-import CommentBox from './components/CommentBox';
 import UpdateProfile from './components/UpdateProfile';
 import ResetPassword from './components/ResetPassword';
 import TagPage from './components/TagPage';
@@ -65,8 +64,6 @@ function Router() {
                         <Route path="/topqans"><TopQAns /></Route>
 
                         <Route path="/askQuestion"><AskQuestion /></Route>
-
-                        <Route path="/comments"><CommentBox /></Route>
 
                         <Route path="/resetPassword"><ResetPassword /></Route>
 

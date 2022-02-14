@@ -75,7 +75,7 @@ const getTagDetails = async (req, res) => {
                             $lookup: 
                             {
                                 from: 'answers', 
-                                localField: 'question_details.questionID', 
+                                localField: 'question_details._id', 
                                 foreignField: 'questionID',
                                 as: 'question_stats'
                             }
@@ -301,7 +301,7 @@ const getTagDetailsForUser = async (req, res) => {
                             $lookup: 
                             {
                                 from: 'answers', 
-                                localField: 'question_details.questionID', 
+                                localField: 'question_details._id', 
                                 foreignField: 'questionID',
                                 as: 'question_stats'
                             }

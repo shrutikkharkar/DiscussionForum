@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, useEffect } from 'react'
+import React, { useCallback, useState, useRef, useEffect, useContext } from 'react'
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +9,7 @@ import Tags from "@yaireo/tagify/dist/react.tagify" // React-wrapper file
 import "@yaireo/tagify/dist/tagify.css" // Tagify CSS
 import AskQuestionSvg from '../Images/AskQuestion.svg'
 import { useMediaQuery } from 'react-responsive'
+import SocketContext from '../context/SocketContext'
 
 function AskQuestion() {
 
@@ -20,6 +21,8 @@ function AskQuestion() {
     const BEHOST = process.env.REACT_APP_BEHOST
     const FEPORT = process.env.REACT_APP_FEPORT
     const FEHOST = process.env.REACT_APP_FEHOST
+
+    const {socket} = useContext(SocketContext)
 
     const history = useHistory();
     const [question, setQuestion] = useState('')
@@ -84,6 +87,7 @@ function AskQuestion() {
                 progress: undefined,
             });
             history.push('/')
+            socket.emit('newQuestion', "questionListPage");
         })
         }
         catch (err) {

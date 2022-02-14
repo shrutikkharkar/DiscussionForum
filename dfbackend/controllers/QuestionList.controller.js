@@ -28,7 +28,7 @@ const askQuestion = async (req, res) => {
 
         const savedQuestion = await submittedQuestion.save()
         .then(data => {
-            res.json({message: 'Question submitted successfully'})
+            res.send({questionId: savedQuestion._id}).json({message: 'Question submitted successfully'})
         })
         .catch(err => {
             res.json({message: 'Error submitting question'})

@@ -79,7 +79,7 @@ const postAnswer = async (req, res) => {
                 }
             });
         }
-        return res.status(200).json('Answer submitted successfully!');
+        return res.send(questionID).status(200);
 
         // return res.json(savedAnswer);
 
@@ -139,10 +139,6 @@ const likeAnswer = async (req, res) => {
         )
         .then((answers) => {
             if(answers){
-
-                // socket.on("madeChange", () => {
-                //     socket.emit('madeChange');
-                // })
                 
                 res.send("Liked successfully");
             }

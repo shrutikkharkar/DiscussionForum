@@ -1,8 +1,8 @@
 .searchInputs {
   display: inline-flex;
   flex-direction: row;
-  position: absolute;
-  margin-top: -1rem;
+  /* position: absolute;
+  margin-top: -1rem; */
 }
 
 .search{
@@ -92,8 +92,11 @@ p:hover {
     margin-top: 0;
     /* width: 50%; */
   }
-  /* .searchIcon{
-    width: 50%
-  } */
+  .search input {
+    
+    padding: 10px;
+    height: 35px;
+    width: 60%;
+  }
 }
 

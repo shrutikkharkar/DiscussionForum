@@ -19,6 +19,7 @@ const NavigationFunctionsForPhone = (props) => {
 
     const {isAdmin} = useContext(IsAdminContext);
 
+    var shouldDisplay = props.show
 
     return (
         <>
@@ -27,12 +28,13 @@ const NavigationFunctionsForPhone = (props) => {
             <SideNav
             onSelect={(selected) => {
                 const to = '/' + selected;
+
                 if (to) {
                     history.push(to);
                 }
             }}
             
-            style={{ backgroundColor: '#242f40', position: 'fixed', display: props.show}}
+            style={{ backgroundColor: '#242f40', position: 'fixed', display: shouldDisplay}}
             // #c8ccd3;
             className='SideNav'
             expanded={true}

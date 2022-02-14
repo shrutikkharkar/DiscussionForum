@@ -1,12 +1,6 @@
 const express = require('express');
 const app = express();
 
-/* For socket io
-const server = require('http').createServer(app);
-const io = require('socket.io')(server, {cors: {origin: '*'} })
-
-
-For socket io */
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {cors: {origin: '*'} })
@@ -65,16 +59,51 @@ app.use('/tag', TagListRouteUrls)
 
 
 io.on('connection', (socket) => {
-  // console.log("User connected " + socket.id);
+  console.log("User connected " + socket.id);
+  console.log( socket.client.conn.server.clientsCount + " users connected" );
 
   // socket.on("message", (data) => {
   //   socket.broadcast.emit('message', data);
   //   //use broadcast when message is to be sent to everyone except you  madeChange
   // })
-  socket.on("makeChange", (data) => {
-    io.sockets.emit('madeChange', data);
-    //use broadcast when message is to be sent to everyone except you  madeChange
-  })
+
+  // socket.on("makeChange", (data) => {
+  //   io.sockets.emit('madeChange', data);
+  //   //use broadcast when message is to be sent to everyone except you  madeChange
+  // })
+
+  // socket.on('askQuestion', (data) => {
+  //   console.log(data);
+  //   io.sockets.emit('askedQuestion', "Someone has just asked a question!");
+  // })
+
+  let onJoinAnswerPage = (data) => {
+    socket.join(data.questionID); // We are using room of socket io
+    console.log("QUESTION ID " + data.questionID)
+
+    socket.on('newAnswer', function(data){
+      io.sockets.in(data.questionID).emit('getNewAnswers', {msg: 'New answer to this question'});
+    })
+  }
+  socket.on('join', onJoinAnswerPage);
+  socket.off('join', onJoinAnswerPage);
+
+
+  let onJoinQuestionPage = (data) => {
+    socket.join(data); // We are using room of socket io
+    console.log("Joined QUESTION page " + data)
+
+    socket.on('newQuestion', function(data){
+      io.sockets.in(data).emit('getNewQuestions', {msg: 'New question added'});
+    })
+  }
+  socket.on('joinQuestionPage', onJoinQuestionPage);
+  socket.off('joinQuestionPage', onJoinQuestionPage);
+
+  
+
+
+  // io.sockets.in('id').emit('askedQuestion', {msg: 'Someone asked new message'});
 
   // socket.on('sendLikedNotification', function (data) {
   //   socket.join(data.id); // We are using room of socket io
@@ -86,9 +115,10 @@ io.on('connection', (socket) => {
   
 
   //A special namespace "disconnect" for when a client disconnects
-  socket.on("disconnect", () => 
-    console.log()
-  );
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+    socket.removeAllListeners();
+  });
 
 })
 

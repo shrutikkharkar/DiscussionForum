@@ -3,6 +3,7 @@ import axios from 'axios'
 import './TopQAns.css'
 import AuthContext from '../context/AuthContext'
 import IsAdminContext from '../context/IsAdminContext';
+import SocketContext from '../context/SocketContext'
 import { BiLike, BiDislike, BiCommentDetail, BiBookmark } from "react-icons/bi";
 import { HiDotsVertical } from "react-icons/hi";
 import { MdBlock, MdReportProblem, MdVerified, MdRemoveCircle, MdOutlinedFlag } from "react-icons/md";
@@ -25,11 +26,11 @@ import 'react-pure-modal/dist/react-pure-modal.min.css';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Spinner } from 'react-bootstrap';
-import CKEditorComponent from './CKEditorComponent'
 
 import io from 'socket.io-client'
 import { auto } from '@popperjs/core';
 
+import {likeAnswer} from '../Controllers.js'
 
 
 function TopQAns() {
@@ -39,10 +40,12 @@ const BEHOST = process.env.REACT_APP_BEHOST
 const FEPORT = process.env.REACT_APP_FEPORT
 const FEHOST = process.env.REACT_APP_FEHOST
 
-let socket = io(`${BEHOST}:${BEPORT}`)
+// let socket = io(`${BEHOST}:${BEPORT}`)
 
     const {loggedIn} = useContext(AuthContext);
     const {isAdmin} = useContext(IsAdminContext);
+    const {socket} = useContext(SocketContext)
+
     const history = useHistory();
     const queryParams = new URLSearchParams(window.location.search);
 
@@ -161,13 +164,42 @@ let socket = io(`${BEHOST}:${BEPORT}`)
         getQuestion()
         getAnswers()
         getAllTagNames()
+        socket.on('connection')
+        socket.emit('join', {questionID});
 
     }, []);
 
 
-    socket.on('madeChange', (data) => {
+    // socket.on('madeChange', (data) => {
+    //     getAnswers()
+    // })
+
+    // socket.on("newAnswer", function(data) {
+    //     getAnswers()
+    //     // toast.dark(data.msg, {
+    //     //     position: "top-center",
+    //     //     autoClose: 4000,
+    //     //     hideProgressBar: false,
+    //     //     closeOnClick: true,
+    //     //     pauseOnHover: true,
+    //     //     draggable: true,
+    //     //     progress: undefined,
+    //     // });
+    // })
+
+    socket.off('getNewAnswers').on('getNewAnswers', () => {
         getAnswers()
-    })
+        console.log("came")
+        toast.dark("Someone just added a new answer!", {
+            position: "top-center",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    });
 
     
 
@@ -218,6 +250,7 @@ let socket = io(`${BEHOST}:${BEPORT}`)
                 await axios.get(`${BEHOST}:${BEPORT}/answer/getForUser/${questionID}`)
                 .then(response => {
                     setAnswers(response.data);
+                    console.log(response.data);
                     setGotAnswers(true);
                 })
             }
@@ -225,6 +258,7 @@ let socket = io(`${BEHOST}:${BEPORT}`)
                 await axios.get(`${BEHOST}:${BEPORT}/answer/get/${questionID}`)
                 .then(response => {
                     setAnswers(response.data);
+                    console.log(response.data);
                     setGotAnswers(true);
                 })
             }
@@ -253,7 +287,7 @@ let socket = io(`${BEHOST}:${BEPORT}`)
                 setPosting(false)
                 getAllTagNames()
                 setAnswer('')
-                toast.success(`${res.data}`, {
+                toast.success("Answer submitted successfully!", {
                     position: "top-center",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -264,7 +298,8 @@ let socket = io(`${BEHOST}:${BEPORT}`)
                     });
                 getAnswers()
                 clearAll()
-                socket.emit('makeChange', "Hello");
+                // socket.emit('makeChange', "Hello");
+                socket.emit('newAnswer', {questionID: res.data});
                 
             })
                
@@ -335,6 +370,14 @@ let socket = io(`${BEHOST}:${BEPORT}`)
             console.error(err);
         }
     }
+
+    // const likeAnswer = async (req, res) => {
+
+    // }
+    // let LikeAnswer = likeAnswer(ansId, answeredById)
+    // LikeAnswer.then( res => {
+    //     setAnswers(res)
+    // })
 
     function removeLike(answerId) {
         try {

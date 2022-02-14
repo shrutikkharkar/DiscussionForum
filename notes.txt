@@ -15,6 +15,7 @@ BUGS:
 1. history.push doesnot update data when in the same route
 2. Blocked answer shows wrong blocked by
 3. Improve latency of like and dislike
+4. Pagination disappears when deleted all on 2nd page
 
 Functions to add:
 -Avoid brute force
@@ -23,6 +24,9 @@ Priority-
   -searchbar for phone
   -remove socket*
   -DEPLOYMENT
+  -socket sends multiple responses
+
+  -Show which user is currently active
 
 -search algo
 -react controllers
