@@ -1,13 +1,14 @@
-.loginContainer, .signupContainer{
-    /* display: inline-block;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    align-content: center;
+.googleButton{
+    border: 1px solid #ced4da;
+    background-color: white;
+    border-radius: 7px;
+    width: 50%;
+    font-size: 1.2rem;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    margin-top: 10vh;
-    margin-bottom: auto;
-    margin-left: 30%; */
-
 }
 
 .loginDiv{

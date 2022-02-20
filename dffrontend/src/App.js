@@ -4,8 +4,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AuthContextProvider } from './context/AuthContext';
 import { IsAdminContextProvider } from './context/IsAdminContext';
-import {SocketContextProvider} from './context/SocketContext';
-import io from 'socket.io-client'
+import { SocketContextProvider } from './context/SocketContext';
 
 const BEPORT = process.env.REACT_APP_BEPORT
 const BEHOST = process.env.REACT_APP_BEHOST

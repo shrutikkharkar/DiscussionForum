@@ -166,7 +166,6 @@ const verifyEmail = async (req, res) => {
 //LOGIN
 const login = async (req, res) => {
     try{
-
         // VALIDATE
         const {email, password} = req.body;
 
@@ -250,14 +249,8 @@ const login = async (req, res) => {
                 // Send the token in a HTTP only cookie
                 res.cookie("token", token, {httpOnly: true}).send();
 
-
-                // console.log(token);
             }
         })
-
-
-        
-
     } 
     catch (err) {
         console.error(err);
@@ -265,6 +258,89 @@ const login = async (req, res) => {
     }
 };
 
+
+const Googlelogin = async (req, res) => {
+    try{
+        // VALIDATE
+        const email = req.body.email;
+        
+        const existingUser = await User.findOne({email});
+        if(!existingUser)
+            return res.status(401).send('User does not exist, please Sign Up!');
+
+        // Logic for unverified user
+        User.findOne({
+            _id: existingUser._id,
+            verified: false
+        })
+        .then((isUnverified) => {
+            if(isUnverified){
+
+        // SEND USER VERIFICATION MAIL
+
+        const token = jwt.sign({user: existingUser._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1 day'});
+
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: process.env.MY_EMAIL,
+              pass: process.env.MY_PASSWORD
+            }
+          });
+          
+          var mailOptions = {
+            from: process.env.MY_EMAIL,
+            // to: savedUser.email,
+            to: existingUser.email,
+            subject: 'Vefification email for your account',
+            //text: 'That was easy!'
+            html: `<h1>Click <a href="${process.env.BEHOST}:${process.env.BEPORT}/user/verifyEmail/${token}">here</a> to verify your account.</h1>`
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+
+        // SEND USER VERIFICATION MAIL
+
+                return res.status(401).cookie("token", "", {
+                    httpOnly: true,
+                    expires: new Date(0)
+                }).send('Please verify your email address. We have sent a verification mail to your registered email.'); 
+                
+            }
+        })
+
+
+
+        // If user is blocked by admin
+        User.findOne({
+            _id: existingUser._id,
+            blockedById: {$ne: []}
+        })
+        .then((isBlocked) => {
+            if(isBlocked){
+                return res.status(401).send('Your profile is blocked by the admins');
+            }
+            else{
+                // Sign the token
+                const token = jwt.sign({user: existingUser._id}, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1 day'});
+
+                // Send the token in a HTTP only cookie
+                res.cookie("token", token, {httpOnly: true}).send();
+
+            }
+        })
+    } 
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
 
 
 //LOGOUT
@@ -810,7 +886,7 @@ const resetPassword = async (req, res) => {
 
 module.exports = userController = {
     signupUser,
-    login, logout, verifyEmail,
+    login, Googlelogin, logout, verifyEmail,
     checkIfLoggedIn,
     getFullNameAndIsCollegeId,
     checkIfAdmin,

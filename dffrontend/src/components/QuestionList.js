@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import axios from 'axios'
-import {useHistory} from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import './QuestionList.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,24 +13,33 @@ import {LoaderProvider, useLoading, Puff} from '@agney/react-loading';
 import SearchBar from './SearchBar'
 import { Pagination } from "react-pagination-bar"
 import 'react-pagination-bar/dist/index.css'
-import SocketContext from '../context/SocketContext'
+import io from "socket.io-client"
+import SocketContext from '../context/SocketContext';
+
+// const socket = io.connect(`${process.env.REACT_APP_BEHOST}:${process.env.REACT_APP_BEPORT}`)
 
 function QuestionList() {
+
+const location = useLocation();
 
 const BEPORT = process.env.REACT_APP_BEPORT
 const BEHOST = process.env.REACT_APP_BEHOST
 const FEPORT = process.env.REACT_APP_FEPORT
 const FEHOST = process.env.REACT_APP_FEHOST
 
-const {socket} = useContext(SocketContext)
-
 const history = useHistory();
 
 const [questions, setQuestions] = useState([]); 
+
+
+const {socket} = useContext(SocketContext);
+
 useEffect(() => {
+
+    // socket.emit('leaveAllRooms', 'leaveAllRooms');
+    socket.emit('joinQuestionPage', 'questionListPage');
     setTimeout(() => questionList(), 500);
-    socket.on('connection')
-    socket.emit('joinQuestionPage', "questionListPage");
+    
 }, []);
 
 

@@ -25,7 +25,6 @@ import 'react-pure-modal/dist/react-pure-modal.min.css';
 import { Pagination } from "react-pagination-bar"
 import 'react-pagination-bar/dist/index.css'
 
-import io from 'socket.io-client'
 
 
 
@@ -43,7 +42,6 @@ function Answered() {
     const FEPORT = process.env.REACT_APP_FEPORT
     const FEHOST = process.env.REACT_APP_FEHOST
 
-    let socket = io(`${BEHOST}:${BEPORT}`)
 
     const {loggedIn} = useContext(AuthContext);
     const {isAdmin} = useContext(IsAdminContext);
@@ -116,12 +114,6 @@ function Answered() {
     const clearAll = () => {
       tagifyRef1.current && tagifyRef1.current.removeAllTags()
     }
-
-
-    socket.on('madeChange', (data) => {
-        getAnswers()
-    })
-
 
 
     async function getAllTagNames() {

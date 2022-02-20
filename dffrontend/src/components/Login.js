@@ -4,14 +4,14 @@ import axios from "axios";
 import './Login.css'
 import AuthContext from '../context/AuthContext';
 import IsAdminContext from '../context/IsAdminContext';
-import GoogleLogin from 'react-google-login'
+import {GoogleLogin} from 'react-google-login'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import loginSvg from '../Images/loginSvg.svg'
 import Loading from '../Images/Loading.svg'
 import { useMediaQuery } from 'react-responsive'
 import { Spinner } from 'react-bootstrap';
-
+import { FcGoogle } from "react-icons/fc";
 
 function Login() {
    
@@ -121,6 +121,37 @@ function Login() {
 
     }
 
+
+    const googleSuccess = async (res) => {
+        const result = res?.profileObj;
+        const token = res?.tokenId;
+        try {
+            // const data = {result, token};
+            
+            await axios.post(`${BEHOST}:${BEPORT}/user/Googlelogin`, result)
+            await getLoggedIn()
+            await getIsAdmin()
+            .then(res => {
+                history.push('/');
+            }) 
+        }
+        catch (err) {
+            console.error(err);
+        }
+    };
+
+    const googleFailure = (err) => {
+        console.log(err);
+        toast.dark("Error logging in using Google. Try other method", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    };
   
 
         return (
@@ -143,6 +174,31 @@ function Login() {
                 {showForm == 'login' && (
                 <div className="loginContainer container col-md-12" >
                     <h3>Login</h3>
+                    <br />
+
+                    <GoogleLogin
+                        clientId="555182318922-l4782f27cskhq5fic7i6krab84ri2n3d.apps.googleusercontent.com"
+                        render={(renderProps) => (
+                            <button 
+                                className="googleButton" 
+                                fullWidth 
+                                onClick={renderProps.onClick}
+                                disabled={renderProps.disabled}
+                                // startIcon={<FcGoogle />}
+                                variant="contained"
+                            >
+                                <FcGoogle /> &nbsp;
+                                Continue using Google
+                            </button>
+                        )}
+
+                        onSuccess={googleSuccess}
+                        onFailure={googleFailure}
+                        cookiePolicy="single_host_origin"
+                    />
+
+                    <br />
+                    <p><b>or</b></p>
 
                     <form className="formForPhone" onSubmit={login}>
                         <div className="form-group col-md-6">
@@ -179,6 +235,9 @@ function Login() {
                         
                     </form>
                     <br />
+
+                    
+
                     <Link to="/signup" style={{textDecoration: "none"}}>New User? Signup </Link>
                    
                    {status == 'success' && (

@@ -3,12 +3,11 @@ import axios from 'axios'
 import './TopQAns.css'
 import AuthContext from '../context/AuthContext'
 import IsAdminContext from '../context/IsAdminContext';
-import SocketContext from '../context/SocketContext'
 import { BiLike, BiDislike, BiCommentDetail, BiBookmark } from "react-icons/bi";
 import { HiDotsVertical } from "react-icons/hi";
 import { MdBlock, MdReportProblem, MdVerified, MdRemoveCircle, MdOutlinedFlag } from "react-icons/md";
 import { AiFillCloseCircle } from "react-icons/ai";
-import {Link, useHistory} from 'react-router-dom'
+import {Link, useHistory, useLocation} from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import Dropdown from "react-bootstrap/Dropdown";
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,7 +26,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Spinner } from 'react-bootstrap';
 
-import io from 'socket.io-client'
+import SocketContext from '../context/SocketContext';
 import { auto } from '@popperjs/core';
 
 import {likeAnswer} from '../Controllers.js'
@@ -35,16 +34,18 @@ import {likeAnswer} from '../Controllers.js'
 
 function TopQAns() {
 
+const location = useLocation();
+
 const BEPORT = process.env.REACT_APP_BEPORT
 const BEHOST = process.env.REACT_APP_BEHOST
 const FEPORT = process.env.REACT_APP_FEPORT
 const FEHOST = process.env.REACT_APP_FEHOST
 
+const {socket} = useContext(SocketContext);
 // let socket = io(`${BEHOST}:${BEPORT}`)
 
     const {loggedIn} = useContext(AuthContext);
     const {isAdmin} = useContext(IsAdminContext);
-    const {socket} = useContext(SocketContext)
 
     const history = useHistory();
     const queryParams = new URLSearchParams(window.location.search);
@@ -161,12 +162,13 @@ const FEHOST = process.env.REACT_APP_FEHOST
 
 
     useEffect(() => {
+
+        // socket.emit('leaveAllRooms', 'leaveAllRooms');
         getQuestion()
         getAnswers()
         getAllTagNames()
-        socket.on('connection')
         socket.emit('join', {questionID});
-
+        
     }, []);
 
 

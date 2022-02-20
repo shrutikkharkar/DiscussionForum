@@ -23,6 +23,7 @@ function Questioned() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const pagePostsLimit = 5;
+    const [getTotalItems, setTotalItems] = useState(0);
 
 const BEPORT = process.env.REACT_APP_BEPORT
 const BEHOST = process.env.REACT_APP_BEHOST
@@ -102,6 +103,7 @@ async function questionList() {
     {
         await axios.get(`${BEHOST}:${BEPORT}/question/questioned`)
         .then(response => {
+            setTotalItems(response.data.length)
             setGotQuestioned(true)
             console.log(response.data)
             setQuestions(response.data);
@@ -364,7 +366,7 @@ function Search(){
             initialPage={currentPage}
             itemsPerPage={pagePostsLimit}
             onPageСhange={(pageNumber) => setCurrentPage(pageNumber)}
-            totalItems={questions.length}
+            totalItems={getTotalItems}
             pageNeighbours={1}
             withProgressBar={true}
         />

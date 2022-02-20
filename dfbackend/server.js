@@ -24,7 +24,9 @@ dotenv.config(); //create process.env on run
 mongoose.connect(process.env.DATABASE_ACCESS, 
   {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
   }, 
   (err) => 
   {
@@ -62,55 +64,49 @@ io.on('connection', (socket) => {
   console.log("User connected " + socket.id);
   console.log( socket.client.conn.server.clientsCount + " users connected" );
 
-  // socket.on("message", (data) => {
-  //   socket.broadcast.emit('message', data);
-  //   //use broadcast when message is to be sent to everyone except you  madeChange
-  // })
+  socket.lastRoom = null;
 
-  // socket.on("makeChange", (data) => {
-  //   io.sockets.emit('madeChange', data);
-  //   //use broadcast when message is to be sent to everyone except you  madeChange
-  // })
-
-  // socket.on('askQuestion', (data) => {
-  //   console.log(data);
-  //   io.sockets.emit('askedQuestion', "Someone has just asked a question!");
-  // })
-
-  let onJoinAnswerPage = (data) => {
-    socket.join(data.questionID); // We are using room of socket io
-    console.log("QUESTION ID " + data.questionID)
-
-    socket.on('newAnswer', function(data){
-      io.sockets.in(data.questionID).emit('getNewAnswers', {msg: 'New answer to this question'});
-    })
-  }
-  socket.on('join', onJoinAnswerPage);
-  socket.off('join', onJoinAnswerPage);
-
-
-  let onJoinQuestionPage = (data) => {
+  socket.on('joinQuestionPage', function (data) {
+    if (socket.lastRoom) {
+      socket.leave(socket.lastRoom);
+      console.log('LEFT: ' + socket.lastRoom)
+      socket.lastRoom = null;
+    }
+    
+    
     socket.join(data); // We are using room of socket io
+    socket.lastRoom = data;
     console.log("Joined QUESTION page " + data)
 
     socket.on('newQuestion', function(data){
-      io.sockets.in(data).emit('getNewQuestions', {msg: 'New question added'});
+      // io.sockets.in(data).broadcast('getNewQuestions', {msg: 'New question added'});
+      socket.broadcast.to(data).emit('getNewQuestions', {msg: 'New question added'});
     })
-  }
-  socket.on('joinQuestionPage', onJoinQuestionPage);
-  socket.off('joinQuestionPage', onJoinQuestionPage);
 
-  
+    console.log("In question page: " + io.sockets.adapter.rooms.get(data).size )
+
+  });
 
 
-  // io.sockets.in('id').emit('askedQuestion', {msg: 'Someone asked new message'});
 
-  // socket.on('sendLikedNotification', function (data) {
-  //   socket.join(data.id); // We are using room of socket io
 
-  //   io.sockets.in(data.id).emit('new_msg', {msg: 'Someone Liked your post'});
+  socket.on('join', function (data) {
+    if (socket.lastRoom) {
+      socket.leave(socket.lastRoom);
+      console.log('LEFT: ' + socket.lastRoom)
+      socket.lastRoom = null;
+    }
 
-  // });
+    socket.join(data.questionID); // We are using room of socket io
+    socket.lastRoom = data.questionID;
+    console.log("QUESTION ID " + data.questionID)
+
+    socket.on('newAnswer', function(data){
+      // io.sockets.in(data.questionID).emit('getNewAnswers', {msg: 'New answer to this question'});
+      socket.broadcast.to(data.questionID).emit('getNewAnswers', {msg: 'New answer to this question'});
+    })
+
+  });
 
   
 
@@ -119,6 +115,7 @@ io.on('connection', (socket) => {
     console.log("User disconnected");
     socket.removeAllListeners();
   });
+
 
 })
 

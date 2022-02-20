@@ -22,7 +22,6 @@ import 'react-pure-modal/dist/react-pure-modal.min.css';
 import { Pagination } from "react-pagination-bar"
 import 'react-pagination-bar/dist/index.css'
 
-import io from 'socket.io-client'
 
 
 function Liked() {
@@ -40,7 +39,6 @@ function Liked() {
     const [currentPage, setCurrentPage] = useState(1);
     const pagePostsLimit = 5;
 
-    let socket = io(`${BEHOST}:${BEPORT}`)
     const {loggedIn} = useContext(AuthContext);
     const {isAdmin} = useContext(IsAdminContext);
     const history = useHistory();
@@ -113,11 +111,6 @@ function Liked() {
     const clearAll = () => {
       tagifyRef1.current && tagifyRef1.current.removeAllTags()
     }
-
-
-    socket.on('madeChange', (data) => {
-        getAnswers()
-    })
 
 
 

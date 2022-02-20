@@ -22,8 +22,6 @@ import "@yaireo/tagify/dist/tagify.css" // Tagify CSS
 import PureModal from 'react-pure-modal';
 import 'react-pure-modal/dist/react-pure-modal.min.css';
 
-import io from 'socket.io-client'
-
 
 function Saved() {
 
@@ -37,7 +35,6 @@ const BEHOST = process.env.REACT_APP_BEHOST
 const FEPORT = process.env.REACT_APP_FEPORT
 const FEHOST = process.env.REACT_APP_FEHOST
 
-let socket = io(`${BEHOST}:${BEPORT}`)
 
     const [currentPage, setCurrentPage] = useState(1);
     const pagePostsLimit = 5;
@@ -114,12 +111,6 @@ let socket = io(`${BEHOST}:${BEPORT}`)
     const clearAll = () => {
       tagifyRef1.current && tagifyRef1.current.removeAllTags()
     }
-
-
-    socket.on('madeChange', (data) => {
-        getAnswers()
-    })
-
 
 
     async function getAllTagNames() {

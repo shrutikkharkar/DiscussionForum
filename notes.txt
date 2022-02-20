@@ -27,14 +27,15 @@ Priority-
   -socket sends multiple responses
 
   -Show which user is currently active
+  -Make answer tile as a component
 
 -search algo
 -react controllers
 -priviledges - 1(normal user), 2(College student), 3(Faculty/admin)
 -image bar
--google signup
 -Add comments logo in side panel
 
+google signup
 Add pagination on required pages
 logging in..
 pagination error

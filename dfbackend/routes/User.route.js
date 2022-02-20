@@ -20,6 +20,8 @@ router.get('/verifyEmail/:id', userController.verifyEmail);
 //LOGIN
 router.post('/login', userController.login);
 
+router.post('/Googlelogin', userController.Googlelogin);
+
 
 //LOGOUT
 router.get('/logout', auth, userController.logout);

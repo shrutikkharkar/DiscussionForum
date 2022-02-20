@@ -102,6 +102,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
                 <option value="TE">TE</option>
                 <option value="BE">BE</option>
                 <option value="Alumni">Alumni</option>
+                <option value="Faculty">Faculty</option>
                 </select>
             
                 <br /><br />

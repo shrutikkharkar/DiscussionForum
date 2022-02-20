@@ -9,7 +9,7 @@ import Tags from "@yaireo/tagify/dist/react.tagify" // React-wrapper file
 import "@yaireo/tagify/dist/tagify.css" // Tagify CSS
 import AskQuestionSvg from '../Images/AskQuestion.svg'
 import { useMediaQuery } from 'react-responsive'
-import SocketContext from '../context/SocketContext'
+import SocketContext from '../context/SocketContext';
 
 function AskQuestion() {
 
@@ -17,12 +17,14 @@ function AskQuestion() {
         getAllTagNames()
     }, []);
 
+    const {socket} = useContext(SocketContext);
+    // socket.emit('leaveAllRooms', 'leaveAllRooms');
+
     const BEPORT = process.env.REACT_APP_BEPORT
     const BEHOST = process.env.REACT_APP_BEHOST
     const FEPORT = process.env.REACT_APP_FEPORT
     const FEHOST = process.env.REACT_APP_FEHOST
 
-    const {socket} = useContext(SocketContext)
 
     const history = useHistory();
     const [question, setQuestion] = useState('')
