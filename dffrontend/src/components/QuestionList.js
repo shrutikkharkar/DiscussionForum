@@ -42,19 +42,36 @@ useEffect(() => {
     
 }, []);
 
+var acknowledged = [];
 
-socket.off('getNewQuestions').on('getNewQuestions', () => {
-    questionList()
-    console.log("Called")
-    toast.dark("Someone just asked a new question!", {
-        position: "top-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-    });
+socket.off('getNewQuestions').on('getNewQuestions', (data) => {
+
+    if(!~acknowledged.indexOf(data.event_id)){
+
+        // add to array of acknowledged events
+        acknowledged.unshift(data.event_id);
+
+        // prevent array from growing to large
+        
+
+            questionList()
+            console.log("Called")
+            toast.dark("Someone just asked a new question!", {
+                position: "top-center",
+                autoClose: 4000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+
+        
+
+        // handle once per event 
+
+    }
+    
 });
 
 

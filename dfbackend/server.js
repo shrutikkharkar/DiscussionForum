@@ -73,14 +73,12 @@ io.on('connection', (socket) => {
       socket.lastRoom = null;
     }
     
-    
     socket.join(data); // We are using room of socket io
     socket.lastRoom = data;
     console.log("Joined QUESTION page " + data)
 
     socket.on('newQuestion', function(data){
-      // io.sockets.in(data).broadcast('getNewQuestions', {msg: 'New question added'});
-      socket.broadcast.to(data).emit('getNewQuestions', {msg: 'New question added'});
+      socket.broadcast.to(data).emit('getNewQuestions', {msg: 'New question added', event_id: '1'});
     })
 
     console.log("In question page: " + io.sockets.adapter.rooms.get(data).size )
@@ -102,8 +100,7 @@ io.on('connection', (socket) => {
     console.log("QUESTION ID " + data.questionID)
 
     socket.on('newAnswer', function(data){
-      // io.sockets.in(data.questionID).emit('getNewAnswers', {msg: 'New answer to this question'});
-      socket.broadcast.to(data.questionID).emit('getNewAnswers', {msg: 'New answer to this question'});
+      socket.broadcast.to(data.questionID).emit('getNewAnswers', {msg: 'New answer to this question', event_id: '1'});
     })
 
   });

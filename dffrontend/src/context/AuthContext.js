@@ -7,8 +7,6 @@ function AuthContextProvider(props) {
 
 const BEPORT = process.env.REACT_APP_BEPORT
 const BEHOST = process.env.REACT_APP_BEHOST
-const FEPORT = process.env.REACT_APP_FEPORT
-const FEHOST = process.env.REACT_APP_FEHOST
 
     const [loggedIn, setLoggedIn] = useState(undefined);
 

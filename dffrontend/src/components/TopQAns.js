@@ -129,38 +129,6 @@ const {socket} = useContext(SocketContext);
     }
 
 
-    // callbacks for all of Tagify's events:
-    // onTagifyAdd = e => {
-    //     console.log('added:', e.detail);
-    // }
-
-    // onTagifyRemove = e => {
-    //     console.log('remove:', e.detail);
-    // }
-
-    // onTagifyInput = e => {
-    //     console.log('input:', e.detail);
-    // }
-
-    // onTagifyInvalid = e => {
-    //     console.log('invalid:', e.detail);
-    // }
-
-
-    /*
-    socket.on('message', (data) => {
-        document.querySelector('h1').innerHTML = data
-    })
-
-    const sendMessage = () => {
-      const messageInput = document.querySelector('.message')
-      const message = messageInput.value
-      socket.emit('message', message)
-    }
-    
-    */
-
-
     useEffect(() => {
 
         // socket.emit('leaveAllRooms', 'leaveAllRooms');
@@ -172,50 +140,32 @@ const {socket} = useContext(SocketContext);
     }, []);
 
 
-    // socket.on('madeChange', (data) => {
-    //     getAnswers()
-    // })
+    var acknowledged = [];
 
-    // socket.on("newAnswer", function(data) {
-    //     getAnswers()
-    //     // toast.dark(data.msg, {
-    //     //     position: "top-center",
-    //     //     autoClose: 4000,
-    //     //     hideProgressBar: false,
-    //     //     closeOnClick: true,
-    //     //     pauseOnHover: true,
-    //     //     draggable: true,
-    //     //     progress: undefined,
-    //     // });
-    // })
+    socket.off('getNewAnswers').on('getNewAnswers', (data) => {
 
-    socket.off('getNewAnswers').on('getNewAnswers', () => {
-        getAnswers()
-        console.log("came")
-        toast.dark("Someone just added a new answer!", {
-            position: "top-center",
-            autoClose: 4000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+        if(!~acknowledged.indexOf(data.event_id)){
+
+            // add to array of acknowledged events
+            acknowledged.unshift(data.event_id);
+    
+            // prevent array from growing to large
+
+            getAnswers()
+            console.log("came")
+            toast.dark("Someone just added a new answer!", {
+                position: "top-center",
+                autoClose: 4000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+
+        }
     });
 
-    
-
-    // socket.on("new_msg", function(data) {
-    //     toast.dark(data.msg, {
-    //         position: "bottom-left",
-    //         autoClose: 2000,
-    //         hideProgressBar: false,
-    //         closeOnClick: true,
-    //         pauseOnHover: true,
-    //         draggable: true,
-    //         progress: undefined,
-    //     });
-    // });
 
     async function getAllTagNames() {
         try {

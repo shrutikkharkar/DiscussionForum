@@ -181,7 +181,7 @@ function AllAnswers() {
         <GridTable 
             columns={columns}
             rows={rows}
-            pageSize={10}
+            pageSize={5}
             isLoading={gotDataFromDatabase}
         />
         

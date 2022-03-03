@@ -1,3 +1,9 @@
+Steps for heroku push:
+git add .
+git commit -am "make it better"
+git push heroku master
+
+
 Algo to use:
 Content matching using Levenshtein Distance algorithm
 Question-answer pair generation and ranking using NAIVE BAYES considering like count and comment polarity.
@@ -21,20 +27,18 @@ Functions to add:
 -Avoid brute force
 
 Priority-
-  -searchbar for phone
-  -remove socket*
-  -DEPLOYMENT
-  -socket sends multiple responses
-
-  -Show which user is currently active
   -Make answer tile as a component
 
+-Show which user is currently active
 -search algo
 -react controllers
 -priviledges - 1(normal user), 2(College student), 3(Faculty/admin)
 -image bar
 -Add comments logo in side panel
 
+searchbar for phone
+socket sends multiple responses
+DEPLOYMENT
 google signup
 Add pagination on required pages
 logging in..

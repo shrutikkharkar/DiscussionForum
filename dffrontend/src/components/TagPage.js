@@ -9,7 +9,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import { MdBlock, MdReportProblem, MdVerified, MdRemoveCircle, MdOutlinedFlag } from "react-icons/md";
 import { AiFillCloseCircle } from "react-icons/ai";
 import IsAdminContext from '../context/IsAdminContext';
-import {Link, Router, useHistory} from 'react-router-dom'
+import {Link, Router, useHistory, useLocation} from 'react-router-dom'
 import {createBrowserHistory} from 'history';
 import { ToastContainer, toast } from 'react-toastify';
 import Dropdown from "react-bootstrap/Dropdown";
@@ -22,13 +22,13 @@ import { Pagination } from "react-pagination-bar"
 import 'react-pagination-bar/dist/index.css'
 function TagPage() {
 
+    const location = useLocation(); //detects when route in url gets changed
+
     const [currentPage, setCurrentPage] = useState(1);
     const pagePostsLimit = 5;
 
-const BEPORT = process.env.REACT_APP_BEPORT
-const BEHOST = process.env.REACT_APP_BEHOST
-const FEPORT = process.env.REACT_APP_FEPORT
-const FEHOST = process.env.REACT_APP_FEHOST
+    const BEPORT = process.env.REACT_APP_BEPORT
+    const BEHOST = process.env.REACT_APP_BEHOST
 
     const {loggedIn} = useContext(AuthContext);
     const {isAdmin} = useContext(IsAdminContext);
@@ -40,7 +40,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
     // const history = createBrowserHistory({forceRefresh:true})
     const queryParams = new URLSearchParams(window.location.search);
     const getTagnameFromUrl = queryParams.get('tagName')
-    const [tagName, setTagName] = useState('')
+    const [getTagName, setTagName] = useState(`${queryParams.get('tagName')}`)
     const [allTagDetails, setAllTagDetails] = useState([])
     const [modal, setModal] = useState(false);
     const [answerByIdForNotification, setAnswerByIdForNotification] = useState('')
@@ -49,9 +49,9 @@ const FEHOST = process.env.REACT_APP_FEHOST
     const [answerForComment, setAnswerForComment] = useState('');
 
     useEffect(() => {
-        getTagDetails(getTagnameFromUrl)
-        setTagName(getTagnameFromUrl)
-    }, []);
+        setTagName(queryParams.get('tagName'))
+        getTagDetails(queryParams.get('tagName'))
+    }, [location]);
 
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         <span
@@ -79,7 +79,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
     
             await axios.post(`${BEHOST}:${BEPORT}/question/removeQuestionByAdmin/${questionId}`)
             .then(res => {
-                getTagDetails()
+                getTagDetails(queryParams.get('tagName'))
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
                     autoClose: 3000,
@@ -122,9 +122,16 @@ const FEHOST = process.env.REACT_APP_FEHOST
    
 
     async function getTagDetails(tagName){
-        setGotTagDetails(false)
         try{
-            if(loggedIn === false){
+            if(loggedIn===true){
+                await axios.get(`${BEHOST}:${BEPORT}/tag/getTagDetailsForUser/${tagName}`)
+                .then(res => {
+                setGotTagDetails(true)
+                setAllTagDetails(res.data)
+                console.log(res.data)
+                })
+            }
+            else {
                 await axios.get(`${BEHOST}:${BEPORT}/tag/getTagDetails/${tagName}`)
                 .then(res => {
                 setGotTagDetails(true)
@@ -133,14 +140,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
                 })
             }
 
-            if(loggedIn === true){
-                await axios.get(`${BEHOST}:${BEPORT}/tag/getTagDetailsForUser/${tagName}`)
-                .then(res => {
-                setGotTagDetails(true)
-                setAllTagDetails(res.data)
-                console.log(res.data)
-                })
-            }
+            
             
         }
         catch (err) {
@@ -189,7 +189,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
 
             await axios.post(`${BEHOST}:${BEPORT}/answer/like/${answerId}`, notificationData)
             .then(res => {
-                getTagDetails()
+                getTagDetails(queryParams.get('tagName'))
             })
 
         }
@@ -203,7 +203,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
         try {
             axios.post(`${BEHOST}:${BEPORT}/answer/removeLike/${answerId}`)
             .then(res => {
-                getTagDetails()
+                getTagDetails(queryParams.get('tagName'))
             })
         }
         catch (err) {
@@ -218,7 +218,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
 
             await axios.post(`${BEHOST}:${BEPORT}/answer/dislike/${answerId}`)
             .then(res => {
-                getTagDetails()
+                getTagDetails(queryParams.get('tagName'))
             })
 
         }
@@ -232,7 +232,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
         try {
             axios.post(`${BEHOST}:${BEPORT}/answer/removeDislike/${answerId}`)
             .then(res => {
-                getTagDetails()
+                getTagDetails(queryParams.get('tagName'))
             })
         }
         catch (err) {
@@ -247,7 +247,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
 
             await axios.post(`${BEHOST}:${BEPORT}/answer/save/${answerId}`)
             .then(res => {
-                getTagDetails()
+                getTagDetails(queryParams.get('tagName'))
                 toast.success('Saved answer successfully!', {
                     position: "bottom-left",
                     autoClose: 3000,
@@ -271,7 +271,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
         try{
             axios.post(`${BEHOST}:${BEPORT}/answer/removeSave/${answerId}`)
             .then(res => {
-                getTagDetails()
+                getTagDetails(queryParams.get('tagName'))
                 toast.dark('Removed saved answer!', {
                     position: "bottom-left",
                     autoClose: 2000,
@@ -296,7 +296,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
 
             await axios.post(`${BEHOST}:${BEPORT}/answer/removeAnswerByAdmin/${answerId}`)
             .then(res => {
-                getTagDetails()
+                getTagDetails(queryParams.get('tagName'))
                 toast.dark(`${res.data}`, {
                     position: "bottom-left",
                     autoClose: 3000,
@@ -489,9 +489,12 @@ const FEHOST = process.env.REACT_APP_FEHOST
 
     
     function getTagContents(tagName){
-        // history.push( `/tagPage/?tagName=${tagName}` );
-        setTagName(tagName)
-        getTagDetails(tagName)
+        if(tagName != getTagName){
+            history.push(`/tagPage/?tagName=${tagName}`)
+            setGotTagDetails(false)
+            setTagName(tagName)
+            getTagDetails(tagName)
+        }
     }
 
     const { containerProps, indicatorEl } = useLoading({
@@ -513,7 +516,7 @@ const FEHOST = process.env.REACT_APP_FEHOST
 
   return (
       <div className="container tagPageMainDiv">
-          <h1>#{tagName}</h1>
+          <h1>#{getTagName}</h1>
           <br />
 
           {allTagDetails.length > 0 && (

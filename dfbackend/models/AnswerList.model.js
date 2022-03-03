@@ -49,6 +49,5 @@ const AnswerListSchema = new mongoose.Schema({
     }
 })
 
-AnswerListSchema.index({answer: 'text', tagsForAnswer: 'text'})
 
 module.exports = mongoose.model('answer', AnswerListSchema)

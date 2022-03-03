@@ -10,8 +10,7 @@ content-type: application/json
 GET http://localhost:3001/tag/getTagDetails/Hackathon2022
 content-type: application/json
 ###
-GET http://localhost:3001/question/search/Test
-content-type: application/json
+GET http://localhost:3001/question/search/Hackathon
 
 ###
 POST http://localhost:3001/user/blockUserByAdmin/61716d2bd703232c709b3fde

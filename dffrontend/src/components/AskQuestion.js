@@ -18,7 +18,6 @@ function AskQuestion() {
     }, []);
 
     const {socket} = useContext(SocketContext);
-    // socket.emit('leaveAllRooms', 'leaveAllRooms');
 
     const BEPORT = process.env.REACT_APP_BEPORT
     const BEHOST = process.env.REACT_APP_BEHOST
@@ -114,7 +113,7 @@ function AskQuestion() {
                 <form onSubmit={submitQuestion}>
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1">Didn't find answer to your question? Post your question here!</label>
-                        <textarea placeholder="Ask your question here!" onChange={(e) => setQuestion(e.target.value)} class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        <textarea placeholder="Ask your question here!" onChange={(e) => setQuestion(e.target.value)} class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
                         <Tags 
                             tagifyRef={tagifyRef1}
                             settings={settings}

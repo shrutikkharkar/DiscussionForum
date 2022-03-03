@@ -42,6 +42,5 @@ const QuestionListTemplates = new mongoose.Schema({
     }
 })
 
-QuestionListTemplates.index({question: 'text', tagsForQuestion: 'text'})
 
 module.exports = mongoose.model('question', QuestionListTemplates)

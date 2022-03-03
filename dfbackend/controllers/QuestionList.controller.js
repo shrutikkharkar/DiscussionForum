@@ -754,9 +754,23 @@ const search = async (req, res) => {
 
         Question.aggregate([
             {
+                $search: 
+                {
+                    index: 'default',
+                    text: 
+                    {
+                      query: textToSearch,
+                      path: 
+                      {
+                        'wildcard': '*'
+                      }
+                    }
+                }
+            },
+
+            {
                 $match:
                 {
-                    $text: { $search: textToSearch },
                     "removedById" : {$eq: []}
                 }
             },
@@ -825,9 +839,23 @@ const search = async (req, res) => {
 
                 Answer.aggregate([
                     {
+                        $search: 
+                        {
+                            index: 'default',
+                            text: 
+                            {
+                              query: textToSearch,
+                              path: 
+                              {
+                                'wildcard': '*'
+                              }
+                            }
+                        }
+                    },
+
+                    {
                         $match: 
                         {
-                            $text: { $search: textToSearch },
                             "removedById" : {$eq: []}
                         }
                     },
@@ -933,9 +961,23 @@ const searchForUser = async (req, res) => {
 
         Question.aggregate([
             {
+                $search: 
+                {
+                    index: 'default',
+                    text: 
+                    {
+                      query: textToSearch,
+                      path: 
+                      {
+                        'wildcard': '*'
+                      }
+                    }
+                }
+            },
+
+            {
                 $match: 
                 {
-                    $text: { $search: textToSearch },
                     "removedById" : {$eq: []}
                 }
             },
@@ -1004,9 +1046,23 @@ const searchForUser = async (req, res) => {
 
                 Answer.aggregate([
                     {
+                        $search: 
+                        {
+                            index: 'default',
+                            text: 
+                            {
+                              query: textToSearch,
+                              path: 
+                              {
+                                'wildcard': '*'
+                              }
+                            }
+                        }
+                    },
+
+                    {
                         $match: 
                         {
-                            $text: { $search: textToSearch },
                             "removedById" : {$eq: []}
                         }
                     },
