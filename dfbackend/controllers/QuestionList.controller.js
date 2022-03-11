@@ -6,6 +6,51 @@ const Tag = require('../models/TagList.model')
 const User = require('../models/User.model')
 const Notification = require('../models/NotificationList.model')
 
+const levenshteinDistance = (s, t) => {
+   
+    // s is text to search and t is answer
+    var maxLen = 0;
+    if (!s.length) return t.length;
+    if (!t.length) return s.length;
+
+    if(s.length > t.length){
+        maxLen = s.length;
+    }
+    else{
+        maxLen = t.length;
+    }
+
+    const arr = [];
+    for (let i = 0; i <= t.length; i++) {
+      arr[i] = [i];
+      for (let j = 1; j <= s.length; j++) {
+        arr[i][j] =
+          i === 0
+            ? j
+            : Math.min(
+                arr[i - 1][j] + 1,
+                arr[i][j - 1] + 1,
+                arr[i - 1][j - 1] + (s[j - 1] === t[i - 1] ? 0 : 1)
+              );
+      }
+    }
+
+    // My logic for YES of NO
+    // If levenshtein Distance is greater than 50% of text to search then return true 
+
+
+    // 100 - 96   4 > 2  is match > word/2
+    if( (maxLen - arr[t.length][s.length] )  >  s.length/2 ){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+    // return arr[t.length][s.length];
+};
+
+
 const askQuestion = async (req, res) => {
     try {
         const {question, tagsForQuestion} = req.body
@@ -710,42 +755,49 @@ const updateQuestion = async (req, res) => {
     }
 }
 
-// const search = async (req, res) => {
-//     try {
-//         let textToSearch = req.params.text
 
-//         var searchResult = [];
+const searchLeven = async (req, res) => {
+    try {
 
-//         Question.find( { $text: { $search: textToSearch } } )
-//         .then((result) => {
-//             if(result){
-//                 for(var i = 0; i < result.length; i++){
-//                     searchResult.push(result[i]);
-//                 }
-//                 Answer.find( { $text: { $search: textToSearch } } )
-//                 .then((result) => {
-//                     if(result){
-//                         for(var i = 0; i < result.length; i++){
-//                             searchResult.push(result[i]);
-//                         }
-//                         res.json(searchResult);
-//                     }
-//                     else{
-//                         res.send("No results found")
-//                     }
-//                 })
-//             }
-//             else{
-//                 res.send("No results found")
-//             }
-//         })
+        let textToSearch = req.params.text;
+        var searchResult = [];
 
-//     }
-//     catch (err) {
-//         console.error(err);
-//         res.status(500).send();
-//     }
-// }
+        const levenshteinDistance = (s, t) => {
+            if (!s.length) return t.length;
+            if (!t.length) return s.length;
+            const arr = [];
+            for (let i = 0; i <= t.length; i++) {
+              arr[i] = [i];
+              for (let j = 1; j <= s.length; j++) {
+                arr[i][j] =
+                  i === 0
+                    ? j
+                    : Math.min(
+                        arr[i - 1][j] + 1,
+                        arr[i][j - 1] + 1,
+                        arr[i - 1][j - 1] + (s[j - 1] === t[i - 1] ? 0 : 1)
+                      );
+              }
+            }
+            return arr[t.length][s.length];
+        };
+
+        Answer.find({}, {answer: 1})
+        .then((answers) => {
+            answers.map(answer => {
+                searchResult.push( levenshteinDistance(textToSearch, answer.answer), answer.answer );
+            })
+
+            res.send(searchResult)
+        })
+
+
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
 
 const search = async (req, res) => {
     try {
@@ -836,6 +888,7 @@ const search = async (req, res) => {
                 for(var i = 0; i < questionDetails.length; i++){
                     searchResult.push(questionDetails[i]);
                 }
+
 
                 Answer.aggregate([
                     {
@@ -932,7 +985,108 @@ const search = async (req, res) => {
                         for(var i = 0; i < answerDetails.length; i++){
                             searchResult.push(answerDetails[i]);
                         }
-                        res.json(searchResult)
+                        
+
+
+
+                        Answer.aggregate([
+                            
+                            {
+                                $match: 
+                                {
+                                    "removedById" : {$eq: []}
+                                }
+                            },
+        
+                            {
+                                $lookup: 
+                                {
+                                    from: "comments", 
+                                    localField: "_id", 
+                                    foreignField: "answerId",
+                                    as: "comment_details"
+                                }
+                            },
+                            {
+                                $lookup: 
+                                {
+                                    from: "users", 
+                                    localField: "answeredById", 
+                                    foreignField: "_id",
+                                    as: "user_details"
+                                }
+                            },
+                            {$unwind: "$user_details"},
+                
+                            {
+                                $match:
+                                {
+                                    "user_details.blockedById" : {$eq: []}
+                                }
+                            },
+        
+                            {
+                                $lookup: 
+                                {
+                                    from: "questions", 
+                                    localField: "questionID", 
+                                    foreignField: "_id",
+                                    as: "question_details_for_answer"
+                                }
+                            },
+                            {$unwind: "$question_details_for_answer"},
+        
+                            
+                            {
+                                $project:
+                                {
+                                    type: "answer",
+                                    answer: 1,
+                                    question: "$question_details_for_answer.question",
+                                    questionId: "$question_details_for_answer.questionId",
+                                    tagsForAnswer: { $ifNull: [ "$tagsForAnswer", [] ] },
+                                    updatedOnDate: 1,
+                                    Class: "$user_details.Class",
+                                    branch: "$user_details.branch",
+                                    fullName: "$user_details.fullName",
+                                    isAdmin: "$user_details.isAdmin",
+                                    isCollegeId: "$user_details.isCollegeId",
+                                    likeCount: {
+                                        $size: "$likedById"
+                                    },
+                                    dislikeCount: {
+                                        $size: "$dislikedById"
+                                    },
+                                    commentCount: {
+                                        $size: "$comment_details"
+                                    }
+                                }
+                            },
+                            { $sort: { updatedOnDate: -1 } }
+                        ])
+                        .then((answerDetails) => 
+                        {
+                            if(answerDetails){
+                                for(var i = 0; i < answerDetails.length; i++){
+
+                                    const resLev = levenshteinDistance(`<p>${textToSearch}</p>`, answerDetails[i].answer);
+            
+                                    if(resLev == true){
+                                        searchResult.push(answerDetails[i]);
+                                    }
+                                }
+
+                                const filteredArray = searchResult.filter((v,i,a)=>a.findIndex(t=>['answer, question'].every(k=>t[k] ===v[k]))===i);
+                                res.json(filteredArray)
+                                console.log("Results found: " + filteredArray.length);
+                            }
+                            else {
+                                res.json({tags: null});
+                            }
+                        })
+
+
+
                     }
                     else {
                         res.json({tags: null});
@@ -1199,6 +1353,7 @@ module.exports = questionListController = {
     updateQuestion,
     getQuestionsAndTagsForSearchBar,
 
+    searchLeven,
     search,
     searchForUser
 };

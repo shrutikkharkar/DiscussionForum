@@ -34,6 +34,8 @@ router.post('/updateQuestion/:id', auth, questionListController.updateQuestion);
 
 router.get('/search/:text', questionListController.search)
 
+router.get('/searchLeven/:text', questionListController.searchLeven)
+
 router.get('/searchForUser/:text', auth, questionListController.searchForUser)
 
 

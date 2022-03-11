@@ -7,12 +7,27 @@ content-type: application/json
     "password": "Shrutik"
 }
 ###
+POST https://vcetdforum.herokuapp.com/user/sendEmailForResetPassword
+content-type: application/json
+
+{
+    "email": "shrutikharkar3@gmail.com"
+}
+
+###
 GET http://localhost:3001/tag/getTagDetails/Hackathon2022
 content-type: application/json
 ###
-GET http://localhost:3001/question/search/Hackathon
+GET http://localhost:3001/question/search/How to learn to code?
+content-type: application/json
 
 ###
+
+###
+GET http://localhost:3001/question/searchLeven/Coding competition
+
+###
+
 POST http://localhost:3001/user/blockUserByAdmin/61716d2bd703232c709b3fde
 content-type: application/json
 

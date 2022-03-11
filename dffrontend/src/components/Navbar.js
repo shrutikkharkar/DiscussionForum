@@ -8,8 +8,7 @@ import IsAdminContext from '../context/IsAdminContext'
 import SearchBar from './SearchBar'
 import { FaUserCircle, FaCheckSquare, FaHeart } from "react-icons/fa";
 import { MdNotificationsNone } from "react-icons/md";
-import { AiOutlinePoweroff } from "react-icons/ai";
-import { BiSearch } from "react-icons/bi";
+
 import { RiArrowDropDownLine, RiProfileFill } from "react-icons/ri";
 import Overlay from 'react-bootstrap/Overlay';
 import Popover from 'react-bootstrap/Popover';

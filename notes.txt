@@ -28,6 +28,9 @@ Functions to add:
 
 Priority-
   -Make answer tile as a component
+  -Like latency
+  -pagination style
+  -
 
 -Show which user is currently active
 -search algo
